@@ -54,8 +54,9 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        dialogueUI.ShowDialogue(currentDialogue.speaker, currentDialogue.dialogue);
+        dialogueUI.ShowDialogue(currentDialogue.speaker, currentDialogue.dialogue, currentDialogue.portrait);
     }
+
 
     void DisplayNextDialogue()
     {

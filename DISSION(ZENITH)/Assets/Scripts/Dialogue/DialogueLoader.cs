@@ -20,8 +20,9 @@ public class DialogueLoader : MonoBehaviour
             string speaker = entry["Speaker"].ToString();
             string dialogue = entry["Dialogue"].ToString();
             string nextId = entry.ContainsKey("Next ID") ? entry["Next ID"].ToString() : "END";
+            string portrait = entry.ContainsKey("Portrait") ? entry["Portrait"].ToString() : "";
 
-            dialogues[id] = new Dialogue(id, speaker, dialogue, nextId);
+            dialogues[id] = new Dialogue(id, speaker, dialogue, nextId, portrait);
         }
 
         Debug.Log("CSV 대화 데이터 로드 완료!");
