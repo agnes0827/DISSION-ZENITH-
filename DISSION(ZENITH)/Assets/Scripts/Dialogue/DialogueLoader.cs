@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// CSV 파일을 읽고 Dialogue 데이터를 Dictionary에 저장
 public class DialogueLoader : MonoBehaviour
 {
     public Dictionary<string, Dialogue> dialogues = new Dictionary<string, Dialogue>();
@@ -10,7 +11,7 @@ public class DialogueLoader : MonoBehaviour
         LoadDialogue("CSV/dialogue");
     }
 
-    // CSV 대화 파일을 읽는 함수
+    // CSVReder를 통해 CSV 파일 파싱, 대화 데이터 로드
     void LoadDialogue(string fileName)
     {
         List<Dictionary<string, object>> data = CSVReader.Read(fileName);
@@ -34,8 +35,8 @@ public class DialogueLoader : MonoBehaviour
         Debug.Log("CSV 대화 데이터 로드 완료");
     }
 
-    // ID로 대화 데이터를 가져 옴
-    public Dialogue GetDialogueById(string id)
+    // ID로 대화 데이터 로드
+    public Dialogue GetDialogueId(string id)
     {
         dialogues.TryGetValue(id, out var dialogue);
         return dialogue;

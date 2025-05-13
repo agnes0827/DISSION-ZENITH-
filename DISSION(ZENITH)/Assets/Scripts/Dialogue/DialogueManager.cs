@@ -3,15 +3,15 @@ using UnityEngine;
 public class DialogueManager : MonoBehaviour
 {
     private DialogueLoader dialogueLoader;
-    [SerializeField] private DialogueUI dialogueUI;  // GameObject로 설정
     private Dialogue currentDialogue;
-    private bool isDialogueActive = false;
+
+    [SerializeField] private DialogueUI dialogueUI;   // UI와 연결
+    private bool isDialogueActive = false;            // 대화창 활성화 여부(기본: false)
 
     void Start()
     {
         dialogueLoader = FindObjectOfType<DialogueLoader>();
 
-        // 대화 시작 시 패널이 꺼져 있으면 활성화
         if (dialogueUI == null)
         {
             Debug.LogError("DialogueUI가 연결되지 않았습니다!");
@@ -26,17 +26,12 @@ public class DialogueManager : MonoBehaviour
         if (isDialogueActive && Input.GetKeyDown(KeyCode.Space))
         {
             if (dialogueUI.IsTyping)
-            {
-                dialogueUI.FinishTypingImmediately(); // 타이핑 중이면 전체 출력
-            }
-            else
-            {
-                DisplayNextDialogue(); // 다 출력됐으면 다음 대사
-            }
+                dialogueUI.FinishTyping();  // 타자 효과 중이면 전체 대화 출력
+            else DisplayNextDialogue();
         }
     }
 
-
+    // 대화 출력
     public void StartDialogue(string startId)
     {
         if (string.IsNullOrEmpty(startId))
@@ -50,9 +45,10 @@ public class DialogueManager : MonoBehaviour
         DisplayDialogue(startId);
     }
 
+    // 특정 ID 대화 출력
     void DisplayDialogue(string currentId)
     {
-        currentDialogue = dialogueLoader.GetDialogueById(currentId);
+        currentDialogue = dialogueLoader.GetDialogueId(currentId);
         if (currentDialogue == null)
         {
             Debug.LogError("대화 데이터를 찾을 수 없습니다: " + currentId);
@@ -62,10 +58,10 @@ public class DialogueManager : MonoBehaviour
 
         dialogueUI.ShowDialogue(currentDialogue.speaker, currentDialogue.dialogue, currentDialogue.portrait);
 
-        // 선택지 있을 경우에만 보여줌
+        // 선택지 있을 경우 버튼 표시
         if (!string.IsNullOrEmpty(currentDialogue.choice1) && !string.IsNullOrEmpty(currentDialogue.choice2))
         {
-            isDialogueActive = false;
+            isDialogueActive = false; // 스페이스바 입력 방지
             dialogueUI.ShowChoices(currentDialogue.choice1, currentDialogue.choice2);
 
             dialogueUI.choiceButton1.onClick.RemoveAllListeners();
@@ -75,12 +71,12 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
-            dialogueUI.HideChoices(); // 선택지가 없으면 무조건 비활성화
+            dialogueUI.HideChoices(); // 선택지가 없으면 비활성화
             isDialogueActive = true;
         }
     }
 
-
+    // 선택지 버튼 클릭시 호출
     public void OnChoiceSelected(int choiceNumber)
     {
         string nextId = (choiceNumber == 1) ? currentDialogue.choice1NextId : currentDialogue.choice2NextId;
@@ -90,16 +86,16 @@ public class DialogueManager : MonoBehaviour
         DisplayDialogue(nextId);
     }
 
-
+    // 다음 대사 출력
     void DisplayNextDialogue()
     {
+        // Next ID가 "END"일 경우 대화 종료
         if (currentDialogue.nextId == "END")
         {
             EndDialogue();
             return;
         }
 
-        // 다음 ID가 비어있다면 다음 행을 출력
         if (string.IsNullOrEmpty(currentDialogue.nextId))
         {
             int nextIndex = int.Parse(currentDialogue.id) + 1;
@@ -111,6 +107,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    // 대화 종료
     void EndDialogue()
     {
         isDialogueActive = false;
