@@ -7,6 +7,12 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private Text dialogueText;
     [SerializeField] private Image portraitImage;  // 초상화 표시용
 
+    public GameObject choicePanel;
+    public Button choiceButton1;
+    public Button choiceButton2;
+    public Text choiceText1;
+    public Text choiceText2;
+
     public void ShowDialogue(string speaker, string dialogue, string portraitName)
     {
         speakerText.text = speaker;
@@ -37,5 +43,17 @@ public class DialogueUI : MonoBehaviour
     public void HideDialogue()
     {
         gameObject.SetActive(false);
+    }
+
+    public void ShowChoices(string c1, string c2)
+    {
+        choicePanel.SetActive(true);
+        choiceText1.text = c1;
+        choiceText2.text = c2;
+    }
+
+    public void HideChoices()
+    {
+        choicePanel.SetActive(false);
     }
 }

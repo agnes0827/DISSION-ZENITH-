@@ -46,7 +46,6 @@ public class DialogueManager : MonoBehaviour
     void DisplayDialogue(string currentId)
     {
         currentDialogue = dialogueLoader.GetDialogueById(currentId);
-
         if (currentDialogue == null)
         {
             Debug.LogError("대화 데이터를 찾을 수 없습니다: " + currentId);
@@ -55,6 +54,33 @@ public class DialogueManager : MonoBehaviour
         }
 
         dialogueUI.ShowDialogue(currentDialogue.speaker, currentDialogue.dialogue, currentDialogue.portrait);
+
+        // 선택지 있을 경우에만 보여줌
+        if (!string.IsNullOrEmpty(currentDialogue.choice1) && !string.IsNullOrEmpty(currentDialogue.choice2))
+        {
+            isDialogueActive = false;
+            dialogueUI.ShowChoices(currentDialogue.choice1, currentDialogue.choice2);
+
+            dialogueUI.choiceButton1.onClick.RemoveAllListeners();
+            dialogueUI.choiceButton2.onClick.RemoveAllListeners();
+            dialogueUI.choiceButton1.onClick.AddListener(() => OnChoiceSelected(1));
+            dialogueUI.choiceButton2.onClick.AddListener(() => OnChoiceSelected(2));
+        }
+        else
+        {
+            dialogueUI.HideChoices(); // 선택지가 없으면 무조건 비활성화
+            isDialogueActive = true;
+        }
+    }
+
+
+    public void OnChoiceSelected(int choiceNumber)
+    {
+        string nextId = (choiceNumber == 1) ? currentDialogue.choice1NextId : currentDialogue.choice2NextId;
+
+        dialogueUI.HideChoices();
+        isDialogueActive = true;
+        DisplayDialogue(nextId);
     }
 
 

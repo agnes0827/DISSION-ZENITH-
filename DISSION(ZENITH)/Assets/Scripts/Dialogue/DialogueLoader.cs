@@ -5,11 +5,12 @@ public class DialogueLoader : MonoBehaviour
 {
     public Dictionary<string, Dialogue> dialogues = new Dictionary<string, Dialogue>();
 
-    void Start()
+    void Awake()
     {
         LoadDialogue("CSV/dialogue");
     }
 
+    // CSV 대화 파일을 읽는 함수
     void LoadDialogue(string fileName)
     {
         List<Dictionary<string, object>> data = CSVReader.Read(fileName);
@@ -22,12 +23,18 @@ public class DialogueLoader : MonoBehaviour
             string nextId = entry.ContainsKey("Next ID") ? entry["Next ID"].ToString() : "END";
             string portrait = entry.ContainsKey("Portrait") ? entry["Portrait"].ToString() : "";
 
-            dialogues[id] = new Dialogue(id, speaker, dialogue, nextId, portrait);
-        }
+            string choice1 = entry.ContainsKey("Choice1") ? entry["Choice1"].ToString() : "";
+            string choice1NextId = entry.ContainsKey("Choice1 Next ID") ? entry["Choice1 Next ID"].ToString() : "";
+            string choice2 = entry.ContainsKey("Choice2") ? entry["Choice2"].ToString() : "";
+            string choice2NextId = entry.ContainsKey("Choice2 Next ID") ? entry["Choice2 Next ID"].ToString() : "";
 
-        Debug.Log("CSV 대화 데이터 로드 완료!");
+            dialogues[id] = new Dialogue(id, speaker, dialogue, nextId, portrait, choice1, choice1NextId, choice2, choice2NextId);
+
+        }
+        Debug.Log("CSV 대화 데이터 로드 완료");
     }
 
+    // ID로 대화 데이터를 가져 옴
     public Dialogue GetDialogueById(string id)
     {
         dialogues.TryGetValue(id, out var dialogue);
