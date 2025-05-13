@@ -23,12 +23,19 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
-        // 스페이스바로 대화 넘기기
         if (isDialogueActive && Input.GetKeyDown(KeyCode.Space))
         {
-            DisplayNextDialogue();
+            if (dialogueUI.IsTyping)
+            {
+                dialogueUI.FinishTypingImmediately(); // 타이핑 중이면 전체 출력
+            }
+            else
+            {
+                DisplayNextDialogue(); // 다 출력됐으면 다음 대사
+            }
         }
     }
+
 
     public void StartDialogue(string startId)
     {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class DialogueUI : MonoBehaviour
 {
@@ -13,12 +14,21 @@ public class DialogueUI : MonoBehaviour
     public Text choiceText1;
     public Text choiceText2;
 
+    [SerializeField] private float typingSpeed = 0.05f;
+    private Coroutine typingCoroutine;
+    public bool IsTyping { get; private set; } = false;
+    private string currentFullText = "";
+
     public void ShowDialogue(string speaker, string dialogue, string portraitName)
     {
         speakerText.text = speaker;
-        dialogueText.text = dialogue;
+        currentFullText = dialogue;
 
-        // 초상화 로드
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeSentence(dialogue));
+
         if (!string.IsNullOrEmpty(portraitName))
         {
             Sprite portrait = Resources.Load<Sprite>("Portraits/" + portraitName);
@@ -32,6 +42,31 @@ public class DialogueUI : MonoBehaviour
                 Debug.LogError("초상화를 찾을 수 없습니다: " + portraitName);
                 portraitImage.enabled = false;
             }
+        }
+    }
+
+    private IEnumerator TypeSentence(string sentence)
+    {
+        IsTyping = true;
+        dialogueText.text = "";
+        foreach (char letter in sentence.ToCharArray())
+        {
+            dialogueText.text += letter;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+        IsTyping = false;
+    }
+
+    // 외부에서 즉시 출력 요청 시 사용
+    public void FinishTypingImmediately()
+    {
+        if (IsTyping)
+        {
+            if (typingCoroutine != null)
+                StopCoroutine(typingCoroutine);
+
+            dialogueText.text = currentFullText;
+            IsTyping = false;
         }
     }
 
