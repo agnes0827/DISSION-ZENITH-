@@ -79,6 +79,11 @@ public class DialogueManager : MonoBehaviour
     // 선택지 버튼 클릭시 호출
     public void OnChoiceSelected(int choiceNumber)
     {
+        if (currentDialogue == null)
+        {
+            return;
+        }
+
         string nextId = (choiceNumber == 1) ? currentDialogue.choice1NextId : currentDialogue.choice2NextId;
 
         dialogueUI.HideChoices();
