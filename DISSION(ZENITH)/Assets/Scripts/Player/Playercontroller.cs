@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playercontroller : MonoBehaviour
 {
@@ -118,5 +119,9 @@ public class playercontroller : MonoBehaviour
             Debug.LogWarning("스프라이트를 찾을 수 없습니다: " + spriteName);
             //해당 스프라이트가 없을 때 경고 메세지
         }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
     }
 }
