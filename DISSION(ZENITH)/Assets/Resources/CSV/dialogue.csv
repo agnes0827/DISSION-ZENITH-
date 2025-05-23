@@ -1,0 +1,11 @@
+ID,Speaker,Dialogue,Next ID,Portrait,Choice1,Choice1 Next ID,Choice2,Choice2 Next ID
+10000,쿠즈릴,안녕하세요.,10001,kuzril_normal,,,,
+10001,쿠즈릴,테스트용 대화 출력입니다.,END,kuzril_normal,,,,
+,,,,,,,,
+20000,쿠즈릴,안녕하세요. 저는 쿠즈릴입니다.,20001,kuzril_normal,,,,
+20001,마을 주민,전 npc에요.,20002,npc1_normal,,,,
+20002,마을 주민,어쩌다 이 마을에 오게 되셨죠?,20005,npc1_normal,어쩌다보니...,20003,날아왔어요.,20004
+20003,마을 주민,그것 참 신기하네요.,20005,npc1_normal,,,,
+20004,마을 주민,네? 농담이시죠?,20005,npc1_normal,,,,
+20005,마을 주민,아무튼 마을사무소로 가보시는 게 좋겠어요.,20006,npc1_normal,,,,
+20006,쿠즈릴,감사합니다.,END,kuzril_normal,,,,
