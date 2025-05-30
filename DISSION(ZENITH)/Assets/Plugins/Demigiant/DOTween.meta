@@ -1,13 +1,5 @@
 fileFormatVersion: 2
 guid: a50bd9a009c8dfc4ebd88cc8101225a7
-<<<<<<< HEAD
-folderAsset: yes
-DefaultImporter:
-  externalObjects: {}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-=======
 labels:
 - Tween
 - Tweening
@@ -27,4 +19,3 @@ labels:
 folderAsset: yes
 DefaultImporter:
   userData: 
->>>>>>> 1f8f79ef6840254268f4e55ce6199f5c8576f945
