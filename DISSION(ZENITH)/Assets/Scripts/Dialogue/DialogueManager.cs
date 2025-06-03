@@ -6,7 +6,8 @@ public class DialogueManager : MonoBehaviour
     private Dialogue currentDialogue;
 
     [SerializeField] private DialogueUI dialogueUI;   // UI와 연결
-    private bool isDialogueActive = false;            // 대화창 활성화 여부(기본: false)
+    public bool isDialogue = false;             // 대화창 활성화 여부(기본: false)
+    public bool isChoice = false;                     // 선택지 활성화 여부(기본: false)
 
     void Start()
     {
@@ -23,7 +24,7 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
-        if (isDialogueActive && Input.GetKeyDown(KeyCode.Space))
+        if (!isChoice && Input.GetKeyDown(KeyCode.Space))
         {
             if (dialogueUI.IsTyping)
                 dialogueUI.FinishTyping();  // 타자 효과 중이면 전체 대화 출력
@@ -40,7 +41,7 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        isDialogueActive = true;
+        isDialogue = true;
         dialogueUI.ShowDialoguePanel();  // 대화 시작 시 패널 표시
         DisplayDialogue(startId);
     }
@@ -61,7 +62,7 @@ public class DialogueManager : MonoBehaviour
         // 선택지 있을 경우 버튼 표시
         if (!string.IsNullOrEmpty(currentDialogue.choice1) && !string.IsNullOrEmpty(currentDialogue.choice2))
         {
-            isDialogueActive = false; // 스페이스바 입력 방지
+            isChoice = true; // 선택지 출력 중에는 스페이스바 입력 방지
             dialogueUI.ShowChoices(currentDialogue.choice1, currentDialogue.choice2);
 
             dialogueUI.choiceButton1.onClick.RemoveAllListeners();
@@ -72,7 +73,7 @@ public class DialogueManager : MonoBehaviour
         else
         {
             dialogueUI.HideChoices(); // 선택지가 없으면 비활성화
-            isDialogueActive = true;
+            isChoice = false;
         }
     }
 
@@ -87,7 +88,7 @@ public class DialogueManager : MonoBehaviour
         string nextId = (choiceNumber == 1) ? currentDialogue.choice1NextId : currentDialogue.choice2NextId;
 
         dialogueUI.HideChoices();
-        isDialogueActive = true;
+        isDialogue = true;
         DisplayDialogue(nextId);
     }
 
@@ -115,7 +116,7 @@ public class DialogueManager : MonoBehaviour
     // 대화 종료
     void EndDialogue()
     {
-        isDialogueActive = false;
+        isDialogue = false;
         dialogueUI.HideDialogue();
     }
 }

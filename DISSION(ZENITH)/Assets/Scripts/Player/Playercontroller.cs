@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class playercontroller : MonoBehaviour
 {
+    private Rigidbody2D rb;
+
     //플레이어 이동 속도
     public float moveSpeed = 3f;
 
@@ -24,9 +26,14 @@ public class playercontroller : MonoBehaviour
     //프레임이 바뀌는 시간(0.1초마다 전환)
     private float animationInterval = 0.1f; // 애니메이션 프레임 간격 (초)
 
+    // 대화 출력 중 플레이어 이동 차단
+    private DialogueManager dialogueManager;
+
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        dialogueManager = FindObjectOfType<DialogueManager>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
@@ -37,7 +44,7 @@ public class playercontroller : MonoBehaviour
         movement.y = Input.GetAxisRaw("Vertical");
 
         //방향키가 눌렸을 때
-        if (movement != Vector2.zero)
+        if (movement != Vector2.zero && !dialogueManager.isDialogue)
         {
             MovePlayer(); //실제 이동 수행
             AnimateWalk();//걷는 애니메이션 재생
