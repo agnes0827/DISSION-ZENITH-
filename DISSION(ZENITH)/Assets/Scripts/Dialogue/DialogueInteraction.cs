@@ -23,7 +23,7 @@ public class DialogueInteraction : MonoBehaviour
     void Update()
     {
         if (currentDialogueTarget != null &&
-            Input.GetKeyDown(KeyCode.Space) &&
+            Input.GetKeyDown(KeyCode.F) &&
             !FindObjectOfType<DialogueManager>().isDialogue) // 대화 중이 아닐 때만 시작
         {
             Debug.Log("대화 시작!");

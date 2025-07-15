@@ -6,7 +6,7 @@ public class DialogueManager : MonoBehaviour
     private Dialogue currentDialogue;
 
     [SerializeField] private DialogueUI dialogueUI;   // UI와 연결
-    public bool isDialogue = false;             // 대화창 활성화 여부(기본: false)
+    public bool isDialogue = false;                   // 대화창 활성화 여부(기본: false)
     public bool isChoice = false;                     // 선택지 활성화 여부(기본: false)
 
     void Start()
@@ -116,7 +116,7 @@ public class DialogueManager : MonoBehaviour
     // 대화 종료
     void EndDialogue()
     {
-        isDialogue = false;
         dialogueUI.HideDialogue();
+        isDialogue = false;
     }
 }
