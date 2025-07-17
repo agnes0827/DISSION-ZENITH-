@@ -84,6 +84,17 @@ public class DialogueManager : MonoBehaviour
             dialogueInstance.HideChoices();
             isChoice = false;
         }
+
+        // 대사 출력 후 퀘스트 수락 처리
+        if (!string.IsNullOrEmpty(currentDialogue.questId))
+        {
+            if (!QuestManager.Instance.HasAccepted(currentDialogue.questId))
+            {
+                QuestManager.Instance.AcceptQuest(currentDialogue.questId);
+                Debug.Log($"퀘스트 수락됨: {currentDialogue.questId}");
+            }
+        }
+
     }
 
     public void OnChoiceSelected(int choiceNumber)
