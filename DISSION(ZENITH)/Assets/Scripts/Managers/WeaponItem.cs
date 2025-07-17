@@ -1,27 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro.Examples;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WeaponItem : MonoBehaviour
 {
     public Image weaponImage; // 이 무기의 이미지 (프리팹 내부에 연결)
-    private WeaponSlotManager slotManager;
+    public Text weaponNameText; // 무기의 이름
+    public Text weaponPowerText; // 무기의 공격력
 
     private void Start()
     {
-        // 씬에서 WeaponSlotManager 찾기
-        slotManager = FindObjectOfType<WeaponSlotManager>();
-
         // 클릭 이벤트 등록
         GetComponent<Button>().onClick.AddListener(OnClick);
     }
 
     void OnClick()
     {
-        if (slotManager != null)
-        {
-            slotManager.AssignWeaponToSlot(weaponImage.sprite);
-        }
+        var slotManager = FindObjectOfType<WeaponSlotManager>();
+
+        string weaponName = weaponNameText.text;
+        int power = int.Parse(weaponPowerText.text);
+
+        slotManager.AssignWeaponToSlot(weaponImage.sprite, weaponName, power);
     }
 }
