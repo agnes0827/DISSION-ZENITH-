@@ -28,12 +28,20 @@ public class BattleManager : MonoBehaviour
     public void OnWeaponSlotClicked(int slotIndex)
     {
         WeaponData data = weaponSlotManager.GetWeaponData(slotIndex);
-        if (data != null)
+        WeaponSlotUI slotUI = weaponSlotManager.weaponSlots[slotIndex];
+
+        if (data != null && slotUI.CanUse())
         {
             Debug.Log($"무기 {data.name} 사용! 공격력: {data.power}");
             enemy.TakeDamage(data.power);
 
+            slotUI.UseWeapon(); // 사용 횟수 차감 및 버튼 비활성화 처리
+
             OnPlayerAttack(); // 적 반격 코루틴 시작
+        }
+        else
+        {
+            Debug.Log("이 무기는 더 이상 사용할 수 없습니다!");
         }
     }
 

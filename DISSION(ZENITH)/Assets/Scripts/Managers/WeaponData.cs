@@ -9,11 +9,13 @@ public class WeaponData
     public string name; // 무기 이름 저장
     public Sprite image; // 무기 이미지 저장
     public int power; // 무기 공격력 저장
+    public int maxUsage = -1; // 도끼만 3이고 나머지 무기한 처리
 
-    public WeaponData(string name, Sprite image, int power)
+    public WeaponData(string name, Sprite image, int power, int maxUsage)
     {
         this.name = name;
         this.image = image;
         this.power = power;
+        this.maxUsage = maxUsage;
     }
 }
