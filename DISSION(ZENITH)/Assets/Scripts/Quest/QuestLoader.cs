@@ -16,14 +16,14 @@ public class QuestLoader : MonoBehaviour
 
         foreach (var entry in data)
         {
-            string id = entry["quest_id"].ToString();
-            string title = entry["quest_title"].ToString();
-            string description = entry["description"].ToString();
-            string type = entry["type"].ToString();
-            string targetId = entry["target_id"].ToString();
-            string requiredCountStr = entry["required_count"].ToString();
+            string id = entry["Quest ID"].ToString();
+            string title = entry["Quest Title"].ToString();
+            string description = entry["Description"].ToString();
+            string type = entry["Type"].ToString();
+            string targetId = entry["Target ID"].ToString();
+            string requiredCountStr = entry["Required Count"].ToString();
             int requiredCount = int.TryParse(requiredCountStr, out var count) ? count : 1;
-            string reward = entry["reward"].ToString();
+            string reward = entry["Reward"].ToString();
 
             Quest quest = new Quest(id, title, description, type, targetId, requiredCount, reward);
             quests[id] = quest;

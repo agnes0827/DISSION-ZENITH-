@@ -21,4 +21,4 @@ ID,Speaker,Dialogue,Next ID,Portrait,Choice1,Choice1 Next ID,Choice2,Choice2 Nex
 30008,초코,멍!,30009,choco_normal,,,,,
 30009,마을 주민,초코를 찾아주셔서 감사해요!,END,npc1_normal,,,,,
 30010,초코,멍!,30011,choco_normal,,,,,
-30011,쿠즈릴,"""(마을 주민이 잃어버렸다는 강아지같다...)/n마을까지 데려다 주자.""",END,kuzril_normal,,,,,
+30011,쿠즈릴,"""마을 주민이 잃어버렸다는 강아지 같다...\n마을까지 데려다 주자.""",END,kuzril_normal,,,,,
