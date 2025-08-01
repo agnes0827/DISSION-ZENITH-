@@ -346,7 +346,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uACF5\uACA9\uB825 10 ~ 30"
+  m_Text: "\uACF5\uACA9\uB825 5 ~ 30"
 --- !u!222 &12130324
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1036,7 +1036,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uACF5\uACA9\uB825 10 ~ 20"
+  m_Text: "\uACF5\uACA9\uB825 0 ~ 20"
 --- !u!222 &750586256
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1340,7 +1340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponImage: {fileID: 948272964}
   weaponNameText: {fileID: 599812941}
-  minDamage: 0
+  minDamage: 10
   maxDamage: 15
 --- !u!114 &948272968
 MonoBehaviour:
@@ -1968,7 +1968,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponImage: {fileID: 1232277911}
   weaponNameText: {fileID: 1937423749}
-  minDamage: 10
+  minDamage: 5
   maxDamage: 30
 --- !u!114 &1513175380
 MonoBehaviour:
@@ -2084,7 +2084,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uACF5\uACA9\uB825 0 ~ 15"
+  m_Text: "\uACF5\uACA9\uB825 10 ~ 15"
 --- !u!222 &1550752167
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2584,9 +2584,9 @@ RectTransform:
   - {fileID: 826258772}
   - {fileID: 1571784444}
   - {fileID: 1370894028}
-  - {fileID: 1563138189}
   - {fileID: 2056420047}
   - {fileID: 1860697568}
+  - {fileID: 1563138189}
   - {fileID: 125984445}
   - {fileID: 1989545951}
   - {fileID: 1032238600}
@@ -2803,7 +2803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponImage: {fileID: 1856496053}
   weaponNameText: {fileID: 732855063}
-  minDamage: 10
+  minDamage: 0
   maxDamage: 20
 --- !u!114 &1856496057
 MonoBehaviour:

@@ -13,8 +13,8 @@ public class CleanSystem : MonoBehaviour
     private Color pressedColor = new Color(0x6F / 255f, 0x4B / 255f, 0x4B / 255f); // #6F4B4B
 
     private List<string> inputHistory = new List<string>();
-    private string[] pattern1 = { "Left", "Right", "Left", "Right", "Left", "Right", "Left", "Right", "Left", "Right" };
-    private string[] pattern2 = { "Right", "Left", "Right", "Left", "Right", "Left", "Right", "Left", "Right", "Left" };
+    private string[] pattern1 = { "Left", "Right", "Left", "Right", "Left", "Right", "Left", "Right", "Left", "Right", "Left", "Right" };
+    private string[] pattern2 = { "Right", "Left", "Right", "Left", "Right", "Left", "Right", "Left", "Right", "Left", "Right", "Left" };
 
 
     void Start()
