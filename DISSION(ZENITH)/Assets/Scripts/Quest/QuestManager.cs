@@ -28,20 +28,38 @@ public class QuestManager : MonoBehaviour
     {
         if (!acceptedQuests.Contains(questId))
         {
-            Debug.Log($"[퀘스트 수락] {questId}");
             acceptedQuests.Add(questId);
 
             // UI에 퀘스트 표시
             var quest = GetQuestById(questId);
-            Debug.Log($"[퀘스트 데이터 확인] 제목: {quest?.quest_title}");
-
             FindObjectOfType<QuestUI>()?.ShowQuest(quest);
+        }
+
+        // 퀘스트 아이콘 갱신
+        foreach (var icon in FindObjectsOfType<QuestIconUI>())
+        {
+            icon.UpdateIcon();
         }
     }
 
     public bool HasAccepted(string questId)
     {
         return acceptedQuests.Contains(questId);
+    }
+
+    // 완료 처리
+    public void TryCompleteTalkToNPC(string npcId)
+    {
+        foreach (var questId in acceptedQuests)
+        {
+            Quest quest = GetQuestById(questId);
+            if (quest != null && quest.type == "TalkToNPC" && quest.target_id == npcId)
+            {
+                Debug.Log($"[퀘스트 완료] {quest.quest_title} - NPC와 대화 완료");
+                CompleteQuest(questId);
+                break; // 하나만 완료
+            }
+        }
     }
 
     public void CompleteQuest(string questId)
@@ -73,6 +91,6 @@ public class QuestManager : MonoBehaviour
 
     private void GiveReward(string reward)
     {
-        Debug.Log($"보상 지급: {reward}");  // 나중에 인벤토리나 골드 시스템 연동
+        Debug.Log($"보상 지급: {reward}");
     }
 }

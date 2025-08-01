@@ -14,6 +14,8 @@ public class DialogueTrigger : MonoBehaviour
 
     public string QuestId;
 
+    [Tooltip("이 NPC의 고유 ID (ex: Npc_choco)")]
+    public string npcId;
 
     public void TriggerDialogue()
     {
@@ -32,5 +34,9 @@ public class DialogueTrigger : MonoBehaviour
         }
 
         FindObjectOfType<DialogueManager>().StartDialogue(selectedId);
+
+        // 퀘스트 조건 충족 검사
+        QuestManager.Instance.TryCompleteTalkToNPC(npcId);
+
     }
 }
