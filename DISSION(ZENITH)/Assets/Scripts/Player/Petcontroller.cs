@@ -10,18 +10,34 @@ public class Petcontroller : MonoBehaviour
 
     private Vector3 lastPlayerPosition;
     private Vector3 lastMoveDirection;
+    private SpriteRenderer sr;         // 펫의 SpriteRenderer
+    private SpriteRenderer playerSR;   // 플레이어의 SpriteRenderer
 
     void Start()
     {
         lastPlayerPosition = player.transform.position;
+
+        sr = GetComponent<SpriteRenderer>();
+        if (sr == null) sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr == null) Debug.LogWarning("Petcontroller: SpriteRenderer (pet) not found on " + gameObject.name);
+
+        if (player != null)
+        {
+            playerSR = player.GetComponent<SpriteRenderer>();
+            if (playerSR == null) playerSR = player.GetComponentInChildren<SpriteRenderer>();
+            if (playerSR == null) Debug.LogWarning("Petcontroller: SpriteRenderer (player) not found on " + player.name);
+        }
+        else
+        {
+            Debug.LogError("Petcontroller: player reference is null on " + gameObject.name);
+        }
     }
 
     void Update()
     {
-        // 1. 이동 방향 계산 (XY 평면에서만 사용)
+        // 기존 코드: 이동 방향 계산, lastMoveDirection 업데이트 등은 그대로 유지
         Vector3 moveDir = player.transform.position - lastPlayerPosition;
 
-        // 이동이 있다면 방향 저장
         if (moveDir.magnitude > 0.01f)
         {
             lastMoveDirection = moveDir.normalized;
@@ -29,23 +45,92 @@ public class Petcontroller : MonoBehaviour
 
         lastPlayerPosition = player.transform.position;
 
-        // 2. 플레이어 다리 높이 계산 (Y축이 높이일 경우)
         float playerLegY = player.transform.position.y - (player.transform.localScale.y / 2f);
 
-        // 3. 따라갈 위치 계산 (화면 상 뒤쪽으로 떨어지게 해야 함)
-        // => lastMoveDirection 기준으로 반대 방향
-        Vector3 targetPosition = player.transform.position - lastMoveDirection * followDistance;
+        // --- 플레이어 방향에 따라 펫 위치 조절하기 ---
+        string playerDir = "Front";
+        PlayerController1 pc = player.GetComponent<PlayerController1>();
+        if (pc != null)
+            playerDir = pc.GetDirection();
 
-        // Y축은 다리 높이에 맞추기 (펫은 땅에 붙이기)
+        Vector3 offset = Vector3.zero;
+        float sideDistance = followDistance;
+        float backDistance = followDistance * 1.5f;
+
+        switch (playerDir)
+        {
+            case "Front":    // 플레이어 아래 보는 중 → 펫은 뒤 (위쪽)
+                offset = new Vector3(0, backDistance, 0);
+                break;
+            case "Back":     // 플레이어 위 보는 중 → 펫은 뒤 (아래쪽)
+                offset = new Vector3(0, -backDistance, 0);
+                break;
+            case "Right":    // 플레이어 오른쪽 → 펫은 왼쪽
+                offset = new Vector3(-sideDistance, 0, 0);
+                break;
+            case "Left":     // 플레이어 왼쪽 → 펫은 오른쪽
+                offset = new Vector3(sideDistance, 0, 0);
+                break;
+            default:
+                offset = -lastMoveDirection * followDistance;
+                break;
+        }
+
+        Vector3 targetPosition = player.transform.position + offset;
+
+        // Y축은 플레이어 다리 높이에 맞춤
         targetPosition.y = playerLegY;
 
-        // 4. 펫 이동
-        Vector3 direction = (targetPosition - transform.position).normalized;
+        // 부드럽게 펫 이동
         float distance = Vector3.Distance(transform.position, targetPosition);
-
         if (distance > 0.05f)
         {
-            transform.position += direction * speed * Time.deltaTime;
+            transform.position = Vector3.Lerp(transform.position, targetPosition, speed * Time.deltaTime);
+        }
+    }
+
+    void LateUpdate()
+    {
+        string dir = "Front"; // 기본값
+        if (player != null)
+        {
+            PlayerController1 pc = player.GetComponent<PlayerController1>();
+            if (pc != null)
+            {
+                dir = pc.GetDirection();
+            }
+            else
+            {
+                // [ADDED] 플레이어에 PlayerController1이 없을 때의 폴백: 최근 위치 변화로 방향 추정
+                Vector3 playerVel = player.transform.position - lastPlayerPosition;
+                if (Mathf.Abs(playerVel.y) > Mathf.Abs(playerVel.x))
+                {
+                    dir = (playerVel.y < 0) ? "Front" : "Back";
+                }
+                else if (Mathf.Abs(playerVel.x) > 0.01f)
+                {
+                    dir = (playerVel.x > 0) ? "Right" : "Left";
+                }
+            }
+        }
+
+        if (dir == "Front")
+        {
+            //플레이어가 아래를 보고 있으면 펫이 뒤에 있어야 함
+            if (sr != null && playerSR != null)
+                sr.sortingOrder = playerSR.sortingOrder + 1;
+        }
+        else if (dir == "Back")
+        {
+            //플레이어가 위를 보고 있으면 펫이 앞에 있어야 함
+            if (sr != null && playerSR != null)
+                sr.sortingOrder = playerSR.sortingOrder - 1;
+        }
+        else
+        {
+            //좌우 방향에서는 Y 위치 기준
+            if (sr != null)
+                sr.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
         }
     }
 }
