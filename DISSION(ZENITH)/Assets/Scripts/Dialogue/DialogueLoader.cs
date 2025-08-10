@@ -29,7 +29,9 @@ public class DialogueLoader : MonoBehaviour
             string choice2 = entry.ContainsKey("Choice2") ? entry["Choice2"].ToString() : "";
             string choice2NextId = entry.ContainsKey("Choice2 Next ID") ? entry["Choice2 Next ID"].ToString() : "";
 
-            dialogues[id] = new Dialogue(id, speaker, dialogue, nextId, portrait, choice1, choice1NextId, choice2, choice2NextId);
+            string questId = entry.ContainsKey("Quest ID") ? entry["Quest ID"].ToString() : "";
+
+            dialogues[id] = new Dialogue(id, speaker, dialogue, nextId, portrait, choice1, choice1NextId, choice2, choice2NextId, questId);
 
         }
         Debug.Log("CSV 대화 데이터 로드 완료");

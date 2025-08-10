@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
 public class Dialogue
 {
     public string id;               // 대화 ID
@@ -16,9 +15,11 @@ public class Dialogue
     public string choice2;          // 선택지 2
     public string choice2NextId;    // 선택지 2 선택 시 이동할 ID
 
+    public string questId;          // 퀘스트 ID
+
     // 생성자
     public Dialogue(string id, string speaker, string dialogue, string nextId, string portrait,
-        string choice1 = "", string choice1NextId = "", string choice2 = "", string choice2NextId = "")
+        string choice1, string choice1NextId, string choice2, string choice2NextId, string questId)
     {
         this.id = id;
         this.speaker = speaker;
@@ -30,5 +31,7 @@ public class Dialogue
         this.choice1NextId = choice1NextId;
         this.choice2 = choice2;
         this.choice2NextId = choice2NextId;
+
+        this.questId = questId;
     }
 }
