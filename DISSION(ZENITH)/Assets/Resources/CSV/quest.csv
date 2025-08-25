@@ -1,2 +1,3 @@
 Quest ID,Quest Title,Description,Type,Target ID,Required Count,Reward
 Q01,초코를 찾아라,"""마을 주민이 잃어버린\n초코를 찾아주자.""",TalkToNPC,Npc_choco,1,
+Q02,도서관을 청소하자,"""도서관을 청소하며\n2층 열쇠를 찾아보자""",,,1,
