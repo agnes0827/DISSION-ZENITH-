@@ -3,11 +3,11 @@ using System;
 
 public class DialogueManager : MonoBehaviour
 {
-    private DialogueLoader dialogueLoader;
     private Dialogue currentDialogue;
 
-    [SerializeField] private GameObject dialoguePrefab; // 프리팹
-    private DialogueUI dialogueInstance;                // 인스턴스화된 UI
+    [SerializeField] private GameObject dialoguePrefab;        // 프리팹
+    [SerializeField] private DialogueLoader dialogueLoader;
+    private DialogueUI dialogueInstance;                       // 인스턴스화된 UI
 
     public bool isDialogue = false;
     public bool isChoice = false;
@@ -18,7 +18,11 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-        dialogueLoader = FindObjectOfType<DialogueLoader>();
+        if (dialogueLoader == null)
+        {
+            Debug.LogError("DialogueLoader가 연결되지 않았습니다!");
+            return;
+        }
 
         if (dialoguePrefab == null)
         {
@@ -26,7 +30,6 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        // 프리팹 인스턴스화 + 캔버스 자식으로 넣기
         GameObject instance = Instantiate(dialoguePrefab, GameObject.Find("Canvas").transform);
         dialogueInstance = instance.GetComponent<DialogueUI>();
 
@@ -36,7 +39,7 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        dialogueInstance.HideDialogue(); // 시작 시 숨기기
+        dialogueInstance.HideDialogue();
     }
 
     void Update()

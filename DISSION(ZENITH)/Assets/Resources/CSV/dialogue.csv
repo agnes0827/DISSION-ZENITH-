@@ -27,3 +27,6 @@ ID,Speaker,Dialogue,Next ID,Portrait,Choice1,Choice1 Next ID,Choice2,Choice2 Nex
 40002,,...먼지가 수북이 쌓여 있다.,END,,,,,,
 40003,,...먼지가 수북이 쌓여 있다.,40004,,,,,,
 40004,쿠즈릴,청소할까?,40004,kuzril_normal_01,응.,MINIGAME,아니.,END,
+40005,,2층 열쇠'를 발견했다.,END,,,,,,
+40006,,문은 굳게 닫혀있다.,40007,,,,,,
+40007,쿠즈릴,사서라면 뭔가 알고 있지 않을까?,END,kuzril_normal_01,,,,,
