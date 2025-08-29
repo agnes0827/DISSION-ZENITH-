@@ -8,6 +8,7 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private Text speakerText;     // 화자(캐릭터 이름)
     [SerializeField] private Text dialogueText;    // 대사 텍스트
     [SerializeField] private Image portraitImage;  // 초상화 이미지
+    [SerializeField] private GameObject speakerPanel; // 이름 박스 전체 패널
 
     // 선택지 UI
     public GameObject choicePanel;
@@ -25,36 +26,52 @@ public class DialogueUI : MonoBehaviour
     // 화자, 대사, 초상화 파일 이름 UI 표시
     public void ShowDialogue(string speaker, string dialogue, string portraitName)
     {
-        speakerText.text = speaker;
+        // 이름이 비어있으면 이름 UI 숨기기
+        if (string.IsNullOrEmpty(speaker))
+        {
+            speakerPanel.SetActive(false);
+        }
+        else
+        {
+            speakerPanel.SetActive(true);
+            speakerText.text = speaker;
+        }
+
         currentFullText = dialogue;
 
-        // 타자 효과가 실행 중일 경우 중지
+        // 타자 효과 중이면 중지
         if (typingCoroutine != null)
             StopCoroutine(typingCoroutine);
 
-        typingCoroutine = StartCoroutine(TypeSentence(dialogue)); // 타자 효과 시작
+        typingCoroutine = StartCoroutine(TypeSentence(dialogue));
 
-        // 초상화 설정 함수
+        // 초상화 설정
         SetPortrait(portraitName);
     }
+
 
     // 초상화 설정
     private void SetPortrait(string portraitName)
     {
         if (string.IsNullOrEmpty(portraitName))
         {
-            portraitImage.enabled = false;
+            portraitImage.gameObject.SetActive(false); // 안 보이게
             return;
         }
 
-        // Portraits 폴더에서 지정된 이미지 로드
-        var portrait = Resources.Load<Sprite>("Portraits/" + portraitName);
-        portraitImage.enabled = portrait != null;
+        Sprite portrait = Resources.Load<Sprite>("Portraits/" + portraitName);
 
-        if (portrait != null)
+        if (portrait == null)
+        {
+            portraitImage.gameObject.SetActive(false); // 로드 실패 시 숨김
+        }
+        else
+        {
             portraitImage.sprite = portrait;
-        else Debug.LogError("초상화를 찾을 수 없습니다: " + portraitName);
+            portraitImage.gameObject.SetActive(true); // 정상 로드 시 보여줌
+        }
     }
+
 
     // 타자 효과 코루틴
     private IEnumerator TypeSentence(string sentence)

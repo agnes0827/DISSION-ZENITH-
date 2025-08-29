@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class DialogueManager : MonoBehaviour
 
     public bool isDialogue = false;
     public bool isChoice = false;
+
+    // 미니게임 요청 이벤트 추가
+    public static event Action<GameObject> OnMiniGameRequested;
+    private GameObject currentDustObject; // 현재 상호작용 중인 먼지 오브젝트
 
     void Start()
     {
@@ -44,14 +49,9 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void StartDialogue(string startId)
+    public void StartDialogue(string startId, GameObject dustObject = null)
     {
-        if (string.IsNullOrEmpty(startId))
-        {
-            Debug.LogError("시작 ID가 올바르지 않습니다!");
-            return;
-        }
-
+        currentDustObject = dustObject;
         isDialogue = true;
         dialogueInstance.ShowDialoguePanel();
         DisplayDialogue(startId);
@@ -85,7 +85,7 @@ public class DialogueManager : MonoBehaviour
             isChoice = false;
         }
 
-        // 대사 출력 후 퀘스트 수락 처리
+        // 퀘스트 처리
         if (!string.IsNullOrEmpty(currentDialogue.questId))
         {
             if (!QuestManager.Instance.HasAccepted(currentDialogue.questId))
@@ -94,7 +94,6 @@ public class DialogueManager : MonoBehaviour
                 Debug.Log($"퀘스트 수락됨: {currentDialogue.questId}");
             }
         }
-
     }
 
     public void OnChoiceSelected(int choiceNumber)
@@ -106,6 +105,16 @@ public class DialogueManager : MonoBehaviour
 
         dialogueInstance.HideChoices();
         isDialogue = true;
+
+        // 미니게임 시작 이벤트 발행
+        if (nextId == "MINIGAME")
+        {
+            Debug.Log("미니게임 시작");
+            EndDialogue();
+            OnMiniGameRequested?.Invoke(currentDustObject);
+            return;
+        }
+
         DisplayDialogue(nextId);
     }
 
