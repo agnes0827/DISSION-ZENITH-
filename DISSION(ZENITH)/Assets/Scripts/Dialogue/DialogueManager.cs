@@ -5,16 +5,29 @@ public class DialogueManager : MonoBehaviour
 {
     private Dialogue currentDialogue;
 
-    [SerializeField] private GameObject dialoguePrefab;        // 프리팹
+    [SerializeField] private GameObject dialoguePrefab;       // 프리팹
     [SerializeField] private DialogueLoader dialogueLoader;
-    private DialogueUI dialogueInstance;                       // 인스턴스화된 UI
+    private DialogueUI dialogueInstance;                      // 인스턴스화된 UI
 
     public bool isDialogue = false;
     public bool isChoice = false;
 
+    public static DialogueManager Instance { get; private set; }
+
     // 미니게임 요청 이벤트 추가
     public static event Action<GameObject> OnMiniGameRequested;
     private GameObject currentDustObject; // 현재 상호작용 중인 먼지 오브젝트
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
+    public void RequestMiniGame(GameObject targetDust)
+    {
+        OnMiniGameRequested?.Invoke(targetDust);
+    }
 
     void Start()
     {
