@@ -60,7 +60,7 @@ public class QuestManager : MonoBehaviour
             if (quest == null) continue;
 
             // TalkToNPC 타입이고 목표 대상이면 완료 처리
-            if (quest.type == "TalkToNPC" && quest.target_id == npcId)
+            if (quest.Type == QuestType.HaveItem && quest.target_id == npcId)
             {
                 if (objectiveReachedQuests.Contains(questId))
                 {
@@ -71,6 +71,23 @@ public class QuestManager : MonoBehaviour
             }
         }
     }
+
+    public void CheckQuestItem(string itemId)
+    {
+        foreach (var questId in new List<string>(acceptedQuests))
+        {
+            var quest = GetQuestById(questId);
+            if (quest == null) continue;
+
+            if (quest.Type == QuestType.HaveItem && quest.target_id == itemId)
+            {
+                SetObjectiveReached(questId);  
+                CompleteQuest(questId);        
+                Debug.Log($"[아이템 조건 만족→완료] {quest.quest_id} - {quest.quest_title}");
+            }
+        }
+    }
+
 
     // 퀘스트 완료 처리
     public void CompleteQuest(string questId)

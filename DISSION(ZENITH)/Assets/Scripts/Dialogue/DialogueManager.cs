@@ -73,7 +73,7 @@ public class DialogueManager : MonoBehaviour
         DisplayDialogue(startId);
     }
 
-    void DisplayDialogue(string currentId)
+    public void DisplayDialogue(string currentId)
     {
         currentDialogue = dialogueLoader.GetDialogueId(currentId);
         if (currentDialogue == null)

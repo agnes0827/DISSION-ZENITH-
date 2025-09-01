@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
+
+public enum QuestType
+{
+    TalkToNPC,
+    HaveItem
+    //KillTarget,
+    //DeliverItem,
+    //CollectItem,
+    //Clean
+}
+
 public class Quest
 {
     public string quest_id;         // 퀘스트 id
@@ -12,6 +23,20 @@ public class Quest
     public string target_id;        // 타겟 id
     public int required_count;      // 완료 조건 수치
     public string reward;           // 보상
+
+    public QuestType Type
+    {
+        get
+        {
+            if (System.Enum.TryParse(type, out QuestType parsedType))
+                return parsedType;
+            else
+            {
+                Debug.LogWarning($"[Quest] Unknown QuestType: {type}, 기본값으로 처리됨");
+                return QuestType.TalkToNPC; // 기본값
+            }
+        }
+    }
 
     // 생성자
     public Quest(string id, string title, string description,

@@ -6,12 +6,15 @@ public class MiniGameManager : MonoBehaviour
 
     [SerializeField] private GameObject dustCleaningUIPanel;
 
+    private DialogueManager dialogueManager;
+
     private int dustCleanedCount = 0;
 
     public bool IsMiniGameActive { get; private set; } = false; // 미니게임 진행 여부
 
     void Awake()
     {
+        dialogueManager = FindObjectOfType<DialogueManager>();
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
@@ -42,14 +45,20 @@ public class MiniGameManager : MonoBehaviour
         dustObject.SetActive(false);
         dustCleanedCount++;
 
-        Debug.Log($"먼지 제거 완료! ({dustCleanedCount}/3)");
+        Debug.Log($"먼지 제거 완료 ({dustCleanedCount}/3)");
 
         EndDustCleaning();
 
         // 먼지 3개 전부 제거 시 → 2층 열쇠 드랍
-        if (dustCleanedCount >= 3)
+        if (dustCleanedCount >= 3 && !InventoryManager.Instance.HasItem("Library_Key_Floor2"))
         {
-            Debug.Log("2층 열쇠 드랍!");
+            Debug.Log("2층 열쇠 획득");
+            InventoryManager.Instance.AddItem("Library_Key_Floor2", "도서관 2층 열쇠");
+
+            if (dialogueManager != null)
+            {
+                dialogueManager.StartDialogue("40005");
+            }
         }
     }
 
