@@ -10,6 +10,7 @@ public class CamereMoving : MonoBehaviour
     
     void Start()
     {
+        
         this.player = GameObject.Find("player");
 
     }
@@ -18,6 +19,6 @@ public class CamereMoving : MonoBehaviour
     void Update()
     {
         Vector3 playerPos = this.player.transform.position;
-        transform.position = new Vector3(transform.position.x,playerPos.y, transform.position.z);
+        transform.position = new Vector3(playerPos.x,playerPos.y, transform.position.z);
     }
 }

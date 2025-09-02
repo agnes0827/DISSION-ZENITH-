@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController1 : MonoBehaviour
 {
+    public string currentMapName;
     public float speed = 3f;
     private Vector3 vector;
     public float runSpeed;
@@ -17,6 +18,7 @@ public class PlayerController1 : MonoBehaviour
 
     void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         anim = GetComponent<Animator>();
     }
 

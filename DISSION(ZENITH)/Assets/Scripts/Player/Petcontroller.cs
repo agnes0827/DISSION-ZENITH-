@@ -15,6 +15,7 @@ public class Petcontroller : MonoBehaviour
 
     void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         lastPlayerPosition = player.transform.position;
 
         sr = GetComponent<SpriteRenderer>();
