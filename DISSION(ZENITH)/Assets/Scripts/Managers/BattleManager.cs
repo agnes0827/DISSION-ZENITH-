@@ -82,7 +82,8 @@ public class BattleManager : MonoBehaviour
         DialogText.text = $"무기 {data.name} 사용!";
 
         yield return new WaitForSeconds(1.2f);
-        enemy.TakeDamage(damage);
+        enemy.TakeDamage(damage); // 적 체력 감소
+        enemy.GetComponent<DamageFlash>().FlashRed(1f); // 적 이미지 빨갛게
         yield return new WaitForSeconds(1.5f);
         OnPlayerAttack(); // 적 반격 시작
     }
@@ -99,6 +100,8 @@ public class BattleManager : MonoBehaviour
 
         DialogText.text = $"적이 {selectedWeapon}(으)로 공격!";
         PlayerHpText.text = $"{damage} 피해, 남은 체력: {playerHP}";
+
+        GameObject.Find("Player").GetComponent<DamageFlash>().FlashRed(1f); // 플레이어 이미지 빨갛게
 
         if (playerHP <= 0 && !battleEnded)
         {
@@ -129,7 +132,7 @@ public class BattleManager : MonoBehaviour
         }
 
         // 전투 시스템 종료 → 프리팹 비활성화
-        // gameObject.SetActive(false);
+        gameObject.SetActive(false);
 
         // 씬 전환(만약 플레이어가 지게 되면 플레이어 말하는 화면 나온 뒤 집으로)
         // SceneManager.LoadScene("마을씬");
