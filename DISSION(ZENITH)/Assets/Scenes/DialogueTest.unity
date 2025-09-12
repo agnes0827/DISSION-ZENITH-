@@ -2429,6 +2429,10 @@ PrefabInstance:
       propertyPath: dialogueLoader
       value: 
       objectReference: {fileID: 514150847}
+    - target: {fileID: 4631179644670033453, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: dialoguePrefab
+      value: 
+      objectReference: {fileID: 1241143372102238290, guid: 6f31f6a32bbdd0746b48a47c8737fc0a, type: 3}
     - target: {fileID: 7710135614641241582, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
       propertyPath: gridLayout
       value: 
