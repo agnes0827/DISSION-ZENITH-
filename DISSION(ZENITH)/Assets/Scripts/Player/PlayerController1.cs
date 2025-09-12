@@ -7,10 +7,13 @@ public class PlayerController1 : MonoBehaviour
     public string currentMapName;
     public float speed = 3f;
     private Vector3 vector;
+    public int walkCount;
     public float runSpeed;
     private float applyRunSpeed;
     //private bool applyRunFlag = false;
     private bool canMove = true;
+    private CapsuleCollider2D capsuleColider;
+    public LayerMask layermask;
 
     Animator anim;
 
@@ -20,6 +23,7 @@ public class PlayerController1 : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
         anim = GetComponent<Animator>();
+        capsuleColider = GetComponent<CapsuleCollider2D>();
     }
 
     IEnumerator MoveCoroutine()
@@ -49,9 +53,24 @@ public class PlayerController1 : MonoBehaviour
 
             anim.SetFloat("InputX", vector.x);
             anim.SetFloat("InputY", vector.y);
+
+            RaycastHit2D hit;
+            Vector2 start = transform.position;
+            Vector2 end = start + new Vector2(vector.x * speed * walkCount, vector.y * speed * walkCount);
+
+            capsuleColider.enabled = false;
+            hit = Physics2D.Linecast(start, end, layermask);
+            capsuleColider.enabled = true;
+
+            if(hit.transform != null)
+            {
+                break;
+
+            }
+
             anim.SetBool("isMoving", true);
 
-            // **중첩 while 제거, 프레임 단위 이동**
+            
             transform.Translate(vector.x * (speed + applyRunSpeed) * Time.deltaTime,
                                  vector.y * (speed + applyRunSpeed) * Time.deltaTime,
                                  0);
