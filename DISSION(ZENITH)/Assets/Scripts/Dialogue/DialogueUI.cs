@@ -1,27 +1,28 @@
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 
 public class DialogueUI : MonoBehaviour
 {
     // 기본 대화 UI
-    [SerializeField] private Text speakerText;     // 화자(캐릭터 이름)
-    [SerializeField] private Text dialogueText;    // 대사 텍스트
-    [SerializeField] private Image portraitImage;  // 초상화 이미지
-    [SerializeField] private GameObject speakerPanel; // 이름 박스 전체 패널
+    [SerializeField] private TextMeshProUGUI speakerText;     // 화자(캐릭터 이름)
+    [SerializeField] private TextMeshProUGUI dialogueText;    // 대사 텍스트 (TMP)
+    [SerializeField] private Image portraitImage;             // 초상화 이미지
+    [SerializeField] private GameObject speakerPanel;         // 이름 박스 전체 패널
 
     // 선택지 UI
     public GameObject choicePanel;
     public Button choiceButton1;
     public Button choiceButton2;
-    public Text choiceText1;
-    public Text choiceText2;
+    public TextMeshProUGUI choiceText1;
+    public TextMeshProUGUI choiceText2;
 
     // 타자(타이핑) 효과: 한 글자씩 출력
-    [SerializeField] private float typingSpeed = 0.05f;     // 타이핑 속도(1글자 출력 간격)
-    private Coroutine typingCoroutine;                      // 타자 효과 코루틴
-    public bool IsTyping { get; private set; } = false;     // 타자 효과 진행 중 여부
-    private string currentFullText = "";                    // 전체 문장(FullText) 저장
+    [SerializeField] private float typingSpeed = 0.05f;       // 1글자 출력 간격(초)
+    private Coroutine typingCoroutine;                        // 타자 효과 코루틴
+    public bool IsTyping { get; private set; } = false;       // 타자 효과 진행 중 여부
+    private string currentFullText = "";                      // 전체 문장(FullText) 저장
 
     // 화자, 대사, 초상화 파일 이름 UI 표시
     public void ShowDialogue(string speaker, string dialogue, string portraitName)
@@ -43,16 +44,24 @@ public class DialogueUI : MonoBehaviour
         if (typingCoroutine != null)
             StopCoroutine(typingCoroutine);
 
-        typingCoroutine = StartCoroutine(TypeSentence(dialogue));
+        // TMP 방식: 원문(태그 포함)을 먼저 세팅하고, 가시 문자 수만 증가
+        dialogueText.richText = true;               
+        dialogueText.text = currentFullText;        // 태그 포함 원문 한 번에 설정
+        dialogueText.ForceMeshUpdate();            
+        dialogueText.maxVisibleCharacters = 0;     
+
+        typingCoroutine = StartCoroutine(TypeSentenceTMP());
 
         // 초상화 설정
         SetPortrait(portraitName);
     }
 
-
     // 초상화 설정
     private void SetPortrait(string portraitName)
     {
+        if (portraitImage == null)
+            return;
+
         if (string.IsNullOrEmpty(portraitName))
         {
             portraitImage.gameObject.SetActive(false); // 안 보이게
@@ -68,22 +77,31 @@ public class DialogueUI : MonoBehaviour
         else
         {
             portraitImage.sprite = portrait;
-            portraitImage.gameObject.SetActive(true); // 정상 로드 시 보여줌
+            portraitImage.gameObject.SetActive(true);  // 정상 로드 시 보여줌
         }
     }
 
-
-    // 타자 효과 코루틴
-    private IEnumerator TypeSentence(string sentence)
+    // TMP 타자 효과 코루틴
+    private IEnumerator TypeSentenceTMP()
     {
         IsTyping = true;
-        dialogueText.text = "";
+        int total = dialogueText.textInfo.characterCount;
 
-        foreach (char letter in sentence.ToCharArray())
+        if (total == 0)
         {
-            dialogueText.text += letter;
+            yield return null;
+            dialogueText.ForceMeshUpdate();
+            total = dialogueText.textInfo.characterCount;
+        }
+
+        int visible = 0;
+        while (visible < total)
+        {
+            visible++;
+            dialogueText.maxVisibleCharacters = visible;
             yield return new WaitForSeconds(typingSpeed);
         }
+
         IsTyping = false;
     }
 
@@ -96,7 +114,9 @@ public class DialogueUI : MonoBehaviour
             if (typingCoroutine != null)
                 StopCoroutine(typingCoroutine);
 
-            dialogueText.text = currentFullText;
+            dialogueText.ForceMeshUpdate();
+            dialogueText.maxVisibleCharacters = dialogueText.textInfo.characterCount;
+
             IsTyping = false;
         }
     }

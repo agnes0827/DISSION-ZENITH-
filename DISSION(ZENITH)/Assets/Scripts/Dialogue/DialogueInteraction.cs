@@ -4,6 +4,7 @@ public class DialogueInteraction : MonoBehaviour
 {
     private DialogueTrigger currentDialogueTarget;
     private DialogueManager dialogueManager;
+
     void Start()
     {
         dialogueManager = FindObjectOfType<DialogueManager>();
@@ -26,7 +27,8 @@ public class DialogueInteraction : MonoBehaviour
     {
         if (currentDialogueTarget != null &&
             Input.GetKeyDown(KeyCode.F) &&
-            !dialogueManager.isDialogue) // 대화 중이 아닐 때만 시작
+            !dialogueManager.isDialogue &&
+            !(MiniGameManager.Instance != null && MiniGameManager.Instance.IsMiniGameActive))
         {
             currentDialogueTarget.TriggerDialogue();
         }
