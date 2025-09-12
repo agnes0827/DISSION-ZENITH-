@@ -5,9 +5,9 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
 
-    private HashSet<string> acceptedQuests = new HashSet<string>();          // 진행 중인 퀘스트
-    private HashSet<string> completedQuests = new HashSet<string>();         // 완료한 퀘스트
-    private HashSet<string> objectiveReachedQuests = new HashSet<string>();  // 목표 달성했지만 완료 전 상태
+    private HashSet<string> acceptedQuests = new HashSet<string>();           // 진행 중
+    private HashSet<string> completedQuests = new HashSet<string>();          // 완료
+    private HashSet<string> objectiveReachedQuests = new HashSet<string>();   // 목표 달성 (대화 후)
 
     private QuestLoader questLoader;
 
@@ -37,49 +37,53 @@ public class QuestManager : MonoBehaviour
             FindObjectOfType<QuestUI>()?.ShowQuest(quest);
 
             Debug.Log($"[퀘스트 수락] {quest.quest_title}");
-        }
-
-        // 퀘스트 아이콘 갱신
-        foreach (var icon in FindObjectsOfType<QuestIconUI>())
-        {
-            icon.UpdateIcon();
+            UpdateQuestIcons();
         }
     }
 
-    // 목표 달성
-
+    // 목표 달성 (DialogueTrigger에서 직접 호출)
     public void SetObjectiveReached(string questId)
     {
         if (acceptedQuests.Contains(questId) && !objectiveReachedQuests.Contains(questId))
         {
             objectiveReachedQuests.Add(questId);
-            Debug.Log($"[퀘스트 목표 달성] {questId}");
+            Debug.Log($"[목표 달성] {questId}");
         }
     }
-    
-    // NPC 대화 시 퀘스트 완료 여부 확인
+
+    // NPC에게 보고 → TalkToNPC 퀘스트 완료 시도
     public void TryCompleteTalkToNPC(string npcId)
     {
         foreach (var questId in acceptedQuests)
         {
             Quest quest = GetQuestById(questId);
-
             if (quest == null) continue;
 
-            // 퀘스트 타입이 TalkToNPC이고 대상이 npcId인 경우만 처리
-            if (quest.type == "TalkToNPC" && quest.target_id == npcId)
+            // TalkToNPC 타입이고 목표 대상이면 완료 처리
+            if (quest.Type == QuestType.HaveItem && quest.target_id == npcId)
             {
-                // 목표가 달성된 상태여야만 완료 처리
                 if (objectiveReachedQuests.Contains(questId))
                 {
-                    Debug.Log($"[퀘스트 완료] {quest.quest_title} - NPC에게 보고 완료");
                     CompleteQuest(questId);
-                }
-                else
-                {
-                    Debug.Log($"[퀘스트 진행 중] {quest.quest_title} - 목표를 아직 달성하지 않음");
+                    Debug.Log($"[퀘스트 완료] {quest.quest_title}");
                 }
                 break;
+            }
+        }
+    }
+
+    public void CheckQuestItem(string itemId)
+    {
+        foreach (var questId in new List<string>(acceptedQuests))
+        {
+            var quest = GetQuestById(questId);
+            if (quest == null) continue;
+
+            if (quest.Type == QuestType.HaveItem && quest.target_id == itemId)
+            {
+                SetObjectiveReached(questId);  
+                CompleteQuest(questId);        
+                Debug.Log($"[아이템 조건 만족→완료] {quest.quest_id} - {quest.quest_title}");
             }
         }
     }
@@ -101,24 +105,15 @@ public class QuestManager : MonoBehaviour
             var questUI = FindObjectOfType<QuestUI>();
             if (questUI != null && questUI.GetCurrentQuestId() == questId)
                 questUI.Hide();
+
+            UpdateQuestIcons();
         }
     }
 
-    // 상태 체크 함수
-    public bool HasAccepted(string questId)
-    {
-        return acceptedQuests.Contains(questId);
-    }
-
-    public bool HasCompleted(string questId)
-    {
-        return completedQuests.Contains(questId);
-    }
-
-    public bool IsObjectiveReached(string questId)
-    {
-        return objectiveReachedQuests.Contains(questId);
-    }
+    // 상태 체크
+    public bool HasAccepted(string questId) => acceptedQuests.Contains(questId);
+    public bool HasCompleted(string questId) => completedQuests.Contains(questId);
+    public bool IsObjectiveReached(string questId) => objectiveReachedQuests.Contains(questId);
 
     // 퀘스트 데이터 로드
     public Quest GetQuestById(string questId)
@@ -130,5 +125,14 @@ public class QuestManager : MonoBehaviour
     private void GiveReward(string reward)
     {
         Debug.Log($"[퀘스트 보상 지급] {reward}");
+    }
+
+    // 아이콘 갱신
+    private void UpdateQuestIcons()
+    {
+        foreach (var icon in FindObjectsOfType<QuestIconUI>())
+        {
+            icon.UpdateIcon();
+        }
     }
 }

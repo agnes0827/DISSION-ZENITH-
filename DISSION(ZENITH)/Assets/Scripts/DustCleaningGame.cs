@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,19 +6,27 @@ using UnityEngine.UI;
 public class DustCleaningGame : MonoBehaviour
 {
     [Header("UI 세팅")]
-    public GameObject arrowPrefab;             // 방향키 아이콘 프리팹
-    public Transform arrowContainer;           // 방향키 아이콘들을 담을 부모
+    public GameObject arrowPrefab;
+    public Transform arrowContainer;
 
-    private List<KeyCode> keySequence = new List<KeyCode>();
+    [Header("피드백 색상")]
+    [SerializeField] private Color correctColor = Color.green;
+    [SerializeField] private Color wrongColor = Color.red;
+    [SerializeField] private float wrongFlashDuration = 0.15f;
+
+    private readonly List<KeyCode> keySequence = new List<KeyCode>();
+    private readonly List<Image> arrowImages = new List<Image>(); // 인덱스 매칭용
     private int currentIndex = 0;
+
     private System.Action<GameObject> onDustCleaned;
     private GameObject currentDustObject;
     private bool isPlaying = false;
 
-    // PNG 경로
+    private static readonly KeyCode[] ARROWS =
+        { KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow };
+
     private const string ICON_PATH = "UI/icon/";
 
-    // 미니게임 시작
     public void BeginGame(GameObject dustObject, System.Action<GameObject> onComplete)
     {
         currentDustObject = dustObject;
@@ -30,27 +39,22 @@ public class DustCleaningGame : MonoBehaviour
         CreateArrowUI();
     }
 
-    // 랜덤 시퀀스 생성
     private void GenerateRandomSequence()
     {
         keySequence.Clear();
-        KeyCode[] arrows = { KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow };
-
-        int arrowCount = Random.Range(4, 6); // 4~5개 랜덤
+        int arrowCount = Random.Range(4, 6); // 4~5개
         for (int i = 0; i < arrowCount; i++)
-        {
-            keySequence.Add(arrows[Random.Range(0, arrows.Length)]);
-        }
+            keySequence.Add(ARROWS[Random.Range(0, ARROWS.Length)]);
 
         currentIndex = 0;
     }
 
-    // 방향키 UI 생성
     private void CreateArrowUI()
     {
-        // 기존 화살표 삭제
+        // 기존 정리
         foreach (Transform child in arrowContainer)
             Destroy(child.gameObject);
+        arrowImages.Clear();
 
         // 새로 생성
         foreach (var key in keySequence)
@@ -58,10 +62,11 @@ public class DustCleaningGame : MonoBehaviour
             GameObject arrow = Instantiate(arrowPrefab, arrowContainer);
             Image img = arrow.GetComponent<Image>();
             img.sprite = GetArrowSprite(key);
+            img.color = Color.white;
+            arrowImages.Add(img);
         }
     }
 
-    // PNG 경로를 기반으로 스프라이트 로드
     private Sprite GetArrowSprite(KeyCode key)
     {
         string fileName = key switch
@@ -72,46 +77,70 @@ public class DustCleaningGame : MonoBehaviour
             KeyCode.RightArrow => "Right",
             _ => "Up"
         };
-
         return Resources.Load<Sprite>($"{ICON_PATH}{fileName}");
+    }
+
+    private bool IsArrowKeyDown(out KeyCode pressed)
+    {
+        // 어떤 방향키가 눌렸는지 판별
+        foreach (var k in ARROWS)
+        {
+            if (Input.GetKeyDown(k))
+            {
+                pressed = k;
+                return true;
+            }
+        }
+        pressed = KeyCode.None;
+        return false;
     }
 
     void Update()
     {
         if (!isPlaying) return;
+        if (currentIndex >= keySequence.Count) return;
 
-        if (currentIndex < keySequence.Count)
+        if (IsArrowKeyDown(out KeyCode pressed))
         {
-            if (Input.GetKeyDown(keySequence[currentIndex]))
+            if (pressed == keySequence[currentIndex])
             {
-                arrowContainer.GetChild(currentIndex).GetComponent<Image>().color = Color.green;
+                arrowImages[currentIndex].color = correctColor;
                 currentIndex++;
 
-                // 모두 입력 완료
                 if (currentIndex >= keySequence.Count)
+                {
                     OnSuccess();
+                }
             }
-            else if (Input.anyKeyDown)
+            else
             {
-                // 오답 → 다시 시작
-                RestartSequence();
+                Debug.Log("오답 입력 틀림");
+                StartCoroutine(FlashWrongAndRestart(currentIndex));
             }
         }
+    }
+
+    private IEnumerator FlashWrongAndRestart(int index)
+    {
+        if (index >= 0 && index < arrowImages.Count)
+        {
+            arrowImages[index].color = wrongColor;
+            yield return new WaitForSeconds(wrongFlashDuration);
+        }
+        RestartSequence();
     }
 
     private void RestartSequence()
     {
         currentIndex = 0;
-        for (int i = 0; i < arrowContainer.childCount; i++)
-            arrowContainer.GetChild(i).GetComponent<Image>().color = Color.white;
+        for (int i = 0; i < arrowImages.Count; i++)
+            arrowImages[i].color = Color.white;
     }
 
     private void OnSuccess()
     {
         isPlaying = false;
         gameObject.SetActive(false);
-
-        // 먼지 제거 콜백 실행
-        onDustCleaned?.Invoke(currentDustObject);
+        onDustCleaned?.Invoke(currentDustObject); // 먼지 제거 콜백(Manager에서 처리)
     }
 }
