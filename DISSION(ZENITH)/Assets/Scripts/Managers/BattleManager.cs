@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
@@ -41,16 +42,17 @@ public class BattleManager : MonoBehaviour
     {
         DialogText.text = $"적이 {damage} 피해를 입었다!";
         EnemyHpText.text = $"{damage} 피해, 남은 체력: {currentHP}";
-
-        if (currentHP <= 0 && !battleEnded)
-        {
-            EndBattle();
-        }
     }
 
     void HandleEnemyDied()
     {
         DialogText.text = "적이 쓰러졌다!";
+        // 마지막으로 싸운 몬스터를 처치 완료로 기록
+        if (LibraryGameState.Instance != null)
+            LibraryGameState.Instance.MarkDefeated(LibraryGameState.Instance.lastMonsterId);
+
+        // Library로 복귀 (페이드아웃 코루틴 안에서 호출해도 OK)
+        EndBattle("Library"); // 앞서 만든 nextScene 인자 받는 버전 사용
     }
 
     void StartBattle()
@@ -82,7 +84,8 @@ public class BattleManager : MonoBehaviour
         DialogText.text = $"무기 {data.name} 사용!";
 
         yield return new WaitForSeconds(1.2f);
-        enemy.TakeDamage(damage);
+        enemy.TakeDamage(damage); // 적 체력 감소
+        enemy.GetComponent<DamageFlash>().FlashRed(1f); // 적 이미지 빨갛게
         yield return new WaitForSeconds(1.5f);
         OnPlayerAttack(); // 적 반격 시작
     }
@@ -100,21 +103,25 @@ public class BattleManager : MonoBehaviour
         DialogText.text = $"적이 {selectedWeapon}(으)로 공격!";
         PlayerHpText.text = $"{damage} 피해, 남은 체력: {playerHP}";
 
+        GameObject.Find("Player").GetComponent<DamageFlash>().FlashRed(1f); // 플레이어 이미지 빨갛게
+
         if (playerHP <= 0 && !battleEnded)
         {
             DialogText.text = "플레이어가 쓰러졌다!"; // 게임 오버 처리
-            EndBattle();
+            EndBattle("DialogueTest");
         }
     }
 
-    void EndBattle()
+    void EndBattle(string nextScene)
     {
+        if (battleEnded) return;
         battleEnded = true;
+
         fadePanel.gameObject.SetActive(true); 
-        StartCoroutine(FadeOutAndClose());
+        StartCoroutine(FadeOutAndClose(nextScene));
     }
 
-    IEnumerator FadeOutAndClose()
+    IEnumerator FadeOutAndClose(string nextScene)
     {
         float elapsed = 0f;
         Color c = fadePanel.color;
@@ -129,9 +136,10 @@ public class BattleManager : MonoBehaviour
         }
 
         // 전투 시스템 종료 → 프리팹 비활성화
-        // gameObject.SetActive(false);
+        gameObject.SetActive(false);
 
-        // 씬 전환(만약 플레이어가 지게 되면 플레이어 말하는 화면 나온 뒤 집으로)
-        // SceneManager.LoadScene("마을씬");
+        // 씬 전환
+        // 지정된 씬으로 이동
+        SceneManager.LoadScene(nextScene);
     }
 }
