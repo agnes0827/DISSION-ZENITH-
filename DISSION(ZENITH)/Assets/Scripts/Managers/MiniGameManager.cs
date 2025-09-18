@@ -10,7 +10,7 @@ public class MiniGameManager : MonoBehaviour
 
     private int dustCleanedCount = 0;
 
-    public bool IsMiniGameActive { get; private set; } = false; // 미니게임 진행 여부
+    public static bool IsMiniGameActive { get; private set; } = false;
 
     void Awake()
     {
