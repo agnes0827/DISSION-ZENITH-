@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4838544597318505316}
   - component: {fileID: 8934165689292947343}
   - component: {fileID: 2176900996224078461}
+  - component: {fileID: -9091455734373802581}
   m_Layer: 0
   m_Name: pet
   m_TagString: Untagged
@@ -92,7 +93,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1284481798169668863}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e56186ba9faac24fa3d93dd87575fa5, type: 3}
   m_Name: 
@@ -100,3 +101,19 @@ MonoBehaviour:
   player: {fileID: 5465506933837067724, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
   speed: 5
   followDistance: 1.5
+--- !u!114 &-9091455734373802581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284481798169668863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af06bb63faca0bb4ab8776620f1f3c70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 5465506933837067724, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
+  speed: 2
+  followDistance: 0.5
+  lockToGround: 0
