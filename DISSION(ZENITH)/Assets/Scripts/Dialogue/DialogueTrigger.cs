@@ -71,12 +71,5 @@ public class DialogueTrigger : MonoBehaviour
 
         // 2. 대사 출력
         DialogueManager.Instance.StartDialogue(selectedId, this.gameObject);
-
-        // 3. objective 대사일 때 미니게임 시작 (dust 자신을 넘김)
-        if (selectedId == objectiveId && QuestManager.Instance.HasAccepted("Q02") && this.gameObject.name == "dust")
-        {
-            DialogueManager.Instance.RequestMiniGame(this.gameObject);
-        }
-
     }
 }
