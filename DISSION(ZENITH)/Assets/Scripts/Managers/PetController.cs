@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PetController : MonoBehaviour
@@ -10,6 +11,8 @@ public class PetController : MonoBehaviour
 
     private Vector3 lastPlayerPosition;
     private Vector3 lastMoveDirection;
+
+
 
     void Start()
     {
@@ -34,7 +37,24 @@ public class PetController : MonoBehaviour
 
         // 3. 따라갈 위치 계산 (화면 상 뒤쪽으로 떨어지게 해야 함)
         // => lastMoveDirection 기준으로 반대 방향
-        Vector3 targetPosition = player.transform.position - lastMoveDirection * followDistance;
+        Vector3 targetPosition;
+        if (Mathf.Abs(lastMoveDirection.y) > Mathf.Abs(lastMoveDirection.x))   // 상하 이동이 더 큰 경우 분기 추가
+        {
+            if (lastMoveDirection.y > 0)
+            {
+                // 위로 이동 → 펫은 아래쪽
+                targetPosition = player.transform.position - Vector3.up * followDistance;
+            }
+            else
+            {
+                // 아래로 이동 → 펫은 위쪽
+                targetPosition = player.transform.position + Vector3.up * followDistance;
+            }
+        }
+        else   // 좌우 이동일 경우 기존 방식 유지
+        {
+            targetPosition = player.transform.position - lastMoveDirection * followDistance;
+        }
 
         // Y축은 다리 높이에 맞추기 (펫은 땅에 붙이기)
         targetPosition.y = playerLegY;
