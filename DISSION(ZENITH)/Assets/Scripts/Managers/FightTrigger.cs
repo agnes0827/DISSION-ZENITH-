@@ -76,6 +76,7 @@ public class FightTrigger : MonoBehaviour
         if (bookItemPrefab != null)
         {
             var go = Instantiate(bookItemPrefab, pos, rot, transform.parent); // 씬에 드랍
+            go.transform.SetAsLastSibling(); // 최상단으로
         }
 
         gameObject.SetActive(false); // 몬스터 숨김

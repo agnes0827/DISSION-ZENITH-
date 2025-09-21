@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 6733631862709746595}
   - component: {fileID: 5254995199641537111}
   - component: {fileID: 8316689587826712880}
-  - component: {fileID: 7973000711307423894}
+  - component: {fileID: 2557325965984720923}
   m_Layer: 0
   m_Name: LetterItem
-  m_TagString: Untagged
+  m_TagString: Artifact
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -116,7 +116,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropHeight: 3
-  dropDuration: 0.35
+  dropDuration: 0.7
   ease:
     serializedVersion: 2
     m_Curve:
@@ -172,7 +172,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   pickupTrigger: {fileID: 0}
   disableTriggerUntilLand: 1
---- !u!114 &7973000711307423894
+--- !u!114 &2557325965984720923
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -181,8 +181,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8924357463392666817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbe4c5962c3e5524a8c6d9399da004df, type: 3}
+  m_Script: {fileID: 11500000, guid: ddce71f6cb935ea40b0aa9906f06669e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  artifactMenu: {fileID: 0}
-  hideAfterPick: 1
