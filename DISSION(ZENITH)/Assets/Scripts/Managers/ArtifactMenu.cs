@@ -16,25 +16,31 @@ public class ArtifactMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] private Transform artifactMenuPanel; // GridLayoutGroup 붙은 패널
 
     private List<Image> slots;
+    private bool initialized;
 
-    void Start()
+    private void Awake()
     {
+        Init(); // ← Awake에서 초기화
+    }
+
+    private void Init()
+    {
+        if (initialized) return;
         menuPanel = GetComponent<RectTransform>();
         originalPosition = menuPanel.anchoredPosition;
         targetPosition = new Vector2(originalPosition.x, originalPosition.y - 80f);
-        // 원위치보다 80 아래로 이동
 
-        // 패널 ‘자신’을 제외하고, 바로 아래 자식들만 슬롯으로 수집
         slots = new List<Image>();
         foreach (Transform child in artifactMenuPanel)
         {
             var img = child.GetComponent<Image>();
             if (img != null)
             {
-                img.enabled = false;   // 비어있을 때 안 보이게
+                img.enabled = false; // 비어있을 때 숨김
                 slots.Add(img);
             }
         }
+        initialized = true;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -63,5 +69,13 @@ public class ArtifactMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
         Debug.Log("슬롯이 가득 찼습니다!");
         return false;
+    }
+
+    public void Open()
+    {
+        gameObject.SetActive(true);
+        Init();
+        currentTween?.Kill();
+        currentTween = menuPanel.DOAnchorPos(targetPosition, 0.25f).SetEase(Ease.OutQuad);
     }
 }
