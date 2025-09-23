@@ -16,7 +16,6 @@ public class DialogueManager : MonoBehaviour
 
     // 선택지 조작용 필드 추가
     private int selectedChoiceIndex = 1; // 1번 버튼부터 시작 (1 또는 2)
-    private bool isInputEnabled = true;  // 쿨다운과 별개로 입력 제어를 위한 플래그
     private float inputCooldown = 0.2f;  // 기존 쿨다운 유지
     private float lastInputTime;         // 기존 쿨다운 유지
 

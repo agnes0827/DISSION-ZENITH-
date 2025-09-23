@@ -41,15 +41,6 @@ public class DialogueInteraction : MonoBehaviour
             {
                 currentDialogueTarget.GetComponent<DialogueTrigger>().TriggerDialogue();
             }
-            // ArtifactInteraction이 붙어 있으면 컷씬 시작 (새로운 시스템)
-            else
-            {
-                var artifactInteraction = currentDialogueTarget.GetComponent<ArtifactInteraction>();
-                if (artifactInteraction != null)
-                {
-                    artifactInteraction.Interact();
-                }
-            }
         }
     }
 }

@@ -1,67 +1,73 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ArtifactProximityPickup : MonoBehaviour
 {
-    [Header("Pickup")]
+    [Header("아티팩트 정보")]
+    [SerializeField] private Sprite artifactSprite; // 직접 할당하거나 Awake에서 가져오도록 수정
+
+    [Header("상호작용")]
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private KeyCode pickupKey = KeyCode.F;
-    [SerializeField] private bool destroyAfterPick = true;
+    [SerializeField] private GameObject promptUI;
 
-    [Header("Menu")]
-    [SerializeField] private ArtifactMenu artifactMenu; // 비워두면 자동 탐색
-    [SerializeField] private bool openMenuAfterPick = true; // 줍고 자동 열기
-
-    [Header("UI Prompt (선택)")]
-    [SerializeField] private GameObject promptUI; // "F키로 줍기" 안내
+    [Header("회상 컷신")]
+    [SerializeField] private bool hasFlashbackCutscene = false;
+    [SerializeField] private string flashbackSceneName; // 컷신이 재생될 씬 이름
 
     private bool _playerInRange = false;
 
     void Awake()
     {
-        if (artifactMenu == null)
-            artifactMenu = FindObjectOfType<ArtifactMenu>(true);
-
+        if (artifactSprite == null)
+        {
+            var sr = GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                artifactSprite = sr.sprite;
+            }
+        }
         if (promptUI) promptUI.SetActive(false);
     }
 
     void Update()
     {
-        if (!_playerInRange) return;
+        if (!_playerInRange || (CutsceneManager.Instance != null && CutsceneManager.IsCutscenePlaying))
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(pickupKey))
         {
-            var sr = GetComponent<SpriteRenderer>();
-            if (sr == null || sr.sprite == null) return;
+            PickUp();
+        }
+    }
 
-            if (artifactMenu == null)
-            {
-                Debug.LogWarning("ArtifactMenu를 찾지 못했습니다.");
-                return;
-            }
+    private void PickUp()
+    {
+        if (artifactSprite == null)
+        {
+            Debug.LogError("획득할 아티팩트 Sprite가 없습니다!");
+            return;
+        }
 
-            // ↓ 메뉴 초기화/활성 보장 (방법 1 쓰면 Open만으로 충분)
-            if (openMenuAfterPick)
+        if (hasFlashbackCutscene && !string.IsNullOrEmpty(flashbackSceneName))
+        {
+            // 회상 씬이 있는 경우
+            CutsceneManager.Instance.SetFlashbackData(artifactSprite, SceneManager.GetActiveScene().name);
+            gameObject.SetActive(false);
+            SceneManager.LoadScene(flashbackSceneName);
+        }
+        else
+        {
+            // 회상 씬이 없는 경우
+            Debug.Log("컷신 없이 즉시 획득합니다.");
+            var artifactMenu = FindObjectOfType<ArtifactMenu>(true);
+            if (artifactMenu != null)
             {
-                // 메뉴 열면서(애니 포함) 슬롯 초기화도 내부에서 보장
-                artifactMenu.Open();
+                artifactMenu.TryAddArtifact(artifactSprite);
             }
-            else
-            {
-                // 열지는 않더라도 Awake에서 Init 되었을 것이므로 안전
-                artifactMenu.gameObject.SetActive(true); // 필요에 따라
-            }
-
-            if (artifactMenu.TryAddArtifact(sr.sprite))
-            {
-                if (destroyAfterPick) Destroy(gameObject);
-                else gameObject.SetActive(false);
-            }
-            else
-            {
-                // 꽉 찼을 때 피드백
-                Debug.Log("아티팩트 메뉴가 가득 찼습니다.");
-            }
+            Destroy(gameObject);
         }
     }
 
