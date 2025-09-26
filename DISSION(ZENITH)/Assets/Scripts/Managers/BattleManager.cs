@@ -46,6 +46,8 @@ public class BattleManager : MonoBehaviour
 
     void HandleEnemyDied()
     {
+        EnemyHpText.enabled = false;
+        PlayerHpText.enabled = false;
         DialogText.text = "적이 쓰러졌다!";
         // 마지막으로 싸운 몬스터를 처치 완료로 기록
         if (LibraryGameState.Instance != null)
@@ -107,6 +109,8 @@ public class BattleManager : MonoBehaviour
 
         if (playerHP <= 0 && !battleEnded)
         {
+            EnemyHpText.enabled = false;
+            PlayerHpText.enabled = false;
             DialogText.text = "플레이어가 쓰러졌다!"; // 게임 오버 처리
             EndBattle("DialogueTest");
         }
@@ -117,7 +121,7 @@ public class BattleManager : MonoBehaviour
         if (battleEnded) return;
         battleEnded = true;
 
-        fadePanel.gameObject.SetActive(true); 
+        fadePanel.gameObject.SetActive(true);
         StartCoroutine(FadeOutAndClose(nextScene));
     }
 

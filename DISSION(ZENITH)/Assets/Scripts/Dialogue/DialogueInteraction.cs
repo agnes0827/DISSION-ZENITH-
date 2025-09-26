@@ -23,14 +23,33 @@ public class DialogueInteraction : MonoBehaviour
         }
     }
 
+
     void Update()
     {
-        if (currentDialogueTarget != null &&
-            Input.GetKeyDown(KeyCode.F) &&
-            !dialogueManager.isDialogue &&
-            !(MiniGameManager.Instance != null && MiniGameManager.Instance.IsMiniGameActive))
+        if (currentDialogueTarget == null) return;
+
+        bool dialogueLocked = (dialogueManager != null && dialogueManager.isDialogue);
+        bool miniGameLocked = (MiniGameManager.Instance != null && MiniGameManager.IsMiniGameActive);
+        bool cutsceneLocked = (CutsceneManager.Instance != null && CutsceneManager.IsCutscenePlaying);
+
+        if (dialogueLocked || miniGameLocked || cutsceneLocked) return;
+
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            currentDialogueTarget.TriggerDialogue();
+            // DialogueTrigger가 붙어 있으면 대화 시작 (기존 시스템)
+            if (currentDialogueTarget.GetComponent<DialogueTrigger>() != null)
+            {
+                currentDialogueTarget.GetComponent<DialogueTrigger>().TriggerDialogue();
+            }
+            // ArtifactInteraction이 붙어 있으면 컷씬 시작 (새로운 시스템)
+            else
+            {
+                var artifactInteraction = currentDialogueTarget.GetComponent<ArtifactInteraction>();
+                if (artifactInteraction != null)
+                {
+                    artifactInteraction.Interact();
+                }
+            }
         }
     }
 }

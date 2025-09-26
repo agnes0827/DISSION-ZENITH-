@@ -74,7 +74,10 @@ public class FightTrigger : MonoBehaviour
         Quaternion rot = rewardSpawnPoint ? rewardSpawnPoint.rotation : Quaternion.identity;
 
         if (bookItemPrefab != null)
-            Instantiate(bookItemPrefab, pos, rot, transform.parent); // ¾À¿¡ µå¶ø
+        {
+            var go = Instantiate(bookItemPrefab, pos, rot, transform.parent); // ¾À¿¡ µå¶ø
+            go.transform.SetAsLastSibling(); // ÃÖ»ó´ÜÀ¸·Î
+        }
 
         gameObject.SetActive(false); // ¸ó½ºÅÍ ¼û±è
     }

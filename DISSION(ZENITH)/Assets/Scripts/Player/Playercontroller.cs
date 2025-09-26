@@ -45,7 +45,7 @@ public class playercontroller : MonoBehaviour
 
         //방향키가 눌렸을 때
         if (movement != Vector2.zero && !dialogueManager.isDialogue &&
-            !(MiniGameManager.Instance != null && MiniGameManager.Instance.IsMiniGameActive))
+            !(MiniGameManager.Instance != null && MiniGameManager.IsMiniGameActive))
         {
             MovePlayer(); //실제 이동 수행
             AnimateWalk();//걷는 애니메이션 재생
