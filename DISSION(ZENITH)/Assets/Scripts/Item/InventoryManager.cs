@@ -5,21 +5,40 @@ public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance;
 
-    [Header("UI 연결")]
-    public Transform gridLayout; // GridLayoutGroup 오브젝트
-    public GameObject itemSlotPrefab; // Item 슬롯 프리팹
+    [Header("아이템 슬롯 프리팹")]
+    public GameObject itemSlotPrefab;
 
-    private Dictionary<string, ItemSlot> itemSlots = new(); // 아이템 ID → 슬롯
+    private Transform gridLayout;
+    private Dictionary<string, ItemSlot> itemSlots = new();
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void RegisterInventoryUI(Transform grid)
+    {
+        gridLayout = grid;
+        Debug.Log("Inventory UI가 InventoryManager에 성공적으로 등록되었습니다.");
     }
 
     // 아이템 추가
     public void AddItem(string itemId, string itemName)
     {
+        if (gridLayout == null)
+        {
+            Debug.LogError("Inventory UI가 등록되지 않았습니다! 아이템을 추가할 수 없습니다.");
+            return;
+        }
+
         if (itemSlots.ContainsKey(itemId))
         {
             // 이미 있으면 수량 증가

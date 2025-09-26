@@ -2,21 +2,21 @@ using UnityEngine;
 
 public class MiniGameManager : MonoBehaviour
 {
-    public static MiniGameManager Instance;
-
     [SerializeField] private GameObject dustCleaningUIPanel;
 
     private DialogueManager dialogueManager;
-
     private int dustCleanedCount = 0;
 
     public static bool IsMiniGameActive { get; private set; } = false;
 
-    void Awake()
+    void Start()
     {
-        dialogueManager = FindObjectOfType<DialogueManager>();
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        dialogueManager = DialogueManager.Instance;
+
+        if (dustCleaningUIPanel != null)
+        {
+            dustCleaningUIPanel.SetActive(false);
+        }
     }
 
     void OnEnable()
@@ -36,7 +36,7 @@ public class MiniGameManager : MonoBehaviour
         dustCleaningUIPanel.SetActive(true);
         var cleaningGame = dustCleaningUIPanel.GetComponent<DustCleaningGame>();
         cleaningGame.BeginGame(dustObject, this.OnDustCleaned);
-        Debug.Log("Start → Active=true");
+        Debug.Log("먼지 제거 미니게임 시작");
     }
 
     // 먼지 하나 제거 성공 시 호출됨
@@ -66,6 +66,6 @@ public class MiniGameManager : MonoBehaviour
     {
         IsMiniGameActive = false;
         dustCleaningUIPanel.SetActive(false);
-        Debug.Log("End → Active=false");
+        Debug.Log("먼지 제거 미니게임 종료");
     }
 }

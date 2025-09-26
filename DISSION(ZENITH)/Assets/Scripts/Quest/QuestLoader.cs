@@ -3,16 +3,11 @@ using System.Collections.Generic;
 
 public class QuestLoader : MonoBehaviour
 {
-    public Dictionary<string, Quest> quests = new Dictionary<string, Quest>();
+    private Dictionary<string, Quest> quests = new Dictionary<string, Quest>();
 
-    void Awake()
+    public void LoadQuestData()
     {
-        LoadQuest("CSV/quest");
-    }
-
-    void LoadQuest(string fileName)
-    {
-        List<Dictionary<string, object>> data = CSVReader.Read(fileName);
+        List<Dictionary<string, object>> data = CSVReader.Read("CSV/quest");
 
         foreach (var entry in data)
         {
@@ -21,21 +16,20 @@ public class QuestLoader : MonoBehaviour
             string description = entry["Description"].ToString();
             string type = entry["Type"].ToString();
             string targetId = entry["Target ID"].ToString();
-            string requiredCountStr = entry["Required Count"].ToString();
-            int requiredCount = int.TryParse(requiredCountStr, out var count) ? count : 1;
+            int requiredCount = int.TryParse(entry["Required Count"].ToString(), out var count) ? count : 1;
             string reward = entry["Reward"].ToString();
 
-            Quest quest = new Quest(id, title, description, type, targetId, requiredCount, reward);
-            quests[id] = quest;
+            quests[id] = new Quest(id, title, description, type, targetId, requiredCount, reward);
         }
-
-        Debug.Log("퀘스트 데이터 로드 완료");
+        Debug.Log("CSV 퀘스트 데이터 로드 완료");
     }
 
-    // ID로 대화 데이터 로드
     public Quest GetQuestById(string id)
     {
-        quests.TryGetValue(id, out var quest);
-        return quest;
+        if (quests.TryGetValue(id, out var quest))
+        {
+            return quest;
+        }
+        return null;
     }
 }

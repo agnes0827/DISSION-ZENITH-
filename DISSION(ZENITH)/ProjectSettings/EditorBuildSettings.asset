@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/StartScene.unity
     guid: 47c5a20a65177124996028e99528a50d
   - enabled: 1
+    path: Assets/Scenes/boot.unity
+    guid: 3255b38f8c34f554a8116e572ebf239b
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
@@ -17,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Fight.unity
     guid: 2c700372fab68714bb610f9f4978f4dd
+  - enabled: 1
+    path: Assets/Scenes/DialogueTest.unity
+    guid: a0ee80d5eb89bac4da1c490d8cbc3c92
+  - enabled: 1
+    path: Assets/Scenes/CutsceneTest.unity
+    guid: af68cd2c8144d844ea51e441339a09ee
   m_configObjects: {}
