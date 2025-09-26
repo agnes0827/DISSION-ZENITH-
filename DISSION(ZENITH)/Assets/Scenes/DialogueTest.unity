@@ -687,11 +687,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1308143889994482161, guid: 50c0fc71caf4115449acb84835af5125, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 61.93
+      value: 61.92
       objectReference: {fileID: 0}
     - target: {fileID: 1308143889994482161, guid: 50c0fc71caf4115449acb84835af5125, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50.965
+      value: 50.96
       objectReference: {fileID: 0}
     - target: {fileID: 1308143889994482161, guid: 50c0fc71caf4115449acb84835af5125, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2430,11 +2430,15 @@ PrefabInstance:
     - target: {fileID: 7139367306291985532, guid: 4abc492805c043747aed0cfdd4ba9f7f, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+      objectReference: {fileID: 11400000, guid: b544962622ec198409a636e01c2ac6b0, type: 2}
     - target: {fileID: 7139367306291985532, guid: 4abc492805c043747aed0cfdd4ba9f7f, type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 7139367306291985532, guid: 4abc492805c043747aed0cfdd4ba9f7f, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8199284407832511381, guid: 4abc492805c043747aed0cfdd4ba9f7f, type: 3}
       propertyPath: m_Name
       value: dustCleaningUIPanel
