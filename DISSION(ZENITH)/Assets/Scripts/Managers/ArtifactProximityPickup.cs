@@ -3,22 +3,29 @@ using UnityEngine.SceneManagement;
 
 public class ArtifactProximityPickup : MonoBehaviour
 {
-    [Header("¾ÆÆ¼ÆÑÆ® Á¤º¸")]
-    [SerializeField] private Sprite artifactSprite; // Á÷Á¢ ÇÒ´çÇÏ°Å³ª Awake¿¡¼­ °¡Á®¿Àµµ·Ï ¼öÁ¤
+    [Header("ì•„í‹°íŒ©íŠ¸ ê³ ìœ  ì •ë³´")]
+    [Tooltip("ì ˆëŒ€ ì¤‘ë³µë˜ì§€ ì•ŠëŠ” ê³ ìœ  IDë¥¼ ì…ë ¥í•˜ì„¸ìš”. ì˜ˆ: World01_Pendant")]
+    public string artifactID;
+    [SerializeField] private Sprite artifactSprite;
 
-    [Header("»óÈ£ÀÛ¿ë")]
+    [Header("ìƒí˜¸ì‘ìš©")]
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private KeyCode pickupKey = KeyCode.F;
     [SerializeField] private GameObject promptUI;
 
-    [Header("È¸»ó ÄÆ½Å")]
+    [Header("íšŒìƒ ì»·ì‹ ")]
     [SerializeField] private bool hasFlashbackCutscene = false;
-    [SerializeField] private string flashbackSceneName; // ÄÆ½ÅÀÌ Àç»ıµÉ ¾À ÀÌ¸§
+    [SerializeField] private string flashbackSceneName;
 
     private bool _playerInRange = false;
 
     void Awake()
     {
+        if (string.IsNullOrEmpty(artifactID))
+        {
+            Debug.LogError($"{gameObject.name}ì— artifactIDê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤! ì§„í–‰ ìƒí™© ì €ì¥ì´ ë¶ˆê°€ëŠ¥í•©ë‹ˆë‹¤.", gameObject);
+        }
+
         if (artifactSprite == null)
         {
             var sr = GetComponent<SpriteRenderer>();
@@ -45,29 +52,28 @@ public class ArtifactProximityPickup : MonoBehaviour
 
     private void PickUp()
     {
-        if (artifactSprite == null)
+        if (hasFlashbackCutscene)
         {
-            Debug.LogError("È¹µæÇÒ ¾ÆÆ¼ÆÑÆ® Sprite°¡ ¾ø½À´Ï´Ù!");
-            return;
-        }
-
-        if (hasFlashbackCutscene && !string.IsNullOrEmpty(flashbackSceneName))
-        {
-            // È¸»ó ¾ÀÀÌ ÀÖ´Â °æ¿ì
-            CutsceneManager.Instance.SetFlashbackData(artifactSprite, SceneManager.GetActiveScene().name);
+            // íšŒìƒ ì”¬ì´ ìˆëŠ” ê²½ìš°: CutsceneManagerì—ê²Œ ë°ì´í„°ë¥¼ ë„˜ê¸°ê³  ì”¬ ì´ë™
+            Debug.Log($"[ArtifactProximityPickup] PickUp called. artifactID: '{artifactID}'");
+            CutsceneManager.Instance.SetFlashbackData(artifactSprite, SceneManager.GetActiveScene().name, artifactID);
             gameObject.SetActive(false);
             SceneManager.LoadScene(flashbackSceneName);
         }
         else
         {
-            // È¸»ó ¾ÀÀÌ ¾ø´Â °æ¿ì
-            Debug.Log("ÄÆ½Å ¾øÀÌ Áï½Ã È¹µæÇÕ´Ï´Ù.");
+            // íšŒìƒ ì”¬ì´ ì—†ëŠ” ê²½ìš°: GameStateManagerì— ì¦‰ì‹œ ê¸°ë¡í•˜ê³  íŒŒê´´
+            if (GameStateManager.Instance != null && !GameStateManager.Instance.collectedArtifactIDs.Contains(artifactID))
+            {
+                GameStateManager.Instance.collectedArtifactIDs.Add(artifactID);
+            }
+
             var artifactMenu = FindObjectOfType<ArtifactMenu>(true);
             if (artifactMenu != null)
             {
                 artifactMenu.TryAddArtifact(artifactSprite);
             }
-            Destroy(gameObject);
+            gameObject.SetActive(false); // Destroy ëŒ€ì‹  SetActive(false)ê°€ ë” ì•ˆì „í•©ë‹ˆë‹¤.
         }
     }
 

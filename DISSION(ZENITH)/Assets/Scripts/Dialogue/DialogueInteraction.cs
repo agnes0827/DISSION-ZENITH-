@@ -29,7 +29,7 @@ public class DialogueInteraction : MonoBehaviour
         if (currentDialogueTarget == null) return;
 
         bool dialogueLocked = (dialogueManager != null && dialogueManager.isDialogue);
-        bool miniGameLocked = (MiniGameManager.Instance != null && MiniGameManager.IsMiniGameActive);
+        bool miniGameLocked = MiniGameManager.IsMiniGameActive;
         bool cutsceneLocked = (CutsceneManager.Instance != null && CutsceneManager.IsCutscenePlaying);
 
         if (dialogueLocked || miniGameLocked || cutsceneLocked) return;

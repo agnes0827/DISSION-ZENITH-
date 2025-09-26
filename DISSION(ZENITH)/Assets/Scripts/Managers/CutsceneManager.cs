@@ -11,9 +11,14 @@ public class CutsceneManager : MonoBehaviour
     public static bool IsCutscenePlaying { get; private set; }
     public static event Action<bool> OnCutsceneStateChanged;
 
+    // 다른 스크립트에서 접근할 수 있도록 public으로 변경
     public Sprite ArtifactSpriteToCollect { get; private set; }
     public string ReturnSceneName { get; private set; }
     public bool needsAcquisitionCompletion { get; private set; } = false;
+
+    // [추가] 오류 해결을 위해 아티팩트 ID를 저장할 변수
+    public string collectedArtifactID { get; private set; }
+
 
     public enum CutsceneActionType { Move, Dialogue, Wait, Activate, Deactivate }
 
@@ -46,11 +51,13 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 
-    public void SetFlashbackData(Sprite sprite, string returnScene)
+    // [수정] 오류 해결을 위해 string artifactID 매개변수 추가
+    public void SetFlashbackData(Sprite sprite, string returnScene, string artifactID)
     {
         ArtifactSpriteToCollect = sprite;
         ReturnSceneName = returnScene;
-        needsAcquisitionCompletion = true; 
+        collectedArtifactID = artifactID; // 전달받은 ID를 변수에 저장
+        needsAcquisitionCompletion = true;
     }
 
     public void Play(List<CutsceneAction> actions)
@@ -102,8 +109,10 @@ public class CutsceneManager : MonoBehaviour
             Debug.LogError("ArtifactMenu를 찾을 수 없어 UI에 아이템을 추가하지 못했습니다!");
         }
 
+        // 모든 임시 데이터를 깨끗하게 초기화합니다.
         ArtifactSpriteToCollect = null;
         ReturnSceneName = null;
+        collectedArtifactID = null; // [추가] ID 데이터도 초기화
         needsAcquisitionCompletion = false;
         Debug.Log("아티팩트 획득 최종 처리 완료.");
     }
@@ -137,3 +146,4 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 }
+
