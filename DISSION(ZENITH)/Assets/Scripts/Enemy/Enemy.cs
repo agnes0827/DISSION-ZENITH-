@@ -22,14 +22,21 @@ public class Enemy : MonoBehaviour
 
         if (hp <= 0)
         {
-            Die();
+            StartCoroutine(DieRoutine());
         }
     }
 
-    void Die()
+    IEnumerator DieRoutine()
     {
+        // 1) 조각 효과 있으면 실행
+        var shatter = GetComponent<UIShatter>();
+        if (shatter != null)
+            yield return StartCoroutine(shatter.Play());
 
+        // 2) 사망 이벤트 (연출 후)
         OnDied?.Invoke();
-        // 여기에 애니메이션, 제거 처리
+
+        // 3) 자기 자신 파괴(또는 비활성)
+        Destroy(gameObject);
     }
 }
