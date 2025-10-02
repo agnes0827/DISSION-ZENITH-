@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        DontDestroyOnLoad(this.gameObject);
+        // DontDestroyOnLoad(this.gameObject);
         anim = GetComponent<Animator>();
         capsuleColider = GetComponent<CapsuleCollider2D>();
     }
