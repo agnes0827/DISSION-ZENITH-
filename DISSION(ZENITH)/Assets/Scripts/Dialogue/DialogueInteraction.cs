@@ -29,7 +29,7 @@ public class DialogueInteraction : MonoBehaviour
         if (currentDialogueTarget == null) return;
 
         bool dialogueLocked = (dialogueManager != null && dialogueManager.isDialogue);
-        bool miniGameLocked = (MiniGameManager.Instance != null && MiniGameManager.IsMiniGameActive);
+        bool miniGameLocked = MiniGameManager.IsMiniGameActive;
         bool cutsceneLocked = (CutsceneManager.Instance != null && CutsceneManager.IsCutscenePlaying);
 
         if (dialogueLocked || miniGameLocked || cutsceneLocked) return;
@@ -40,15 +40,6 @@ public class DialogueInteraction : MonoBehaviour
             if (currentDialogueTarget.GetComponent<DialogueTrigger>() != null)
             {
                 currentDialogueTarget.GetComponent<DialogueTrigger>().TriggerDialogue();
-            }
-            // ArtifactInteraction이 붙어 있으면 컷씬 시작 (새로운 시스템)
-            else
-            {
-                var artifactInteraction = currentDialogueTarget.GetComponent<ArtifactInteraction>();
-                if (artifactInteraction != null)
-                {
-                    artifactInteraction.Interact();
-                }
             }
         }
     }

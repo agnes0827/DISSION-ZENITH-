@@ -1,67 +1,79 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ArtifactProximityPickup : MonoBehaviour
 {
-    [Header("Pickup")]
+    [Header("ì•„í‹°íŒ©íŠ¸ ê³ ìœ  ì •ë³´")]
+    [Tooltip("ì ˆëŒ€ ì¤‘ë³µë˜ì§€ ì•ŠëŠ” ê³ ìœ  IDë¥¼ ì…ë ¥í•˜ì„¸ìš”. ì˜ˆ: World01_Pendant")]
+    public string artifactID;
+    [SerializeField] private Sprite artifactSprite;
+
+    [Header("ìƒí˜¸ì‘ìš©")]
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private KeyCode pickupKey = KeyCode.F;
-    [SerializeField] private bool destroyAfterPick = true;
+    [SerializeField] private GameObject promptUI;
 
-    [Header("Menu")]
-    [SerializeField] private ArtifactMenu artifactMenu; // ºñ¿öµÎ¸é ÀÚµ¿ Å½»ö
-    [SerializeField] private bool openMenuAfterPick = true; // Áİ°í ÀÚµ¿ ¿­±â
-
-    [Header("UI Prompt (¼±ÅÃ)")]
-    [SerializeField] private GameObject promptUI; // "FÅ°·Î Áİ±â" ¾È³»
+    [Header("íšŒìƒ ì»·ì‹ ")]
+    [SerializeField] private bool hasFlashbackCutscene = false;
+    [SerializeField] private string flashbackSceneName;
 
     private bool _playerInRange = false;
 
     void Awake()
     {
-        if (artifactMenu == null)
-            artifactMenu = FindObjectOfType<ArtifactMenu>(true);
+        if (string.IsNullOrEmpty(artifactID))
+        {
+            Debug.LogError($"{gameObject.name}ì— artifactIDê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤! ì§„í–‰ ìƒí™© ì €ì¥ì´ ë¶ˆê°€ëŠ¥í•©ë‹ˆë‹¤.", gameObject);
+        }
 
+        if (artifactSprite == null)
+        {
+            var sr = GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                artifactSprite = sr.sprite;
+            }
+        }
         if (promptUI) promptUI.SetActive(false);
     }
 
     void Update()
     {
-        if (!_playerInRange) return;
+        if (!_playerInRange || (CutsceneManager.Instance != null && CutsceneManager.IsCutscenePlaying))
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(pickupKey))
         {
-            var sr = GetComponent<SpriteRenderer>();
-            if (sr == null || sr.sprite == null) return;
+            PickUp();
+        }
+    }
 
-            if (artifactMenu == null)
+    private void PickUp()
+    {
+        if (hasFlashbackCutscene)
+        {
+            // íšŒìƒ ì”¬ì´ ìˆëŠ” ê²½ìš°: CutsceneManagerì—ê²Œ ë°ì´í„°ë¥¼ ë„˜ê¸°ê³  ì”¬ ì´ë™
+            Debug.Log($"[ArtifactProximityPickup] PickUp called. artifactID: '{artifactID}'");
+            CutsceneManager.Instance.SetFlashbackData(artifactSprite, SceneManager.GetActiveScene().name, artifactID);
+            gameObject.SetActive(false);
+            SceneManager.LoadScene(flashbackSceneName);
+        }
+        else
+        {
+            // íšŒìƒ ì”¬ì´ ì—†ëŠ” ê²½ìš°: GameStateManagerì— ì¦‰ì‹œ ê¸°ë¡í•˜ê³  íŒŒê´´
+            if (GameStateManager.Instance != null && !GameStateManager.Instance.collectedArtifactIDs.Contains(artifactID))
             {
-                Debug.LogWarning("ArtifactMenu¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.");
-                return;
+                GameStateManager.Instance.collectedArtifactIDs.Add(artifactID);
             }
 
-            // ¡é ¸Ş´º ÃÊ±âÈ­/È°¼º º¸Àå (¹æ¹ı 1 ¾²¸é Open¸¸À¸·Î ÃæºĞ)
-            if (openMenuAfterPick)
+            var artifactMenu = FindObjectOfType<ArtifactMenu>(true);
+            if (artifactMenu != null)
             {
-                // ¸Ş´º ¿­¸é¼­(¾Ö´Ï Æ÷ÇÔ) ½½·Ô ÃÊ±âÈ­µµ ³»ºÎ¿¡¼­ º¸Àå
-                artifactMenu.Open();
+                artifactMenu.TryAddArtifact(artifactSprite);
             }
-            else
-            {
-                // ¿­Áö´Â ¾Ê´õ¶óµµ Awake¿¡¼­ Init µÇ¾úÀ» °ÍÀÌ¹Ç·Î ¾ÈÀü
-                artifactMenu.gameObject.SetActive(true); // ÇÊ¿ä¿¡ µû¶ó
-            }
-
-            if (artifactMenu.TryAddArtifact(sr.sprite))
-            {
-                if (destroyAfterPick) Destroy(gameObject);
-                else gameObject.SetActive(false);
-            }
-            else
-            {
-                // ²Ë Ã¡À» ¶§ ÇÇµå¹é
-                Debug.Log("¾ÆÆ¼ÆÑÆ® ¸Ş´º°¡ °¡µæ Ã¡½À´Ï´Ù.");
-            }
+            gameObject.SetActive(false); // Destroy ëŒ€ì‹  SetActive(false)ê°€ ë” ì•ˆì „í•©ë‹ˆë‹¤.
         }
     }
 

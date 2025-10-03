@@ -10,9 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8113391196986179061}
   - component: {fileID: 4631179644670033453}
-  - component: {fileID: 4597537431946371638}
   - component: {fileID: 7646114847891443017}
-  - component: {fileID: 3325930213640875017}
   - component: {fileID: 7710135614641241582}
   m_Layer: 0
   m_Name: Manager
@@ -48,23 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 180bc4cab884b2b479ef9cdad37c0ecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialoguePrefab: {fileID: 1241143372102238290, guid: af9819559d14d944b8f4004a8c13251f, type: 3}
-  dialogueLoader: {fileID: 0}
-  isDialogue: 0
-  isChoice: 0
---- !u!114 &4597537431946371638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4191938908106082822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62cfef077d3084741b154b9e4a56046e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventory: {fileID: 0}
+  dialogueUIPrefab: {fileID: 1241143372102238290, guid: 6f31f6a32bbdd0746b48a47c8737fc0a, type: 3}
+  dialogueLoader: {fileID: 2251821162496677051, guid: efb9828a4571eee41849592dc7b3b475, type: 3}
 --- !u!114 &7646114847891443017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,19 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f18bdd374ba20d488b527fcbb159900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3325930213640875017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4191938908106082822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53040422b975a1a44892098a9a6859ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dustCleaningUIPanel: {fileID: 0}
+  questLoader: {fileID: 0}
 --- !u!114 &7710135614641241582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,5 +73,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df3e8f5fb3141b54ba9fa65c79f35b97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridLayout: {fileID: 0}
-  itemSlotPrefab: {fileID: 0}
+  itemSlotPrefab: {fileID: 392294654906400889, guid: 6ede9581c321f7f45aea57c72abc78c4, type: 3}

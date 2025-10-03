@@ -4,12 +4,15 @@ using UnityEngine;
 public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
+    [SerializeField] private QuestLoader questLoader;
 
+    // 퀘스트 상태
     private HashSet<string> acceptedQuests = new HashSet<string>();           // 진행 중
     private HashSet<string> completedQuests = new HashSet<string>();          // 완료
     private HashSet<string> objectiveReachedQuests = new HashSet<string>();   // 목표 달성 (대화 후)
 
-    private QuestLoader questLoader;
+    // UI 참조
+    private QuestUI questUI;
 
     void Awake()
     {
@@ -17,7 +20,15 @@ public class QuestManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            questLoader = FindObjectOfType<QuestLoader>();
+
+            if (questLoader != null)
+            {
+                questLoader.LoadQuestData();
+            }
+            else
+            {
+                Debug.LogError("QuestLoader가 연결되지 않았습니다!");
+            }
         }
         else
         {
@@ -25,23 +36,64 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    public void RegisterQuestUI(QuestUI ui)
+    {
+        questUI = ui;
+        Debug.Log("QuestUI가 QuestManager에 성공적으로 등록되었습니다.");
+    }
+
+    public void UnregisterQuestUI()
+    {
+        questUI = null;
+        Debug.Log("QuestUI가 파괴되어 등록 해제되었습니다.");
+    }
+
     // 퀘스트 수락
     public void AcceptQuest(string questId)
     {
-        if (!acceptedQuests.Contains(questId))
+        // 이미 수락했거나 완료한 퀘스트는 다시 수락하지 않습니다.
+        if (HasAccepted(questId) || HasCompleted(questId))
         {
-            acceptedQuests.Add(questId);
+            Debug.Log($"퀘스트 '{questId}'는 이미 처리된 퀘스트이므로 다시 수락하지 않습니다.");
+            return;
+        }
 
-            // UI 표시
+        acceptedQuests.Add(questId);
+        Debug.Log($"[퀘스트 수락] ID: {questId}");
+
+        // 등록된 UI가 있다면, UI를 표시합니다.
+        var quest = GetQuestById(questId);
+        if (questUI != null && quest != null)
+        {
+            questUI.ShowQuest(quest);
+        }
+
+        UpdateQuestIcons();
+    }
+
+    // 퀘스트 완료 처리
+    public void CompleteQuest(string questId)
+    {
+        if (acceptedQuests.Contains(questId) && !completedQuests.Contains(questId))
+        {
+            acceptedQuests.Remove(questId);
+            objectiveReachedQuests.Remove(questId);
+            completedQuests.Add(questId);
+
             var quest = GetQuestById(questId);
-            FindObjectOfType<QuestUI>()?.ShowQuest(quest);
+            GiveReward(quest.reward);
 
-            Debug.Log($"[퀘스트 수락] {quest.quest_title}");
+            if (questUI != null && questUI.GetCurrentQuestId() == questId)
+            {
+                questUI.Hide();
+            }
+
             UpdateQuestIcons();
+            Debug.Log($"[퀘스트 완료] ID: {questId}");
         }
     }
 
-    // 목표 달성 (DialogueTrigger에서 직접 호출)
+    // 목표 달성
     public void SetObjectiveReached(string questId)
     {
         if (acceptedQuests.Contains(questId) && !objectiveReachedQuests.Contains(questId))
@@ -85,28 +137,6 @@ public class QuestManager : MonoBehaviour
                 CompleteQuest(questId);        
                 Debug.Log($"[아이템 조건 만족→완료] {quest.quest_id} - {quest.quest_title}");
             }
-        }
-    }
-
-
-    // 퀘스트 완료 처리
-    public void CompleteQuest(string questId)
-    {
-        if (acceptedQuests.Contains(questId) && !completedQuests.Contains(questId))
-        {
-            acceptedQuests.Remove(questId);
-            objectiveReachedQuests.Remove(questId);
-            completedQuests.Add(questId);
-
-            var quest = GetQuestById(questId);
-            GiveReward(quest.reward);
-
-            // UI 닫기
-            var questUI = FindObjectOfType<QuestUI>();
-            if (questUI != null && questUI.GetCurrentQuestId() == questId)
-                questUI.Hide();
-
-            UpdateQuestIcons();
         }
     }
 

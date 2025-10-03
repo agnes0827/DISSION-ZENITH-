@@ -6,15 +6,10 @@ public class DialogueLoader : MonoBehaviour
 {
     public Dictionary<string, Dialogue> dialogues = new Dictionary<string, Dialogue>();
 
-    void Awake()
-    {
-        LoadDialogue("CSV/dialogue");
-    }
-
     // CSVReder를 통해 CSV 파일 파싱, 대화 데이터 로드
-    void LoadDialogue(string fileName)
+    public void LoadDialogueData()
     {
-        List<Dictionary<string, object>> data = CSVReader.Read(fileName);
+        List<Dictionary<string, object>> data = CSVReader.Read("CSV/dialogue");
 
         foreach (var entry in data)
         {

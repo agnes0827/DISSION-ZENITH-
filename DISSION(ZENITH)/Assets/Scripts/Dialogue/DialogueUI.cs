@@ -5,13 +5,14 @@ using System.Collections;
 
 public class DialogueUI : MonoBehaviour
 {
-    // 기본 대화 UI
-    [SerializeField] private TextMeshProUGUI speakerText;     // 화자(캐릭터 이름)
-    [SerializeField] private TextMeshProUGUI dialogueText;    // 대사 텍스트 (TMP)
-    [SerializeField] private Image portraitImage;             // 초상화 이미지
-    [SerializeField] private GameObject speakerPanel;         // 이름 박스 전체 패널
+    [Header("UI 구성 요소")]
+    [SerializeField] private GameObject dialogueContainer;
+    [SerializeField] private TextMeshProUGUI speakerText;
+    [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private Image portraitImage;
+    [SerializeField] private GameObject speakerPanel;
 
-    // 선택지 UI
+    [Header("선택지 UI")]
     public GameObject choicePanel;
     public Button choiceButton1;
     public Button choiceButton2;
@@ -23,6 +24,36 @@ public class DialogueUI : MonoBehaviour
     private Coroutine typingCoroutine;                        // 타자 효과 코루틴
     public bool IsTyping { get; private set; } = false;       // 타자 효과 진행 중 여부
     private string currentFullText = "";                      // 전체 문장(FullText) 저장
+
+    private void Awake()
+    {
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.RegisterDialogueUI(this);
+        }
+        else
+        {
+            Debug.LogError("DialogueManager가 씬에 없습니다! UI를 등록할 수 없습니다.");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.UnregisterDialogueUI();
+        }
+    }
+
+    public void ShowDialoguePanel()
+    {
+        dialogueContainer.SetActive(true);
+    }
+
+    public void HideDialoguePanel()
+    {
+        dialogueContainer.SetActive(false);
+    }
 
     // 화자, 대사, 초상화 파일 이름 UI 표시
     public void ShowDialogue(string speaker, string dialogue, string portraitName)
@@ -121,16 +152,6 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-    public void ShowDialoguePanel()
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void HideDialogue()
-    {
-        gameObject.SetActive(false);
-    }
-
     public void ShowChoices(string c1, string c2)
     {
         choicePanel.SetActive(true);
@@ -141,5 +162,14 @@ public class DialogueUI : MonoBehaviour
     public void HideChoices()
     {
         choicePanel.SetActive(false);
+    }
+
+    public void HighlightChoice(int index)
+    {
+        Color highlightColor = Color.yellow;
+        Color normalColor = Color.white;
+
+        choiceButton1.GetComponent<Image>().color = (index == 1) ? highlightColor : normalColor;
+        choiceButton2.GetComponent<Image>().color = (index == 2) ? highlightColor : normalColor;
     }
 }
