@@ -337,7 +337,7 @@ MonoBehaviour:
   piecesY: 8
   explodeRadius: 180
   rotateMax: 360
-  duration: 0.8
+  duration: 1.8
   upBias: 0.3
 --- !u!1001 &1285690441
 PrefabInstance:
@@ -521,7 +521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4834307309094451845, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 50.000004
+      value: 50.000008
       objectReference: {fileID: 0}
     - target: {fileID: 5057994625920588765, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: m_LocalPosition.x

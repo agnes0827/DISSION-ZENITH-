@@ -16,13 +16,15 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider2D capsuleColider;
     public LayerMask layermask; //이동 불가 지역
 
+    private Vector2 lastMove = Vector2.down; // 게임 시작시 정면 보게
+
     Animator anim;
 
     private string lastDirection = "Front"; // 기본 방향
 
     void Start()
     {
-        DontDestroyOnLoad(this.gameObject);
+        // DontDestroyOnLoad(this.gameObject);
         anim = GetComponent<Animator>();
         capsuleColider = GetComponent<CapsuleCollider2D>();
     }
@@ -47,15 +49,15 @@ public class PlayerController : MonoBehaviour
             if (vector.x != 0)
                 vector.y = 0;
 
-            // 방향 갱신
-            if (vector.y < 0) lastDirection = "Back";
-            else if (vector.y > 0) lastDirection = "Front";
-            else if (vector.x > 0) lastDirection = "Right";
-            else if (vector.x < 0) lastDirection = "Left";
-            
-            //애니메이션 파라미터
+            // 움직였을 때만 방향 갱신
+            if (vector.x != 0 || vector.y != 0)
+                lastMove = new Vector2(Mathf.Sign(vector.x), Mathf.Sign(vector.y));
+
+
+            // 애니 파라미터
             anim.SetFloat("InputX", vector.x);
             anim.SetFloat("InputY", vector.y);
+            anim.SetBool("isMoving", true);
 
             //레이어 마스크
             RaycastHit2D hit;
@@ -84,6 +86,8 @@ public class PlayerController : MonoBehaviour
         }
 
         anim.SetBool("isMoving", false);
+        anim.SetFloat("InputX", lastMove.x);
+        anim.SetFloat("InputY", lastMove.y);
         canMove = true;
     }
 
