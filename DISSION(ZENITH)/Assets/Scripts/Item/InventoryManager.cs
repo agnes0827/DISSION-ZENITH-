@@ -40,10 +40,16 @@ public class InventoryManager : MonoBehaviour
     }
 
     // 아이템 추가
+    public void AddItem(string itemId)
+    {
+        AddItem(itemId, null); // 이름은 DB에서 가져옴
+    }
+
     public void AddItem(string itemId, string itemName)
     {
-        // item을 GameStateManager에 등록
+        // GameStateManager의 원본 인벤토리 사전에 접근
         var inventory = GameStateManager.Instance.inventoryItems;
+        // 이미 있으면 수량만 증가, 없으면 신규 키로 1개 등록
         if (inventory.ContainsKey(itemId))
         {
             inventory[itemId]++; // 수량 증가
