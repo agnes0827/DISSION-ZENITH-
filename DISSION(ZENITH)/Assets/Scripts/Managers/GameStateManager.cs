@@ -65,8 +65,9 @@ public class GameStateManager : MonoBehaviour
         playerHP = playerMaxHP;
         playerGold = 0;
 
-        // 다른 데이터들도 필요하다면 여기서 초기화
-        // 예: inventoryItems.Clear();
+        // 인벤토리 초기화 후 기본템(사과) 추가
+        inventoryItems.Clear();
+        inventoryItems.Add("apple", 2); 
         // 예: questStates.Clear();
     }
 }
