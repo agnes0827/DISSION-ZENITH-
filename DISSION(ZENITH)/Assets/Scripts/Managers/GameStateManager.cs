@@ -2,14 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 퀘스트 상태 저장
-public enum QuestStatus
-{
-    NotStarted, // 시작 안 함
-    InProgress, // 진행 중
-    Completed   // 완료
-}
-
 /// <summary>
 /// 게임의 모든 영구 데이터를 저장하고 관리하는 중앙 데이터베이스입니다.
 /// 씬이 변경되어도 파괴되지 않으며, 인벤토리, 퀘스트 진행도, 오브젝트 상태 등
@@ -32,7 +24,10 @@ public class GameStateManager : MonoBehaviour
 
     // 퀘스트
     [Header("Quest Status")]
-    public Dictionary<string, QuestStatus> questStates = new Dictionary<string, QuestStatus>();
+    public HashSet<string> acceptedQuests = new HashSet<string>();           // 진행 중인 퀘스트 목록
+    public HashSet<string> completedQuests = new HashSet<string>();          // 완료한 퀘스트 목록
+    public HashSet<string> objectiveReachedQuests = new HashSet<string>();   // 목표 달성한 퀘스트 목록
+
 
     // 아티팩트
     [Header("Artifact Status")]
