@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 91706e0e963f5d946b2c98a762f243ca
+guid: d73d3518a5cdb9d45a782604d7ab5247
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -108,49 +108,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: bookcase_2_top
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 23
-        width: 130
-        height: 97
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 79c19b7242888e34d928c8c368537485
-      internalID: 1130307264
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: bookcase_2_bottom
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 130
-        height: 23
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c405a44f63f17af408131ea0d134470f
-      internalID: -190020633
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -161,9 +119,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      bookcase_2_bottom: -190020633
-      bookcase_2_top: 1130307264
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
