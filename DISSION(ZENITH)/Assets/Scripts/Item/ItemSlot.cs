@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ItemSlot : MonoBehaviour
 {
-    public Text itemNameText;
-    public Text amountText;
+    public TextMeshProUGUI itemNameText;
+    public TextMeshProUGUI amountText;
 
     private ItemData itemData;
 

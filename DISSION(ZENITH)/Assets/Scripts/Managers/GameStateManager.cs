@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,9 +13,12 @@ public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager Instance { get; private set; }
 
+    // HP 변경 이벤트: (current, max)
+    public event Action<float, float> OnPlayerHpChanged;
+
     // 플레이어 상태
     [Header("Player Stats")]
-    public float playerHP;            // 현재 체력
+    public float playerHP;// 현재 체력
     public float playerMaxHP = 100f;  // 최대 체력
 
     // 인벤토리
@@ -60,9 +64,32 @@ public class GameStateManager : MonoBehaviour
         playerHP = playerMaxHP;
         playerGold = 0;
 
-        // 다른 데이터들도 필요하다면 여기서 초기화
-        // 예: inventoryItems.Clear();
+        // 인벤토리 초기화 후 기본템(사과) 추가
+        inventoryItems.Clear();
+        inventoryItems.Add("apple", 2); 
         // 예: questStates.Clear();
+    }
+
+    // 체력 변경은 이 함수만 통해서 하도록(클램프 + 이벤트 발행)
+    public void ChangeHP(float delta)
+    {
+        float prev = playerHP;
+        playerHP = Mathf.Clamp(playerHP + delta, 0f, playerMaxHP);
+        if (!Mathf.Approximately(prev, playerHP))
+        {
+            OnPlayerHpChanged?.Invoke(playerHP, playerMaxHP);
+        }
+    }
+
+    // 직접 세팅용도
+    public void SetHP(float value)
+    {
+        float clamped = Mathf.Clamp(value, 0f, playerMaxHP);
+        if (!Mathf.Approximately(playerHP, clamped))
+        {
+            playerHP = clamped;
+            OnPlayerHpChanged?.Invoke(playerHP, playerMaxHP);
+        }
     }
 }
 
