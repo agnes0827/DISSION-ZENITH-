@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 // 씬이 바뀌어도 파괴되지 않고, 모든 대화의 흐름을 총괄하는 '뇌' 역할을 합니다.
 public class DialogueManager : MonoBehaviour
@@ -25,12 +26,16 @@ public class DialogueManager : MonoBehaviour
     public static event Action<GameObject> OnMiniGameRequested;
     private GameObject currentDustObject;
 
+    private PlayerController playerController;
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+
             if (dialogueLoader != null)
             {
                 dialogueLoader.LoadDialogueData();
@@ -39,6 +44,26 @@ public class DialogueManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindPlayer();
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+
+        if (playerObject != null)
+        {
+            playerController = playerObject.GetComponent<PlayerController>();
+        }
+
+        if (playerController == null)
+        {
+            Debug.LogWarning("현재 씬에서 'Player' 태그를 가진 PlayerController를 찾을 수 없습니다.");
         }
     }
 
@@ -114,6 +139,7 @@ public class DialogueManager : MonoBehaviour
     public void StartDialogue(string startId, GameObject dustObject = null)
     {
         currentDustObject = dustObject;
+        // playerController.StopMovement();
 
         if (dialogueUI == null)
         {
@@ -211,6 +237,8 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue()
     {
+        playerController.ResumeMovement();
+
         isDialogue = false;
         if (dialogueUI != null)
         {

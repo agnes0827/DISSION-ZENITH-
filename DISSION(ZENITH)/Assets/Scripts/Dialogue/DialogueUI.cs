@@ -11,6 +11,7 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private Image portraitImage;
     [SerializeField] private GameObject speakerPanel;
+    [SerializeField] private RectTransform choicePanelRectTransform;
 
     [Header("º±≈√¡ˆ UI")]
     public GameObject choicePanel;
@@ -157,6 +158,8 @@ public class DialogueUI : MonoBehaviour
         choicePanel.SetActive(true);
         choiceText1.text = c1;
         choiceText2.text = c2;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(choicePanelRectTransform);
     }
 
     public void HideChoices()
@@ -166,8 +169,8 @@ public class DialogueUI : MonoBehaviour
 
     public void HighlightChoice(int index)
     {
-        Color highlightColor = Color.yellow;
-        Color normalColor = Color.white;
+        Color highlightColor = Color.gray;
+        Color normalColor = Color.black;
 
         choiceButton1.GetComponent<Image>().color = (index == 1) ? highlightColor : normalColor;
         choiceButton2.GetComponent<Image>().color = (index == 2) ? highlightColor : normalColor;

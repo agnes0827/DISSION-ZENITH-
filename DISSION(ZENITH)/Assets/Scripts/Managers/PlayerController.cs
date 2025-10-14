@@ -107,4 +107,16 @@ public class PlayerController : MonoBehaviour
     {
         return lastDirection;
     }
+
+    public void StopMovement()
+    {
+        StopAllCoroutines();
+        anim.SetBool("isMoving", false);
+        canMove = false;
+    }
+
+    public void ResumeMovement()
+    {
+        canMove = true;
+    }
 }
