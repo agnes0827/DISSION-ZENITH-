@@ -4591,10 +4591,10 @@ PrefabInstance:
     - target: {fileID: 7139367306291985532, guid: 4abc492805c043747aed0cfdd4ba9f7f, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+      objectReference: {fileID: 2983453847705035796, guid: b544962622ec198409a636e01c2ac6b0, type: 2}
     - target: {fileID: 7139367306291985532, guid: 4abc492805c043747aed0cfdd4ba9f7f, type: 3}
       propertyPath: m_hasFontAssetChanged
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8199284407832511381, guid: 4abc492805c043747aed0cfdd4ba9f7f, type: 3}
       propertyPath: m_Name

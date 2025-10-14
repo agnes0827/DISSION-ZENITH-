@@ -59,6 +59,7 @@ public class DialogueManager : MonoBehaviour
         if (playerObject != null)
         {
             playerController = playerObject.GetComponent<PlayerController>();
+            Debug.LogWarning("현재 씬에서 'Player' 태그를 가진 PlayerController를 찾았습니다.");
         }
 
         if (playerController == null)
@@ -74,7 +75,6 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("DialogueUI가 DialogueManager에 성공적으로 등록되었습니다.");
     }
 
-    // DialogueUI가 파괴될 때 참조를 깨끗하게 정리합니다.
     public void UnregisterDialogueUI()
     {
         dialogueUI = null;
@@ -139,7 +139,7 @@ public class DialogueManager : MonoBehaviour
     public void StartDialogue(string startId, GameObject dustObject = null)
     {
         currentDustObject = dustObject;
-        // playerController.StopMovement();
+        playerController.StopMovement();
 
         if (dialogueUI == null)
         {
@@ -215,11 +215,21 @@ public class DialogueManager : MonoBehaviour
         if (nextId == "MINIGAME")
         {
             OnMiniGameRequested?.Invoke(currentDustObject);
-            EndDialogue();
+            isDialogue = false;
+
+            if (dialogueUI != null)
+            {
+                dialogueUI.HideDialoguePanel();
+            }
+            //EndDialogue();
+        }
+        else if (!string.IsNullOrEmpty(nextId))
+        {
+            DisplayDialogue(nextId);
         }
         else
         {
-            DisplayDialogue(nextId);
+            EndDialogue();
         }
     }
 

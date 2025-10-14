@@ -1,20 +1,52 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MiniGameManager : MonoBehaviour
 {
+    public static MiniGameManager Instance { get; private set; }
     [SerializeField] private GameObject dustCleaningUIPanel;
 
-    private DialogueManager dialogueManager;
-
+    private PlayerController playerController;
     public static bool IsMiniGameActive { get; private set; } = false;
 
-    void Start()
+    void Awake()
     {
-        dialogueManager = DialogueManager.Instance;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         if (dustCleaningUIPanel != null)
         {
             dustCleaningUIPanel.SetActive(false);
+        }
+
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindPlayer();
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            playerController = playerObject.GetComponent<PlayerController>();
+        }
+    }
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
     }
 
@@ -31,6 +63,12 @@ public class MiniGameManager : MonoBehaviour
 
     public void StartDustCleaning(GameObject dustObject)
     {
+        if (playerController == null)
+        {
+            return;
+        }
+
+        playerController.StopMovement();
         IsMiniGameActive = true;
         dustCleaningUIPanel.SetActive(true);
         var cleaningGame = dustCleaningUIPanel.GetComponent<DustCleaningGame>();
@@ -62,12 +100,11 @@ public class MiniGameManager : MonoBehaviour
         {
             Debug.Log("2Ãþ ¿­¼è È¹µæ");
             GameStateManager.Instance.isDustCleaningQuestCompleted = true;
-
             InventoryManager.Instance.AddItem("Library_Key_Floor2", "µµ¼­°ü 2Ãþ ¿­¼è");
 
-            if (dialogueManager != null)
+            if (DialogueManager.Instance != null)
             {
-                dialogueManager.StartDialogue("40005");
+                DialogueManager.Instance.StartDialogue("40005");
             }
         }
     }
@@ -76,5 +113,12 @@ public class MiniGameManager : MonoBehaviour
     {
         IsMiniGameActive = false;
         dustCleaningUIPanel.SetActive(false);
+
+        Debug.Log("<color=orange>[MiniGameManager] ¹Ì´Ï°ÔÀÓ Á¾·á! IsMiniGameActive = " + IsMiniGameActive + "</color>");
+
+        if (playerController != null)
+        {
+            playerController.ResumeMovement();
+        }
     }
 }
