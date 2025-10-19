@@ -114,8 +114,6 @@ public class MiniGameManager : MonoBehaviour
         IsMiniGameActive = false;
         dustCleaningUIPanel.SetActive(false);
 
-        Debug.Log("<color=orange>[MiniGameManager] 미니게임 종료! IsMiniGameActive = " + IsMiniGameActive + "</color>");
-
         if (playerController != null)
         {
             playerController.ResumeMovement();
