@@ -16,6 +16,10 @@ public class GameStateManager : MonoBehaviour
     // HP 변경 이벤트: (current, max)
     public event Action<float, float> OnPlayerHpChanged;
 
+    // 스폰포인트 설정
+    [Header("Scene Management")]
+    public string nextSpawnPointId;
+
     // 플레이어 상태
     [Header("Player Stats")]
     public float playerHP;// 현재 체력
@@ -31,7 +35,6 @@ public class GameStateManager : MonoBehaviour
     public HashSet<string> acceptedQuests = new HashSet<string>();           // 진행 중인 퀘스트 목록
     public HashSet<string> completedQuests = new HashSet<string>();          // 완료한 퀘스트 목록
     public HashSet<string> objectiveReachedQuests = new HashSet<string>();   // 목표 달성한 퀘스트 목록
-
 
     // 아티팩트
     [Header("Artifact Status")]

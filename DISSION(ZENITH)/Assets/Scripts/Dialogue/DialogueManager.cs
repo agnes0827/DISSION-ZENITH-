@@ -59,7 +59,7 @@ public class DialogueManager : MonoBehaviour
         if (playerObject != null)
         {
             playerController = playerObject.GetComponent<PlayerController>();
-            Debug.LogWarning("현재 씬에서 'Player' 태그를 가진 PlayerController를 찾았습니다.");
+            Debug.Log("현재 씬에서 'Player' 태그를 가진 PlayerController를 찾았습니다.");
         }
 
         if (playerController == null)

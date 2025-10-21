@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public string currentMapName; //맵 이름
+    public static PlayerController Instance { get; private set; }
 
+    public string currentMapName; //맵 이름
     public float speed = 3f;
     private Vector3 vector;
     public int walkCount;
@@ -22,11 +24,59 @@ public class PlayerController : MonoBehaviour
 
     private string lastDirection = "Front"; // 기본 방향
 
-    void Start()
+    void Awake()
     {
-        // DontDestroyOnLoad(this.gameObject);
-        anim = GetComponent<Animator>();
-        capsuleColider = GetComponent<CapsuleCollider2D>();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            anim = GetComponent<Animator>();
+            capsuleColider = GetComponent<CapsuleCollider2D>();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // 씬이 새로 로드되었을 때(맵 이동)
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        canMove = true;
+        currentMapName = scene.name;
+
+        string spawnId = GameStateManager.Instance.nextSpawnPointId;
+
+        if (!string.IsNullOrEmpty(spawnId))
+        {
+            SpawnPoint[] spawnPoints = FindObjectsOfType<SpawnPoint>();
+            foreach (var spawnPoint in spawnPoints)
+            {
+                if (spawnPoint.spawnPointId == spawnId)
+                {
+                    transform.position = spawnPoint.transform.position;
+                    transform.rotation = spawnPoint.transform.rotation;
+
+                    anim.SetFloat("InputX", lastMove.x);
+                    anim.SetFloat("InputY", lastMove.y);
+                    anim.SetBool("isMoving", false);
+
+                    Debug.Log($"'{spawnId}'로 이동");
+                    break;
+                }
+            }
+            GameStateManager.Instance.nextSpawnPointId = null;
+        }
     }
 
     IEnumerator MoveCoroutine()
