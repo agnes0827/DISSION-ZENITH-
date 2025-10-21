@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 8564343175094565043}
   - component: {fileID: 889249640751383659}
   - component: {fileID: 1917861236462102434}
+  - component: {fileID: 2754159693073458905}
+  - component: {fileID: 1227759704609475949}
   m_Layer: 0
   m_Name: bookcase_1
   m_TagString: Untagged
@@ -130,3 +132,69 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.0919998, y: 0.23045105}
   m_EdgeRadius: 0
+--- !u!61 &2754159693073458905
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3759048038351358350}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.24, y: -0.63}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.56, y: 1.2}
+    newSize: {x: 1.56, y: 1.2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.1, y: 0.26}
+  m_EdgeRadius: 0
+--- !u!114 &1227759704609475949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3759048038351358350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f81240adfea52439b420a899096f06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prerequisiteQuestId: 
+  lockedId: 
+  defaultId: 
+  acceptedId: 
+  objectiveId: 
+  completedId: 
+  QuestId: 
+  npcId: 
+  isReportNpc: 0

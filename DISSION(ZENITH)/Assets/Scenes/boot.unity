@@ -436,7 +436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57a104860646b9749970d8091705b30c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: DialogueTest
+  sceneToLoad: Library1F
 --- !u!114 &1454374852
 MonoBehaviour:
   m_ObjectHideFlags: 0
