@@ -9,20 +9,17 @@ public class PlayerController : MonoBehaviour
 
     public string currentMapName; //맵 이름
     public float speed = 3f;
-    private Vector3 vector;
-    public int walkCount;
     public float runSpeed;
     private float applyRunSpeed;
     private bool canMove = true;
 
-    private CapsuleCollider2D capsuleColider;
+    public int walkCount;
+
+    private BoxCollider2D boxCollider;
     public LayerMask layermask; //이동 불가 지역
 
-    private Vector2 lastMove = Vector2.down; // 게임 시작시 정면 보게
-
+    private Vector2 lastMove = Vector2.down;
     Animator anim;
-
-    private string lastDirection = "Front"; // 기본 방향
 
     void Awake()
     {
@@ -32,7 +29,7 @@ public class PlayerController : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             anim = GetComponent<Animator>();
-            capsuleColider = GetComponent<CapsuleCollider2D>();
+            boxCollider = GetComponent<BoxCollider2D>();
         }
         else
         {
@@ -81,42 +78,34 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator MoveCoroutine()
     {
+        Vector2 moveVector = Vector2.zero;
+
         //이동
         while (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                applyRunSpeed = runSpeed;
-                //applyRunFlag = true;
-            }
-            else
-            {
-                applyRunSpeed = 0;
-                //applyRunFlag = false;
-            }
+            applyRunSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : 0;
 
-            vector.Set(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0f);
-            if (vector.x != 0)
-                vector.y = 0;
+            moveVector.x = Input.GetAxisRaw("Horizontal");
+            moveVector.y = Input.GetAxisRaw("Vertical");
 
-            // 움직였을 때만 방향 갱신
-            if (vector.x != 0 || vector.y != 0)
-                lastMove = new Vector2(Mathf.Sign(vector.x), Mathf.Sign(vector.y));
+            if (moveVector.x != 0)
+                moveVector.y = 0;
 
+            lastMove = moveVector;
 
-            // 애니 파라미터
-            anim.SetFloat("InputX", vector.x);
-            anim.SetFloat("InputY", vector.y);
+            //애니메이션 파라미터
+            anim.SetFloat("InputX", moveVector.x);
+            anim.SetFloat("InputY", moveVector.y);
             anim.SetBool("isMoving", true);
 
             //레이어 마스크
             RaycastHit2D hit;
             Vector2 start = transform.position;
-            Vector2 end = start + new Vector2(vector.x * speed * walkCount, vector.y * speed * walkCount);
+            Vector2 end = start + moveVector * 0.5f;
 
-            capsuleColider.enabled = false;
+            boxCollider.enabled = false;
             hit = Physics2D.Linecast(start, end, layermask);
-            capsuleColider.enabled = true;
+            boxCollider.enabled = true;
 
             if (hit.transform != null)
             {
@@ -124,13 +113,7 @@ public class PlayerController : MonoBehaviour
 
             }
 
-            //움직임 판단
-            anim.SetBool("isMoving", true);
-
-
-            transform.Translate(vector.x * (speed + applyRunSpeed) * Time.deltaTime,
-                                 vector.y * (speed + applyRunSpeed) * Time.deltaTime,
-                                 0);
+            transform.Translate(moveVector * (speed + applyRunSpeed) * Time.deltaTime);
 
             yield return null; // 다음 프레임까지 대기
         }
@@ -138,6 +121,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("isMoving", false);
         anim.SetFloat("InputX", lastMove.x);
         anim.SetFloat("InputY", lastMove.y);
+
         canMove = true;
     }
 
@@ -151,11 +135,6 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(MoveCoroutine());
             }
         }
-    }
-
-    public string GetDirection()
-    {
-        return lastDirection;
     }
 
     public void StopMovement()

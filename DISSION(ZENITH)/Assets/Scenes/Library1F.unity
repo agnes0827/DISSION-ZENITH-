@@ -301,7 +301,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5746421788647783321, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6578521916374233572, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
       propertyPath: speed
@@ -317,7 +317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7270879863315666608, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8957809312697036735, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
       propertyPath: m_LocalScale.x
@@ -4140,6 +4140,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2310900920585549384}
     m_Modifications:
+    - target: {fileID: 136315120459061860, guid: 0a30345a1c1982c499544b1d3cd7e783, type: 3}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[6].x
+      value: -1.7406384
+      objectReference: {fileID: 0}
+    - target: {fileID: 136315120459061860, guid: 0a30345a1c1982c499544b1d3cd7e783, type: 3}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[6].y
+      value: -0.5895386
+      objectReference: {fileID: 0}
+    - target: {fileID: 136315120459061860, guid: 0a30345a1c1982c499544b1d3cd7e783, type: 3}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[7].x
+      value: 1.6199746
+      objectReference: {fileID: 0}
+    - target: {fileID: 136315120459061860, guid: 0a30345a1c1982c499544b1d3cd7e783, type: 3}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[7].y
+      value: -0.5900568
+      objectReference: {fileID: 0}
     - target: {fileID: 3823581420468321295, guid: 0a30345a1c1982c499544b1d3cd7e783, type: 3}
       propertyPath: m_Name
       value: library_desk

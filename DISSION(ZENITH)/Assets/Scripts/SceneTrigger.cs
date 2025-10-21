@@ -22,6 +22,9 @@ public class SceneTrigger : MonoBehaviour
     [SerializeField] AudioClip enterSfx;
     [SerializeField] float sfxVolume = 1f;
 
+    private float interactionCooldown = 1f;
+    private float lastInteractionTime = -1f; 
+
     private AudioSource _audio;
     private bool _isLoading;
 
@@ -42,11 +45,17 @@ public class SceneTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (Time.time < lastInteractionTime + interactionCooldown)
+        {
+            return;
+        }
+
         if (_isLoading || !other.CompareTag("Player")) return;
 
         // 아이템 조건 확인
         if (!string.IsNullOrEmpty(requiredItemId) && !InventoryManager.Instance.HasItem(requiredItemId))
         {
+            lastInteractionTime = Time.time;
             DialogueManager.Instance.StartDialogue(lockedDialogueId);
             return;
         }
