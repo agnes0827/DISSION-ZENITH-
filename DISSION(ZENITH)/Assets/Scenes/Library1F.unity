@@ -308,6 +308,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6578521916374233572, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
+      propertyPath: walkCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6578521916374233572, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
       propertyPath: currentMapName
       value: 
       objectReference: {fileID: 0}
