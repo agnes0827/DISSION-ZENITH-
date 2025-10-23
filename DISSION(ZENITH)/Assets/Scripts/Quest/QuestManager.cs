@@ -35,10 +35,13 @@ public class QuestManager : MonoBehaviour
         Debug.Log("QuestUI가 QuestManager에 성공적으로 등록되었습니다.");
     }
 
-    public void UnregisterQuestUI()
+    public void UnregisterQuestUI(QuestUI uiToRemove)
     {
-        questUI = null;
-        Debug.Log("QuestUI가 파괴되어 등록 해제되었습니다.");
+        if (questUI == uiToRemove)
+        {
+            questUI = null;
+            Debug.Log($"QuestUI ({uiToRemove.gameObject.name})가 파괴되어 등록 해제되었습니다.");
+        }
     }
 
     // 퀘스트 수락
