@@ -9,9 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8113391196986179061}
+  - component: {fileID: 6807950798496175030}
   - component: {fileID: 4631179644670033453}
   - component: {fileID: 7646114847891443017}
+  - component: {fileID: 2753302554536012300}
   - component: {fileID: 7710135614641241582}
+  - component: {fileID: 8728913585552578073}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -34,6 +37,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6807950798496175030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4191938908106082822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78aac91942d329d4284bdb2d2db31d4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextSpawnPointId: 
+  playerHP: 0
+  playerMaxHP: 100
+  playerGold: 0
+  collectedArtifactIDs: []
+  isDustCleaningQuestCompleted: 0
 --- !u!114 &4631179644670033453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,7 +81,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f18bdd374ba20d488b527fcbb159900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  questLoader: {fileID: 0}
+  questLoader: {fileID: 2449982960776611720, guid: efb9828a4571eee41849592dc7b3b475, type: 3}
+--- !u!114 &2753302554536012300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4191938908106082822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dd964d5f1a0be74c88cd7374cb79e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7710135614641241582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,3 +107,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSlotPrefab: {fileID: 392294654906400889, guid: 6ede9581c321f7f45aea57c72abc78c4, type: 3}
+  itemDatabase: {fileID: 11400000, guid: 3d05d3bf198fd814690f8d054a293165, type: 2}
+--- !u!114 &8728913585552578073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4191938908106082822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a58b60afc3a48ef41a125b6620d3ee25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noticeUIPrefab: {fileID: 1929307437908204177, guid: 50c0fc71caf4115449acb84835af5125, type: 3}

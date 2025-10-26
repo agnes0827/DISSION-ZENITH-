@@ -677,38 +677,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Manager
       objectReference: {fileID: 0}
-    - target: {fileID: 4191938908106082822, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4631179644670033453, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      propertyPath: dialogueLoader
-      value: 
-      objectReference: {fileID: 2251821162496677051, guid: efb9828a4571eee41849592dc7b3b475, type: 3}
-    - target: {fileID: 4631179644670033453, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      propertyPath: dialoguePrefab
-      value: 
-      objectReference: {fileID: 1241143372102238290, guid: 6f31f6a32bbdd0746b48a47c8737fc0a, type: 3}
-    - target: {fileID: 4631179644670033453, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      propertyPath: dialogueUIPrefab
-      value: 
-      objectReference: {fileID: 1241143372102238290, guid: 6f31f6a32bbdd0746b48a47c8737fc0a, type: 3}
-    - target: {fileID: 7646114847891443017, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      propertyPath: questLoader
-      value: 
-      objectReference: {fileID: 2449982960776611720, guid: efb9828a4571eee41849592dc7b3b475, type: 3}
-    - target: {fileID: 7710135614641241582, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      propertyPath: gridLayout
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7710135614641241582, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      propertyPath: itemDatabase
-      value: 
-      objectReference: {fileID: 11400000, guid: 3d05d3bf198fd814690f8d054a293165, type: 2}
-    - target: {fileID: 7710135614641241582, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      propertyPath: itemSlotPrefab
-      value: 
-      objectReference: {fileID: 392294654906400889, guid: 6ede9581c321f7f45aea57c72abc78c4, type: 3}
     - target: {fileID: 8113391196986179061, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
       propertyPath: m_LocalPosition.x
       value: 346.96667
@@ -752,48 +720,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4191938908106082822, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 1714856825}
-    - targetCorrespondingSourceObject: {fileID: 4191938908106082822, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-      insertIndex: 4
-      addedObject: {fileID: 1714856823}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
---- !u!1 &1714856822 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4191938908106082822, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
-  m_PrefabInstance: {fileID: 1714856821}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1714856823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1714856822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0dd964d5f1a0be74c88cd7374cb79e17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1714856825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1714856822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78aac91942d329d4284bdb2d2db31d4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerHP: 0
-  playerMaxHP: 100
-  playerGold: 0
-  collectedArtifactIDs: []
-  isDustCleaningQuestCompleted: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

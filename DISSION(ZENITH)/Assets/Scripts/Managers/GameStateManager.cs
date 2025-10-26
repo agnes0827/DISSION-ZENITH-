@@ -40,6 +40,10 @@ public class GameStateManager : MonoBehaviour
     [Header("Artifact Status")]
     public List<string> collectedArtifactIDs = new List<string>();
 
+    // 진행 상황(Notice용) 플래그
+    [Header("Event Flags")]
+    public HashSet<string> triggeredNoticeIds = new HashSet<string>();
+
     // 도서관 미니게임 먼지
     [Header("Dust States")]
     public HashSet<string> cleanedDustIds = new HashSet<string>();
