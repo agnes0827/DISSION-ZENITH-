@@ -16,6 +16,7 @@ public class DialogueManager : MonoBehaviour
     public bool isChoice { get; private set; } = false;
     private DialogueUI dialogueUI;
     private Dialogue currentDialogue;
+    private bool isOneOffNotice = false; // (아이템 획득용) 1회성 알림
 
     // 입력 및 선택지 관련 변수
     private int selectedChoiceIndex = 1;
@@ -108,7 +109,17 @@ public class DialogueManager : MonoBehaviour
             }
             else
             {
-                DisplayNextDialogue();
+                if (isOneOffNotice)
+                {
+                    // 1회성 알림이었으면 바로 종료
+                    isOneOffNotice = false; // 플래그 리셋
+                    EndDialogue();
+                }
+                else
+                {
+                    // 기존 CSV 대화 로직
+                    DisplayNextDialogue();
+                }
             }
         }
     }
@@ -243,6 +254,45 @@ public class DialogueManager : MonoBehaviour
         {
             DisplayDialogue(currentDialogue.nextId);
         }
+    }
+
+    public void ShowItemGetNotice(string itemName)
+    {
+        // 다른 대화가 진행 중이면 실행 X
+        if (isDialogue)
+        {
+            return;
+        }
+
+        // (StartDialogue의 UI 준비 로직)
+        if (dialogueUI == null)
+        {
+            if (dialogueUIPrefab != null)
+            {
+                Canvas sceneCanvas = FindObjectOfType<Canvas>();
+                if (sceneCanvas == null)
+                {
+                    Debug.LogError("현재 씬에 UI를 표시할 Canvas가 없습니다!");
+                    return;
+                }
+                GameObject uiObject = Instantiate(dialogueUIPrefab, sceneCanvas.transform);
+            }
+            else
+            {
+                Debug.LogError("DialogueUIPrefab이 할당되지 않았습니다!");
+                return;
+            }
+        }
+
+        playerController?.StopMovement();
+        isDialogue = true;
+        isChoice = false;
+        isOneOffNotice = true; // 1회성 알림
+
+        string message = $"{itemName}(을)를 획득했다!";
+        dialogueUI.ShowDialoguePanel();
+        dialogueUI.ShowDialogue("", message, "");
+        dialogueUI.HideChoices();
     }
 
     private void EndDialogue()

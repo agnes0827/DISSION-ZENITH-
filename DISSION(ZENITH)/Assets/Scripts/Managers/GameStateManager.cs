@@ -30,6 +30,10 @@ public class GameStateManager : MonoBehaviour
     public Dictionary<string, int> inventoryItems = new Dictionary<string, int>();
     public int playerGold;
 
+    // 씬 오브젝트 상태
+    [Header("Scene Object States")]
+    public HashSet<string> collectedSceneObjectIDs = new HashSet<string>();
+
     // 퀘스트
     [Header("Quest Status")]
     public HashSet<string> acceptedQuests = new HashSet<string>();           // 진행 중인 퀘스트 목록
@@ -73,8 +77,10 @@ public class GameStateManager : MonoBehaviour
 
         // 인벤토리 초기화 후 기본템(사과) 추가
         inventoryItems.Clear();
-        inventoryItems.Add("apple", 2); 
+        inventoryItems.Add("apple", 2);
         // 예: questStates.Clear();
+
+        collectedSceneObjectIDs.Clear();
     }
 
     // 체력 변경은 이 함수만 통해서 하도록(클램프 + 이벤트 발행)
