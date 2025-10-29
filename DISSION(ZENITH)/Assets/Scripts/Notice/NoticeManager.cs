@@ -19,9 +19,6 @@ public class NoticeManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 현재 씬의 Canvas에 Notice UI를 생성하고 메시지를 표시합니다.
-    /// </summary>
     public void ShowNotice(string message)
     {
         if (noticeUIPrefab == null)
@@ -31,15 +28,15 @@ public class NoticeManager : MonoBehaviour
         }
 
         // 현재 씬의 Canvas 찾기
-        Canvas sceneCanvas = FindObjectOfType<Canvas>();
-        if (sceneCanvas == null)
+        GameObject canvasGO = GameObject.FindWithTag("GameCanvas");
+        if (canvasGO == null)
         {
-            Debug.LogError("NoticeManager: 현재 씬에서 Canvas를 찾을 수 없습니다!");
+            Debug.LogError("NoticeManager: 현재 씬에서 'GameCanvas' 태그를 가진 Canvas를 찾을 수 없습니다!");
             return;
         }
 
         // Canvas 아래에 프리팹 생성
-        GameObject noticeObject = Instantiate(noticeUIPrefab, sceneCanvas.transform);
+        GameObject noticeObject = Instantiate(noticeUIPrefab, canvasGO.transform);
 
         // 생성된 오브젝트에서 NoticeUI 스크립트 가져오기
         NoticeUI noticeUI = noticeObject.GetComponent<NoticeUI>();

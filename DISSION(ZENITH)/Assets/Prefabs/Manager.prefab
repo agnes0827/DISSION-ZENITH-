@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2753302554536012300}
   - component: {fileID: 7710135614641241582}
   - component: {fileID: 8728913585552578073}
+  - component: {fileID: 5640131150669254005}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -54,6 +55,10 @@ MonoBehaviour:
   playerMaxHP: 100
   playerGold: 0
   collectedArtifactIDs: []
+  playerPositionBeforeBattle: {x: 0, y: 0, z: 0}
+  returnSceneAfterBattle: 
+  currentMonsterId: 
+  collectedLibraryBossReward: 0
   isDustCleaningQuestCompleted: 0
 --- !u!114 &4631179644670033453
 MonoBehaviour:
@@ -121,3 +126,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noticeUIPrefab: {fileID: 1929307437908204177, guid: 50c0fc71caf4115449acb84835af5125, type: 3}
+--- !u!114 &5640131150669254005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4191938908106082822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 821310d8ea4813d4890a9edd5c0d9052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLoading: 0

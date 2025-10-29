@@ -32,7 +32,6 @@ public class BattleIntroSequence : MonoBehaviour
             yield break;
         }
 
-        // --- 연출 시작 ---
         if (sequenceDone) yield break; // 중복 실행 방지
         sequenceDone = true;
 
@@ -56,7 +55,8 @@ public class BattleIntroSequence : MonoBehaviour
         yield return new WaitForSeconds(focusDuration);
 
         // 3. 다시 플레이어 카메라로 복구
-        monsterFocusCam.Priority = originalMonsterPriority; // 원래 우선순위로 되돌림 (플레이어 카메라가 다시 활성화됨)
+        monsterFocusCam.Priority = originalMonsterPriority; // 원래 우선순위로 되돌림
+        yield return new WaitForSeconds(1.5f);
 
         // 플레이어 이동 다시 가능하게
         PlayerController.Instance?.ResumeMovement();

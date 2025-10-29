@@ -8,10 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class ArtifactMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    // 싱글톤 관리
-    public static ArtifactMenu Instance { get; private set; }
-    private bool isSubscribed = false;
-
     private RectTransform menuPanel; // 메뉴 객체
     private Vector2 originalPosition;
     private Vector2 targetPosition;
@@ -27,54 +23,30 @@ public class ArtifactMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            SubscribeToSceneLoad();
-            Init();
-        }
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        Init();
     }
 
-    private void SubscribeToSceneLoad()
+    private void Start()
     {
-        if (!isSubscribed) { SceneManager.sceneLoaded += OnSceneLoaded; isSubscribed = true; }
-    }
-    private void UnsubscribeFromSceneLoad()
-    {
-        if (isSubscribed) { SceneManager.sceneLoaded -= OnSceneLoaded; isSubscribed = false; }
-    }
-    private void OnDestroy()
-    {
-        if (Instance == this) { UnsubscribeFromSceneLoad(); Instance = null; }
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
+        // 씬 시작 시 GameStateManager 데이터를 기반으로 UI 채우기
         RepopulateUI();
-        StartCoroutine(AttachToCanvasCoroutine());
-    }
-
-    IEnumerator AttachToCanvasCoroutine()
-    {
-        Canvas sceneCanvas = null;
-        yield return null;
-        sceneCanvas = FindObjectOfType<Canvas>();
-        if (sceneCanvas != null) { transform.SetParent(sceneCanvas.transform, false); }
-        else { Debug.LogError("ArtifactMenu: 새 씬에서 Canvas를 찾지 못했습니다!"); }
     }
 
     private void Init()
     {
         if (initialized) return;
+
         menuPanel = GetComponent<RectTransform>();
-        originalPosition = menuPanel.anchoredPosition;
-        targetPosition = new Vector2(originalPosition.x, originalPosition.y - 80f);
+        if (menuPanel != null)
+        {
+            originalPosition = menuPanel.anchoredPosition;
+            targetPosition = new Vector2(originalPosition.x, originalPosition.y - 80f);
+        }
+        else
+        {
+            Debug.LogError("ArtifactMenu: RectTransform 컴포넌트를 찾을 수 없습니다!");
+        }
+
 
         slots.Clear();
         if (artifactMenuPanel != null)
@@ -82,15 +54,31 @@ public class ArtifactMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             foreach (Transform child in artifactMenuPanel)
             {
                 var img = child.GetComponent<Image>();
-                if (img != null) { img.enabled = false; img.sprite = null; slots.Add(img); }
+                if (img != null)
+                {
+                    img.enabled = false; // 기본 숨김
+                    img.sprite = null;
+                    slots.Add(img);
+                }
             }
+        }
+        else
+        {
+            Debug.LogError("ArtifactMenu: Artifact Menu Panel이 연결되지 않았습니다!");
         }
         initialized = true;
     }
 
     public void RepopulateUI()
     {
-        if (!initialized || GameStateManager.Instance == null || artifactDatabase == null) return;
+        if (!initialized) Init();
+
+        if (GameStateManager.Instance == null || artifactDatabase == null)
+        {
+            Debug.LogError("ArtifactMenu: GameStateManager 또는 ArtifactDatabase를 찾을 수 없습니다!");
+            foreach (var slot in slots) { slot.enabled = false; slot.sprite = null; }
+            return;
+        }
         Debug.Log("ArtifactMenu: GameState 기준으로 UI 다시 채우기...");
 
         // 1. 슬롯 초기화

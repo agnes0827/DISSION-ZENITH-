@@ -156,13 +156,14 @@ public class DialogueManager : MonoBehaviour
         {
             if (dialogueUIPrefab != null)
             {
-                Canvas sceneCanvas = FindObjectOfType<Canvas>();
-                if (sceneCanvas == null)
+                GameObject canvasGO = GameObject.FindWithTag("GameCanvas"); // 태그로 찾기
+                if (canvasGO == null)
                 {
-                    Debug.LogError("현재 씬에 UI를 표시할 Canvas가 없습니다!");
+                    Debug.LogError("현재 씬에서 'GameCanvas' 태그를 가진 Canvas를 찾을 수 없습니다!");
                     return;
                 }
-                GameObject uiObject = Instantiate(dialogueUIPrefab, sceneCanvas.transform);
+
+                GameObject uiObject = Instantiate(dialogueUIPrefab, canvasGO.transform);
             }
             else
             {
@@ -269,14 +270,15 @@ public class DialogueManager : MonoBehaviour
         {
             if (dialogueUIPrefab != null)
             {
-                Canvas sceneCanvas = FindObjectOfType<Canvas>();
-                if (sceneCanvas == null)
+                GameObject canvasGO = GameObject.FindWithTag("GameCanvas"); // 태그로 찾기
+                if (canvasGO == null)
                 {
-                    Debug.LogError("현재 씬에 UI를 표시할 Canvas가 없습니다!");
+                    Debug.LogError("현재 씬에 'GameCanvas' 태그를 가진 Canvas가 없습니다!");
                     return;
                 }
-                GameObject uiObject = Instantiate(dialogueUIPrefab, sceneCanvas.transform);
+                GameObject uiObject = Instantiate(dialogueUIPrefab, canvasGO.transform);
             }
+
             else
             {
                 Debug.LogError("DialogueUIPrefab이 할당되지 않았습니다!");

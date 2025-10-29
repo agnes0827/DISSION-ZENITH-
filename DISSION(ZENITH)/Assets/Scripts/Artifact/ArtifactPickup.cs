@@ -68,6 +68,7 @@ public class ArtifactPickup : MonoBehaviour
             // 회상 씬이 있는 경우: CutsceneManager에게 데이터를 넘기고 씬 이동
             Debug.Log($"[ArtifactProximityPickup] PickUp called. artifactID: '{artifactID}'");
             CutsceneManager.Instance.SetFlashbackData(artifactSprite, SceneManager.GetActiveScene().name, artifactID);
+
             gameObject.SetActive(false);
             SceneManager.LoadScene(flashbackSceneName);
         }
@@ -79,14 +80,15 @@ public class ArtifactPickup : MonoBehaviour
                 GameStateManager.Instance.collectedArtifactIDs.Add(artifactID);
                 Debug.Log($"GameStateManager에 아티팩트 ID '{artifactID}' 기록됨.");
 
-                if (ArtifactMenu.Instance != null)
+                ArtifactMenu currentMenu = FindObjectOfType<ArtifactMenu>();
+                if (currentMenu != null)
                 {
-                    ArtifactMenu.Instance.RepopulateUI();
-                    Debug.Log("ArtifactMenu UI 새로고침 요청됨.");
+                    currentMenu.RepopulateUI();
+                    Debug.Log("현재 씬의 ArtifactMenu UI 새로고침 요청됨.");
                 }
                 else
                 {
-                    Debug.LogWarning("ArtifactMenu Instance를 찾을 수 없어 UI를 새로고침할 수 없습니다.");
+                    Debug.LogWarning("현재 씬에서 ArtifactMenu를 찾을 수 없어 UI를 새로고침할 수 없습니다.");
                 }
             }
             gameObject.SetActive(false);
