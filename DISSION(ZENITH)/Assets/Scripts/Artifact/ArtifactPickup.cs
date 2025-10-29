@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ArtifactProximityPickup : MonoBehaviour
+public class ArtifactPickup : MonoBehaviour
 {
     [Header("아티팩트 고유 정보")]
     [Tooltip("절대 중복되지 않는 고유 ID를 입력하세요. 예: World01_Pendant")]
@@ -37,6 +37,17 @@ public class ArtifactProximityPickup : MonoBehaviour
         if (promptUI) promptUI.SetActive(false);
     }
 
+    void Start()
+    {
+        // GameStateManager에 artifactID가 이미 저장되어 있다면
+        if (GameStateManager.Instance != null && GameStateManager.Instance.collectedArtifactIDs.Contains(artifactID))
+        {
+            // 오브젝트를 비활성화
+            gameObject.SetActive(false);
+            Debug.Log($"아티팩트 '{artifactID}'는 이미 획득했습니다.");
+        }
+
+    }
     void Update()
     {
         if (!_playerInRange || (CutsceneManager.Instance != null && CutsceneManager.IsCutscenePlaying))
@@ -62,36 +73,41 @@ public class ArtifactProximityPickup : MonoBehaviour
         }
         else
         {
-            // 회상 씬이 없는 경우: GameStateManager에 즉시 기록하고 파괴
+            // 회상 씬이 없는 경우: GameStateManager에 즉시 기록
             if (GameStateManager.Instance != null && !GameStateManager.Instance.collectedArtifactIDs.Contains(artifactID))
             {
                 GameStateManager.Instance.collectedArtifactIDs.Add(artifactID);
-            }
+                Debug.Log($"GameStateManager에 아티팩트 ID '{artifactID}' 기록됨.");
 
-            var artifactMenu = FindObjectOfType<ArtifactMenu>(true);
-            if (artifactMenu != null)
+                if (ArtifactMenu.Instance != null)
+                {
+                    ArtifactMenu.Instance.RepopulateUI();
+                    Debug.Log("ArtifactMenu UI 새로고침 요청됨.");
+                }
+                else
+                {
+                    Debug.LogWarning("ArtifactMenu Instance를 찾을 수 없어 UI를 새로고침할 수 없습니다.");
+                }
+            }
+            gameObject.SetActive(false);
+        }
+    }
+
+        void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.CompareTag(playerTag))
             {
-                artifactMenu.TryAddArtifact(artifactSprite);
+                _playerInRange = true;
+                if (promptUI) promptUI.SetActive(true);
             }
-            gameObject.SetActive(false); // Destroy 대신 SetActive(false)가 더 안전합니다.
         }
-    }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag(playerTag))
+        void OnTriggerExit2D(Collider2D other)
         {
-            _playerInRange = true;
-            if (promptUI) promptUI.SetActive(true);
+            if (other.CompareTag(playerTag))
+            {
+                _playerInRange = false;
+                if (promptUI) promptUI.SetActive(false);
+            }
         }
     }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag(playerTag))
-        {
-            _playerInRange = false;
-            if (promptUI) promptUI.SetActive(false);
-        }
-    }
-}

@@ -242,6 +242,5 @@ public class BattleManager : MonoBehaviour
             // 기본 씬으로 이동하거나 에러 처리
             // SceneManager.LoadScene("DefaultMap");
         }
-
     }
 }

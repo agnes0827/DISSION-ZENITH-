@@ -723,11 +723,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 415021190}
-  - {fileID: 1824208692}
   - {fileID: 2126548144}
   - {fileID: 1446450223}
   - {fileID: 1247887184}
   - {fileID: 1200838042}
+  - {fileID: 1824208692}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3750,13 +3750,44 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7879846171631602482, guid: 19fed4c7836f051408d55798ad60e571, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1824208695}
   m_SourcePrefab: {fileID: 100100000, guid: 19fed4c7836f051408d55798ad60e571, type: 3}
 --- !u!224 &1824208692 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5549899602298333206, guid: 19fed4c7836f051408d55798ad60e571, type: 3}
   m_PrefabInstance: {fileID: 1824208691}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1824208693 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7879846171631602482, guid: 19fed4c7836f051408d55798ad60e571, type: 3}
+  m_PrefabInstance: {fileID: 1824208691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &1824208695
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824208693}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &1887452892
 GameObject:
   m_ObjectHideFlags: 0

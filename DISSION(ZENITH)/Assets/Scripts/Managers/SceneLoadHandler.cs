@@ -33,7 +33,7 @@ public class SceneLoadHandler : MonoBehaviour
             return;
         }
 
-        ArtifactProximityPickup[] artifactsInScene = FindObjectsOfType<ArtifactProximityPickup>();
+        ArtifactPickup[] artifactsInScene = FindObjectsOfType<ArtifactPickup>();
 
         foreach (var artifact in artifactsInScene)
         {
