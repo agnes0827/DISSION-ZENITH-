@@ -49,8 +49,25 @@ public class PlayerController : MonoBehaviour
     // 씬이 새로 로드되었을 때(맵 이동)
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        canMove = true;
+        ResumeMovement();
         currentMapName = scene.name;
+
+        if (GameStateManager.Instance != null && !string.IsNullOrEmpty(GameStateManager.Instance.returnSceneAfterBattle) && scene.name == GameStateManager.Instance.returnSceneAfterBattle)
+        {
+            // 전투 전 위치로 플레이어 이동
+            transform.position = GameStateManager.Instance.playerPositionBeforeBattle;
+            // 애니메이터 설정
+            anim.SetFloat("InputX", lastMove.x);
+            anim.SetFloat("InputY", lastMove.y);
+            anim.SetBool("isMoving", false);
+
+            Debug.Log($"전투 복귀: 이전 위치({GameStateManager.Instance.playerPositionBeforeBattle})로 이동 완료.");
+
+            // 사용한 복귀 씬 이름 정보 초기화
+            GameStateManager.Instance.returnSceneAfterBattle = null;
+
+            return; // 스폰 포인트 찾는 로직 실행 안 함
+        }
 
         string spawnId = GameStateManager.Instance.nextSpawnPointId;
 

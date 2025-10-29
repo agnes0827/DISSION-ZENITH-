@@ -44,9 +44,18 @@ public class GameStateManager : MonoBehaviour
     [Header("Artifact Status")]
     public List<string> collectedArtifactIDs = new List<string>();
 
-    // 진행 상황(Notice용) 플래그
+    // 전투
+    [HideInInspector] public Vector3 playerPositionBeforeBattle; // 전투 전 플레이어 위치
+    [HideInInspector] public string returnSceneAfterBattle;     // 전투 후 돌아갈 씬 이름
+    [HideInInspector] public string currentMonsterId;           // 현재 전투 중인 몬스터 ID
+
+    // 진행 상황 플래그
     [Header("Event Flags")]
-    public HashSet<string> triggeredNoticeIds = new HashSet<string>();
+    public HashSet<string> triggeredNoticeIds = new HashSet<string>();       // NoticeUI
+    public bool collectedLibraryBossReward = false;                          // 보상 아이템 획득 여부
+
+    [Header("Combat States")]
+    public HashSet<string> defeatedMonsterIds = new HashSet<string>();
 
     // 도서관 미니게임 먼지
     [Header("Dust States")]
@@ -81,6 +90,12 @@ public class GameStateManager : MonoBehaviour
         // 예: questStates.Clear();
 
         collectedSceneObjectIDs.Clear();
+        defeatedMonsterIds.Clear();
+    }
+
+    public bool IsMonsterDefeated(string monsterId)
+    {
+        return defeatedMonsterIds.Contains(monsterId);
     }
 
     // 체력 변경은 이 함수만 통해서 하도록(클램프 + 이벤트 발행)
