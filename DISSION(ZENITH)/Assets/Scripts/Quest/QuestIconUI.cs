@@ -25,7 +25,7 @@ public class QuestIconUI : MonoBehaviour
 
         GameObject icon = new GameObject("QuestIcon");
         icon.transform.SetParent(this.transform);
-        icon.transform.localPosition = new Vector3(0, 0.8f, 0);   // 위치 조정
+        icon.transform.localPosition = new Vector3(0, 0.65f, 0);   // 위치 조정
         icon.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);   // 크기 조정
 
         spriteRenderer = icon.AddComponent<SpriteRenderer>();

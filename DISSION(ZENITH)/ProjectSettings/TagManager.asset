@@ -6,6 +6,7 @@ TagManager:
   tags:
   - NPC
   - Artifact
+  - GameCanvas
   layers:
   - Default
   - TransparentFX
@@ -42,4 +43,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 881474443
+    locked: 0
+  - name: Foreground
+    uniqueID: 1627668935
     locked: 0

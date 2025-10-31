@@ -1,14 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-// 퀘스트 상태 저장
-public enum QuestStatus
-{
-    NotStarted, // 시작 안 함
-    InProgress, // 진행 중
-    Completed   // 완료
-}
 
 /// <summary>
 /// 게임의 모든 영구 데이터를 저장하고 관리하는 중앙 데이터베이스입니다.
@@ -20,9 +13,16 @@ public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager Instance { get; private set; }
 
+    // HP 변경 이벤트: (current, max)
+    public event Action<float, float> OnPlayerHpChanged;
+
+    // 스폰포인트 설정
+    [Header("Scene Management")]
+    public string nextSpawnPointId;
+
     // 플레이어 상태
     [Header("Player Stats")]
-    public float playerHP;            // 현재 체력
+    public float playerHP;// 현재 체력
     public float playerMaxHP = 100f;  // 최대 체력
 
     // 인벤토리
@@ -30,13 +30,32 @@ public class GameStateManager : MonoBehaviour
     public Dictionary<string, int> inventoryItems = new Dictionary<string, int>();
     public int playerGold;
 
+    // 씬 오브젝트 상태
+    [Header("Scene Object States")]
+    public HashSet<string> collectedSceneObjectIDs = new HashSet<string>();
+
     // 퀘스트
     [Header("Quest Status")]
-    public Dictionary<string, QuestStatus> questStates = new Dictionary<string, QuestStatus>();
+    public HashSet<string> acceptedQuests = new HashSet<string>();           // 진행 중인 퀘스트 목록
+    public HashSet<string> completedQuests = new HashSet<string>();          // 완료한 퀘스트 목록
+    public HashSet<string> objectiveReachedQuests = new HashSet<string>();   // 목표 달성한 퀘스트 목록
 
     // 아티팩트
     [Header("Artifact Status")]
     public List<string> collectedArtifactIDs = new List<string>();
+
+    // 전투
+    [HideInInspector] public Vector3 playerPositionBeforeBattle; // 전투 전 플레이어 위치
+    [HideInInspector] public string returnSceneAfterBattle;     // 전투 후 돌아갈 씬 이름
+    [HideInInspector] public string currentMonsterId;           // 현재 전투 중인 몬스터 ID
+
+    // 진행 상황 플래그
+    [Header("Event Flags")]
+    public HashSet<string> triggeredNoticeIds = new HashSet<string>();       // NoticeUI
+    public bool collectedLibraryBossReward = false;                          // 보상 아이템 획득 여부
+
+    [Header("Combat States")]
+    public HashSet<string> defeatedMonsterIds = new HashSet<string>();
 
     // 도서관 미니게임 먼지
     [Header("Dust States")]
@@ -65,9 +84,40 @@ public class GameStateManager : MonoBehaviour
         playerHP = playerMaxHP;
         playerGold = 0;
 
-        // 다른 데이터들도 필요하다면 여기서 초기화
-        // 예: inventoryItems.Clear();
+        // 인벤토리 초기화 후 기본템(사과) 추가
+        inventoryItems.Clear();
+        inventoryItems.Add("apple", 2);
         // 예: questStates.Clear();
+
+        collectedSceneObjectIDs.Clear();
+        defeatedMonsterIds.Clear();
+    }
+
+    public bool IsMonsterDefeated(string monsterId)
+    {
+        return defeatedMonsterIds.Contains(monsterId);
+    }
+
+    // 체력 변경은 이 함수만 통해서 하도록(클램프 + 이벤트 발행)
+    public void ChangeHP(float delta)
+    {
+        float prev = playerHP;
+        playerHP = Mathf.Clamp(playerHP + delta, 0f, playerMaxHP);
+        if (!Mathf.Approximately(prev, playerHP))
+        {
+            OnPlayerHpChanged?.Invoke(playerHP, playerMaxHP);
+        }
+    }
+
+    // 직접 세팅용도
+    public void SetHP(float value)
+    {
+        float clamped = Mathf.Clamp(value, 0f, playerMaxHP);
+        if (!Mathf.Approximately(playerHP, clamped))
+        {
+            playerHP = clamped;
+            OnPlayerHpChanged?.Invoke(playerHP, playerMaxHP);
+        }
     }
 }
 

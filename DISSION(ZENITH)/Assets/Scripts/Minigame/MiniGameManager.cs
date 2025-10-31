@@ -1,40 +1,103 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MiniGameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject dustCleaningUIPanel;
+    public static MiniGameManager Instance { get; private set; }
 
-    private DialogueManager dialogueManager;
-
+    [SerializeField] private DustCleaningGame dustCleaningGameUI;
+    private PlayerController playerController;
     public static bool IsMiniGameActive { get; private set; } = false;
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("MiniGameManager 인스턴스가 이미 존재합니다. 새로 생성된 인스턴스를 파괴합니다.");
+            Destroy(gameObject);
+            return;
+        }
+    }
 
     void Start()
     {
-        dialogueManager = DialogueManager.Instance;
+        FindPlayer();
+        FindUI();
 
-        if (dustCleaningUIPanel != null)
+        if (dustCleaningGameUI != null)
         {
-            dustCleaningUIPanel.SetActive(false);
+            dustCleaningGameUI.gameObject.SetActive(false);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    private void FindPlayer()
+    {
+        if (playerController != null) return;
+
+        playerController = FindObjectOfType<PlayerController>();
+        if (playerController == null)
+        {
+            Debug.LogError("MiniGameManager: PlayerController를 찾을 수 없습니다!");
+        }
+    }
+
+    private void FindUI()
+    {
+        if (dustCleaningGameUI == null)
+        {
+            dustCleaningGameUI = FindObjectOfType<DustCleaningGame>(true);
+            if (dustCleaningGameUI == null)
+            {
+                Debug.LogError("MiniGameManager: DustCleaningGame UI를 찾을 수 없습니다!");
+            }
         }
     }
 
     void OnEnable()
     {
-        DialogueManager.OnMiniGameRequested += StartDustCleaning;
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.OnMiniGameRequested += StartDustCleaning;
+        }
+        else
+        {
+            Debug.LogError("MiniGameManager: DialogueManager를 찾을 수 없습니다!");
+        }
     }
 
     void OnDisable()
     {
-        DialogueManager.OnMiniGameRequested -= StartDustCleaning;
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.OnMiniGameRequested -= StartDustCleaning;
+        }
     }
-
 
     public void StartDustCleaning(GameObject dustObject)
     {
+        if (playerController == null) FindPlayer();
+        if (playerController == null) return;
+
+        if (dustCleaningGameUI == null) FindUI();
+        if (dustCleaningGameUI == null) return;
+
+        playerController.StopMovement();
         IsMiniGameActive = true;
-        dustCleaningUIPanel.SetActive(true);
-        var cleaningGame = dustCleaningUIPanel.GetComponent<DustCleaningGame>();
-        cleaningGame.BeginGame(dustObject, this.OnDustCleaned);
+
+        dustCleaningGameUI.gameObject.SetActive(true);
+        dustCleaningGameUI.BeginGame(dustObject, this.OnDustCleaned);
     }
 
     // 먼지 하나 제거 성공 시 호출됨
@@ -62,12 +125,11 @@ public class MiniGameManager : MonoBehaviour
         {
             Debug.Log("2층 열쇠 획득");
             GameStateManager.Instance.isDustCleaningQuestCompleted = true;
-
             InventoryManager.Instance.AddItem("Library_Key_Floor2", "도서관 2층 열쇠");
 
-            if (dialogueManager != null)
+            if (DialogueManager.Instance != null)
             {
-                dialogueManager.StartDialogue("40005");
+                DialogueManager.Instance.StartDialogue("40005");
             }
         }
     }
@@ -75,6 +137,15 @@ public class MiniGameManager : MonoBehaviour
     public void EndDustCleaning()
     {
         IsMiniGameActive = false;
-        dustCleaningUIPanel.SetActive(false);
+
+        if (dustCleaningGameUI != null)
+        {
+            dustCleaningGameUI.gameObject.SetActive(false);
+        }
+
+        if (playerController != null)
+        {
+            playerController.ResumeMovement();
+        }
     }
 }
