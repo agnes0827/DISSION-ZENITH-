@@ -35,8 +35,13 @@ public class FadeManager : MonoBehaviour
     }
     IEnumerator FadeInCoroutine(float _speed)
     {
+        if (black.color.a == 0)
+        {
+            color = black.color;
+            color.a = 1f;          // 완전 어둡게 시작
+            black.color = color;
+        }
         color = black.color;
-
         while (color.a > 0f)
         {
             color.a -= _speed;

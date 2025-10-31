@@ -21,6 +21,7 @@ public class Transmap : MonoBehaviour
         //충돌 시 오브젝트 이름이 플레이어면 StartCoroutine(TransferCoroutine()) 호출
         if (collision.gameObject.name == "Player")
         {
+            //맵 이름을 현재 맵이름에 받기
             thePlayer.currentMapName = sceneToLoad;
             StartCoroutine(TransferCoroutine());
         }

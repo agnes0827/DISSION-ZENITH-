@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     public string currentMapName; //∏  ¿Ã∏ß
+    
 
     public float speed = 3f;
     private Vector3 vector;
@@ -22,9 +24,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        // DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(this.gameObject);
         anim = GetComponent<Animator>();
         capsuleColider = GetComponent<CapsuleCollider2D>();
+        
     }
 
     IEnumerator MoveCoroutine()
