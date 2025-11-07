@@ -26,6 +26,7 @@ public class SceneIntroZoom : MonoBehaviour
 
         // 씬 로드 후 2초 기다렸다가 연출 시작
         yield return new WaitForSecondsRealtime(delayAfterLoad);
+        PlayerController.Instance.StopMovement();
 
         // 도끼로 전환 + 줌 인
         vcam.Follow = axe;
@@ -37,6 +38,7 @@ public class SceneIntroZoom : MonoBehaviour
         // 플레이어로 복귀 + 줌 아웃
         vcam.Follow = originalFollow; // <- null일 수 있는 player 변수 대신, 처음에 저장한 originalFollow로 복구
         yield return LerpSize(focusZoom, originalSize, blendTime);
+        PlayerController.Instance.ResumeMovement();
     }
 
     IEnumerator LerpSize(float from, float to, float dur)
