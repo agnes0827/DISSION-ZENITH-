@@ -6,7 +6,6 @@ using Cinemachine;
 public class SceneIntroZoom : MonoBehaviour
 {
     [SerializeField] CinemachineVirtualCamera vcam;
-    [SerializeField] Transform player;
     [SerializeField] Transform axe;
 
     [Header("Timing")]
@@ -36,7 +35,7 @@ public class SceneIntroZoom : MonoBehaviour
         yield return new WaitForSeconds(focusHold);
 
         // 플레이어로 복귀 + 줌 아웃
-        vcam.Follow = player;
+        vcam.Follow = originalFollow; // <- null일 수 있는 player 변수 대신, 처음에 저장한 originalFollow로 복구
         yield return LerpSize(focusZoom, originalSize, blendTime);
     }
 
