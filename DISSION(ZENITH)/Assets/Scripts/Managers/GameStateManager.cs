@@ -62,6 +62,11 @@ public class GameStateManager : MonoBehaviour
     public HashSet<string> cleanedDustIds = new HashSet<string>();
     public bool isDustCleaningQuestCompleted = false;
 
+    // 플레이 타임 측정
+    [Header("Play Time")]
+    public float totalPlayTime;   // 초 단위 누적 플레이 시간
+    public bool isCountingTime = true;   // 일시정지 등일 때 멈출 용
+
     private void Awake()
     {
         if (Instance == null)
@@ -75,6 +80,14 @@ public class GameStateManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    void Update()
+    {
+        if (!isCountingTime) return;
+
+        // Time.deltaTime = 프레임 간 경과 시간(초)
+        totalPlayTime += Time.deltaTime;
     }
 
     // 게임 상태를 초기화하는 함수
@@ -118,6 +131,16 @@ public class GameStateManager : MonoBehaviour
             playerHP = clamped;
             OnPlayerHpChanged?.Invoke(playerHP, playerMaxHP);
         }
+    }
+
+    // 세이브 시 텍스트로 쓸 플레이타임 포맷 함수
+    public string GetFormattedPlayTime()
+    {
+        int totalSec = Mathf.FloorToInt(totalPlayTime);
+        int h = totalSec / 3600;
+        int m = (totalSec % 3600) / 60;
+        int s = totalSec % 60;
+        return $"{h}:{m:00}:{s:00}";   // 1:01:35 이렇게
     }
 }
 
