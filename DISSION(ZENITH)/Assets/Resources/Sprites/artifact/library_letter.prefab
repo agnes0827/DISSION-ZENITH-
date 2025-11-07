@@ -144,9 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   artifactID: letter
-  artifactSprite: {fileID: 21300000, guid: 03f39828c4029bd4bbbb9d884f29d545, type: 3}
   playerTag: Player
   pickupKey: 102
   promptUI: {fileID: 0}
-  hasFlashbackCutscene: 0
-  flashbackSceneName: 
+  artifactDatabase: {fileID: 11400000, guid: a7289a709d482ec4f822e38d2ca61529, type: 2}

@@ -30,3 +30,6 @@ ID,Speaker,Dialogue,Next ID,Portrait,Choice1,Choice1 Next ID,Choice2,Choice2 Nex
 40005,,<color=#ffc200>도서관 2층 열쇠</color>가 떨어졌다.,END,,,,,,
 40006,,문은 굳게 닫혀있다.,40007,,,,,,
 40007,쿠즈릴,사서라면 뭔가 알고 있지 않을까?,END,kuzril_normal_01,,,,,
+,,,,,,,,,
+10000,,..오래되어 보이는 편지다.,10001,,,,,,
+10001,,어딘가 낯이 익다.,END,,,,,,

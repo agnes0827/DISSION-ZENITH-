@@ -20,4 +20,14 @@ public class ArtifactDefinition : ScriptableObject
     [Header("컷신 정보")]
     [Tooltip("이 아티팩트 획득 시 재생할 컷신 씬의 이름 (없으면 비워둠)")]
     public string flashbackSceneName; // 연결된 컷신 씬 이름
+
+    [Space(10)]
+    [Tooltip("true이면, 씬 이동 대신 인플레이스 이벤트를 재생")]
+    public bool hasInPlaceEvent = false;
+
+    [Tooltip("이벤트에서 보여줄 큰 이미지 (예: 편지)")]
+    public Sprite eventImage;
+
+    [Tooltip("이벤트에서 재생할 Dialogue ID")]
+    public string eventDialogueID;
 }
