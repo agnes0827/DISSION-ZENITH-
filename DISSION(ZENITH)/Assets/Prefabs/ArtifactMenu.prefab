@@ -647,6 +647,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   artifactMenuPanel: {fileID: 3274082718346449029}
+  artifactDatabase: {fileID: 11400000, guid: a7289a709d482ec4f822e38d2ca61529, type: 2}
 --- !u!1 &8529664912216935455
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,72 +1,128 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public string currentMapName; //맵 이름
+    public static PlayerController Instance { get; private set; }
 
+    public string currentMapName; //맵 이름
     public float speed = 3f;
-    private Vector3 vector;
-    public int walkCount;
     public float runSpeed;
     private float applyRunSpeed;
     private bool canMove = true;
 
-    private CapsuleCollider2D capsuleColider;
+    public int walkCount;
+
+    private BoxCollider2D boxCollider;
     public LayerMask layermask; //이동 불가 지역
 
-    private Vector2 lastMove = Vector2.down; // 게임 시작시 정면 보게
-
+    private Vector2 lastMove = Vector2.down;
     Animator anim;
 
-    private string lastDirection = "Front"; // 기본 방향
-
-    void Start()
+    void Awake()
     {
-        // DontDestroyOnLoad(this.gameObject);
-        anim = GetComponent<Animator>();
-        capsuleColider = GetComponent<CapsuleCollider2D>();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            anim = GetComponent<Animator>();
+            boxCollider = GetComponent<BoxCollider2D>();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // 씬이 새로 로드되었을 때(맵 이동)
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResumeMovement();
+        currentMapName = scene.name;
+
+        if (GameStateManager.Instance != null && !string.IsNullOrEmpty(GameStateManager.Instance.returnSceneAfterBattle) && scene.name == GameStateManager.Instance.returnSceneAfterBattle)
+        {
+            // 전투 전 위치로 플레이어 이동
+            transform.position = GameStateManager.Instance.playerPositionBeforeBattle;
+            // 애니메이터 설정
+            anim.SetFloat("InputX", lastMove.x);
+            anim.SetFloat("InputY", lastMove.y);
+            anim.SetBool("isMoving", false);
+
+            Debug.Log($"전투 복귀: 이전 위치({GameStateManager.Instance.playerPositionBeforeBattle})로 이동 완료.");
+
+            // 사용한 복귀 씬 이름 정보 초기화
+            GameStateManager.Instance.returnSceneAfterBattle = null;
+
+            return; // 스폰 포인트 찾는 로직 실행 안 함
+        }
+
+        string spawnId = GameStateManager.Instance.nextSpawnPointId;
+
+        if (!string.IsNullOrEmpty(spawnId))
+        {
+            SpawnPoint[] spawnPoints = FindObjectsOfType<SpawnPoint>();
+            foreach (var spawnPoint in spawnPoints)
+            {
+                if (spawnPoint.spawnPointId == spawnId)
+                {
+                    transform.position = spawnPoint.transform.position;
+                    transform.rotation = spawnPoint.transform.rotation;
+
+                    anim.SetFloat("InputX", lastMove.x);
+                    anim.SetFloat("InputY", lastMove.y);
+                    anim.SetBool("isMoving", false);
+
+                    Debug.Log($"'{spawnId}'로 이동");
+                    break;
+                }
+            }
+            GameStateManager.Instance.nextSpawnPointId = null;
+        }
     }
 
     IEnumerator MoveCoroutine()
     {
+        Vector2 moveVector = Vector2.zero;
+
         //이동
         while (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                applyRunSpeed = runSpeed;
-                //applyRunFlag = true;
-            }
-            else
-            {
-                applyRunSpeed = 0;
-                //applyRunFlag = false;
-            }
+            applyRunSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : 0;
 
-            vector.Set(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0f);
-            if (vector.x != 0)
-                vector.y = 0;
+            moveVector.x = Input.GetAxisRaw("Horizontal");
+            moveVector.y = Input.GetAxisRaw("Vertical");
 
-            // 움직였을 때만 방향 갱신
-            if (vector.x != 0 || vector.y != 0)
-                lastMove = new Vector2(Mathf.Sign(vector.x), Mathf.Sign(vector.y));
+            if (moveVector.x != 0)
+                moveVector.y = 0;
 
+            lastMove = moveVector;
 
-            // 애니 파라미터
-            anim.SetFloat("InputX", vector.x);
-            anim.SetFloat("InputY", vector.y);
+            //애니메이션 파라미터
+            anim.SetFloat("InputX", moveVector.x);
+            anim.SetFloat("InputY", moveVector.y);
             anim.SetBool("isMoving", true);
 
             //레이어 마스크
             RaycastHit2D hit;
             Vector2 start = transform.position;
-            Vector2 end = start + new Vector2(vector.x * speed * walkCount, vector.y * speed * walkCount);
+            Vector2 end = start + moveVector * 0.5f;
 
-            capsuleColider.enabled = false;
+            boxCollider.enabled = false;
             hit = Physics2D.Linecast(start, end, layermask);
-            capsuleColider.enabled = true;
+            boxCollider.enabled = true;
 
             if (hit.transform != null)
             {
@@ -74,13 +130,7 @@ public class PlayerController : MonoBehaviour
 
             }
 
-            //움직임 판단
-            anim.SetBool("isMoving", true);
-
-
-            transform.Translate(vector.x * (speed + applyRunSpeed) * Time.deltaTime,
-                                 vector.y * (speed + applyRunSpeed) * Time.deltaTime,
-                                 0);
+            transform.Translate(moveVector * (speed + applyRunSpeed) * Time.deltaTime);
 
             yield return null; // 다음 프레임까지 대기
         }
@@ -88,6 +138,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("isMoving", false);
         anim.SetFloat("InputX", lastMove.x);
         anim.SetFloat("InputY", lastMove.y);
+
         canMove = true;
     }
 
@@ -103,8 +154,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public string GetDirection()
+    public void StopMovement()
     {
-        return lastDirection;
+        StopAllCoroutines();
+        anim.SetBool("isMoving", false);
+        canMove = false;
+    }
+
+    public void ResumeMovement()
+    {
+        canMove = true;
     }
 }

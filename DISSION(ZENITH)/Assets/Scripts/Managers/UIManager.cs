@@ -36,6 +36,7 @@ public class UIManager : MonoBehaviour
         // 패널이 활성화되는 시점에 인벤토리 정보를 새로 받아옴
         if (isActive)
         {
+            Time.timeScale = 0f; // 게임 일시정지
             if (InventoryManager.Instance != null && inventoryGridLayout != null)
             {
                 InventoryManager.Instance.RegisterInventoryUI(inventoryGridLayout);
@@ -44,6 +45,10 @@ public class UIManager : MonoBehaviour
             {
                 Debug.LogWarning("InventoryManager를 찾을 수 없거나, inventoryGridLayout이 연결되지 않았습니다.");
             }
+        }
+        else
+        {
+            Time.timeScale = 1f; // 게임 시간을 원래 속도로 되돌림
         }
     }
 

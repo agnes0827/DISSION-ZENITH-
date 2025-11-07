@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,12 @@ public class DustCleaningGame : MonoBehaviour
     [SerializeField] private Color correctColor = Color.green;
     [SerializeField] private Color wrongColor = Color.red;
     [SerializeField] private float wrongFlashDuration = 0.15f;
+
+    [Header("타이머 설정")]
+    [SerializeField] private float timeLimit = 3f;
+    [SerializeField] private Image timerBarFill;
+    private float timeRemaining;
+    private Coroutine timerCoroutine;
 
     private readonly List<KeyCode> keySequence = new List<KeyCode>();
     private readonly List<Image> arrowImages = new List<Image>(); // 인덱스 매칭용
@@ -37,6 +44,63 @@ public class DustCleaningGame : MonoBehaviour
 
         GenerateRandomSequence();
         CreateArrowUI();
+
+        timeRemaining = timeLimit;
+        UpdateTimerUI();
+        if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+        timerCoroutine = StartCoroutine(TimerCountdown());
+    }
+
+    private void UpdateTimerUI()
+    {
+        // 남은 시간 계산
+        float fillRatio = timeRemaining / timeLimit;
+
+        // 타이머 바 업데이트
+        if (timerBarFill != null)
+        {
+            timerBarFill.fillAmount = fillRatio;
+        }
+    }
+
+    private IEnumerator TimerCountdown()
+    {
+        while (timeRemaining > 0)
+        {
+            if (!isPlaying) yield break;
+
+            timeRemaining -= Time.deltaTime;
+            UpdateTimerUI();
+            yield return null;
+        }
+
+        // 시간이 0 이하가 되면 실패 처리
+        timeRemaining = 0;
+        UpdateTimerUI();
+        HandleFailure();
+    }
+
+    private void HandleFailure()
+    {
+        if (!isPlaying) return;
+
+        isPlaying = false;
+        Debug.Log("미니게임 시간 초과");
+
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+
+        if (MiniGameManager.Instance != null)
+        {
+            MiniGameManager.Instance.EndDustCleaning();
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void GenerateRandomSequence()

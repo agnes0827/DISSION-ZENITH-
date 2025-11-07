@@ -11,6 +11,8 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private Image portraitImage;
     [SerializeField] private GameObject speakerPanel;
+    [SerializeField] private RectTransform choicePanelRectTransform;
+    [SerializeField] private RectTransform dialogueTextRectTransform;
 
     [Header("선택지 UI")]
     public GameObject choicePanel;
@@ -18,6 +20,13 @@ public class DialogueUI : MonoBehaviour
     public Button choiceButton2;
     public TextMeshProUGUI choiceText1;
     public TextMeshProUGUI choiceText2;
+    public GameObject choice1Arrow;
+    public GameObject choice2Arrow;
+
+    private Vector2 originalAnchorMin;
+    private Vector2 originalAnchorMax;
+    private Vector2 originalOffsetMin;
+    private Vector2 originalOffsetMax;
 
     // 타자(타이핑) 효과: 한 글자씩 출력
     [SerializeField] private float typingSpeed = 0.05f;       // 1글자 출력 간격(초)
@@ -34,6 +43,14 @@ public class DialogueUI : MonoBehaviour
         else
         {
             Debug.LogError("DialogueManager가 씬에 없습니다! UI를 등록할 수 없습니다.");
+        }
+
+        if (dialogueTextRectTransform != null)
+        {
+            originalAnchorMin = dialogueTextRectTransform.anchorMin;
+            originalAnchorMax = dialogueTextRectTransform.anchorMax;
+            originalOffsetMin = dialogueTextRectTransform.offsetMin;
+            originalOffsetMax = dialogueTextRectTransform.offsetMax;
         }
     }
 
@@ -58,33 +75,58 @@ public class DialogueUI : MonoBehaviour
     // 화자, 대사, 초상화 파일 이름 UI 표시
     public void ShowDialogue(string speaker, string dialogue, string portraitName)
     {
-        // 이름이 비어있으면 이름 UI 숨기기
-        if (string.IsNullOrEmpty(speaker))
+        if (string.IsNullOrEmpty(portraitName))
         {
+            // 1. 시스템 메시지(or 혼잣말)
+            portraitImage.gameObject.SetActive(false);
             speakerPanel.SetActive(false);
+
+            // 대화 텍스트를 중앙 정렬
+            dialogueText.alignment = TextAlignmentOptions.Center;
+
+            dialogueTextRectTransform.anchorMin = new Vector2(0, 0);
+            dialogueTextRectTransform.anchorMax = new Vector2(1, 1);
+            dialogueTextRectTransform.offsetMin = new Vector2(20, 20);
+            dialogueTextRectTransform.offsetMax = new Vector2(-20, -20);
         }
         else
         {
-            speakerPanel.SetActive(true);
-            speakerText.text = speaker;
+            // 2. 일반 캐릭터 대화 모드
+            SetPortrait(portraitName);
+
+            // 이름 패널 설정
+            if (string.IsNullOrEmpty(speaker))
+            {
+                speakerPanel.SetActive(false);
+            }
+            else
+            {
+                speakerPanel.SetActive(true);
+                speakerText.text = speaker;
+            }
+
+            // 대화 텍스트를 왼쪽 정렬
+            dialogueText.alignment = TextAlignmentOptions.Left;
+
+            // 대화 텍스트의 RectTransform을 원래 값으로 복원
+            dialogueTextRectTransform.anchorMin = originalAnchorMin;
+            dialogueTextRectTransform.anchorMax = originalAnchorMax;
+            dialogueTextRectTransform.offsetMin = originalOffsetMin;
+            dialogueTextRectTransform.offsetMax = originalOffsetMax;
         }
 
+        // 타자 효과
         currentFullText = dialogue;
 
-        // 타자 효과 중이면 중지
         if (typingCoroutine != null)
             StopCoroutine(typingCoroutine);
 
-        // TMP 방식: 원문(태그 포함)을 먼저 세팅하고, 가시 문자 수만 증가
+        // TMP 방식: 원문(텍스트 태그 포함)을 먼저 세팅
         dialogueText.richText = true;               
-        dialogueText.text = currentFullText;        // 태그 포함 원문 한 번에 설정
+        dialogueText.text = currentFullText;
         dialogueText.ForceMeshUpdate();            
         dialogueText.maxVisibleCharacters = 0;     
-
         typingCoroutine = StartCoroutine(TypeSentenceTMP());
-
-        // 초상화 설정
-        SetPortrait(portraitName);
     }
 
     // 초상화 설정
@@ -157,6 +199,8 @@ public class DialogueUI : MonoBehaviour
         choicePanel.SetActive(true);
         choiceText1.text = c1;
         choiceText2.text = c2;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(choicePanelRectTransform);
     }
 
     public void HideChoices()
@@ -166,10 +210,13 @@ public class DialogueUI : MonoBehaviour
 
     public void HighlightChoice(int index)
     {
-        Color highlightColor = Color.yellow;
-        Color normalColor = Color.white;
+        Color highlightColor = Color.gray;
+        Color normalColor = Color.black;
 
         choiceButton1.GetComponent<Image>().color = (index == 1) ? highlightColor : normalColor;
         choiceButton2.GetComponent<Image>().color = (index == 2) ? highlightColor : normalColor;
+
+        choice1Arrow.SetActive(index == 1);
+        choice2Arrow.SetActive(index == 2);
     }
 }

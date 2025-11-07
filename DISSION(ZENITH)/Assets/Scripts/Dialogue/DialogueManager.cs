@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 // 씬이 바뀌어도 파괴되지 않고, 모든 대화의 흐름을 총괄하는 '뇌' 역할을 합니다.
 public class DialogueManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class DialogueManager : MonoBehaviour
     public bool isChoice { get; private set; } = false;
     private DialogueUI dialogueUI;
     private Dialogue currentDialogue;
+    private bool isOneOffNotice = false; // (아이템 획득용) 1회성 알림
 
     // 입력 및 선택지 관련 변수
     private int selectedChoiceIndex = 1;
@@ -25,12 +27,16 @@ public class DialogueManager : MonoBehaviour
     public static event Action<GameObject> OnMiniGameRequested;
     private GameObject currentDustObject;
 
+    private PlayerController playerController;
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+
             if (dialogueLoader != null)
             {
                 dialogueLoader.LoadDialogueData();
@@ -42,6 +48,27 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindPlayer();
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+
+        if (playerObject != null)
+        {
+            playerController = playerObject.GetComponent<PlayerController>();
+            Debug.Log("현재 씬에서 'Player' 태그를 가진 PlayerController를 찾았습니다.");
+        }
+
+        if (playerController == null)
+        {
+            Debug.LogWarning("현재 씬에서 'Player' 태그를 가진 PlayerController를 찾을 수 없습니다.");
+        }
+    }
+
     #region UI 등록 시스템
     public void RegisterDialogueUI(DialogueUI ui)
     {
@@ -49,7 +76,6 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("DialogueUI가 DialogueManager에 성공적으로 등록되었습니다.");
     }
 
-    // DialogueUI가 파괴될 때 참조를 깨끗하게 정리합니다.
     public void UnregisterDialogueUI()
     {
         dialogueUI = null;
@@ -83,7 +109,17 @@ public class DialogueManager : MonoBehaviour
             }
             else
             {
-                DisplayNextDialogue();
+                if (isOneOffNotice)
+                {
+                    // 1회성 알림이었으면 바로 종료
+                    isOneOffNotice = false; // 플래그 리셋
+                    EndDialogue();
+                }
+                else
+                {
+                    // 기존 CSV 대화 로직
+                    DisplayNextDialogue();
+                }
             }
         }
     }
@@ -114,18 +150,20 @@ public class DialogueManager : MonoBehaviour
     public void StartDialogue(string startId, GameObject dustObject = null)
     {
         currentDustObject = dustObject;
+        playerController.StopMovement();
 
         if (dialogueUI == null)
         {
             if (dialogueUIPrefab != null)
             {
-                Canvas sceneCanvas = FindObjectOfType<Canvas>();
-                if (sceneCanvas == null)
+                GameObject canvasGO = GameObject.FindWithTag("GameCanvas"); // 태그로 찾기
+                if (canvasGO == null)
                 {
-                    Debug.LogError("현재 씬에 UI를 표시할 Canvas가 없습니다!");
+                    Debug.LogError("현재 씬에서 'GameCanvas' 태그를 가진 Canvas를 찾을 수 없습니다!");
                     return;
                 }
-                GameObject uiObject = Instantiate(dialogueUIPrefab, sceneCanvas.transform);
+
+                GameObject uiObject = Instantiate(dialogueUIPrefab, canvasGO.transform);
             }
             else
             {
@@ -189,11 +227,21 @@ public class DialogueManager : MonoBehaviour
         if (nextId == "MINIGAME")
         {
             OnMiniGameRequested?.Invoke(currentDustObject);
-            EndDialogue();
+            isDialogue = false;
+
+            if (dialogueUI != null)
+            {
+                dialogueUI.HideDialoguePanel();
+            }
+            //EndDialogue();
+        }
+        else if (!string.IsNullOrEmpty(nextId))
+        {
+            DisplayDialogue(nextId);
         }
         else
         {
-            DisplayDialogue(nextId);
+            EndDialogue();
         }
     }
 
@@ -209,8 +257,50 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    public void ShowItemGetNotice(string itemName)
+    {
+        // 다른 대화가 진행 중이면 실행 X
+        if (isDialogue)
+        {
+            return;
+        }
+
+        // (StartDialogue의 UI 준비 로직)
+        if (dialogueUI == null)
+        {
+            if (dialogueUIPrefab != null)
+            {
+                GameObject canvasGO = GameObject.FindWithTag("GameCanvas"); // 태그로 찾기
+                if (canvasGO == null)
+                {
+                    Debug.LogError("현재 씬에 'GameCanvas' 태그를 가진 Canvas가 없습니다!");
+                    return;
+                }
+                GameObject uiObject = Instantiate(dialogueUIPrefab, canvasGO.transform);
+            }
+
+            else
+            {
+                Debug.LogError("DialogueUIPrefab이 할당되지 않았습니다!");
+                return;
+            }
+        }
+
+        playerController?.StopMovement();
+        isDialogue = true;
+        isChoice = false;
+        isOneOffNotice = true; // 1회성 알림
+
+        string message = $"{itemName}(을)를 획득했다!";
+        dialogueUI.ShowDialoguePanel();
+        dialogueUI.ShowDialogue("", message, "");
+        dialogueUI.HideChoices();
+    }
+
     private void EndDialogue()
     {
+        playerController.ResumeMovement();
+
         isDialogue = false;
         if (dialogueUI != null)
         {
