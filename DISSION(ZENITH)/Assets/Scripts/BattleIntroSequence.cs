@@ -51,6 +51,8 @@ public class BattleIntroSequence : MonoBehaviour
         yield return new WaitForSeconds(focusDelay);
         monsterFocusCam.Priority = originalPlayerPriority + 1; // 몬스터 카메라 우선순위를 더 높여 활성화
 
+        EmotionController.Instance.ShowSurprise();
+
         // 2. 몬스터를 잠시 보여줌
         yield return new WaitForSeconds(focusDuration);
 
