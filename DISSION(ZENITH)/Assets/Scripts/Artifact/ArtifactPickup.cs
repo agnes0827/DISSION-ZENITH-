@@ -6,18 +6,18 @@ public class ArtifactPickup : MonoBehaviour
     [Header("아티팩트 고유 정보")]
     [Tooltip("절대 중복되지 않는 고유 ID를 입력하세요. 예: World01_Pendant")]
     public string artifactID;
-    [SerializeField] private Sprite artifactSprite;
 
     [Header("상호작용")]
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private KeyCode pickupKey = KeyCode.F;
     [SerializeField] private GameObject promptUI;
 
-    [Header("회상 컷신")]
-    [SerializeField] private bool hasFlashbackCutscene = false;
-    [SerializeField] private string flashbackSceneName;
+    [Header("데이터 연결")]
+    [Tooltip("모든 아티팩트 정보가 담긴 ArtifactDatabase를 연결하세요.")]
+    [SerializeField] private ArtifactDatabase artifactDatabase;
 
     private bool _playerInRange = false;
+    private ArtifactEventViewer _eventViewer;
 
     void Awake()
     {
@@ -26,14 +26,6 @@ public class ArtifactPickup : MonoBehaviour
             Debug.LogError($"{gameObject.name}에 artifactID가 설정되지 않았습니다! 진행 상황 저장이 불가능합니다.", gameObject);
         }
 
-        if (artifactSprite == null)
-        {
-            var sr = GetComponent<SpriteRenderer>();
-            if (sr != null)
-            {
-                artifactSprite = sr.sprite;
-            }
-        }
         if (promptUI) promptUI.SetActive(false);
     }
 
@@ -42,15 +34,19 @@ public class ArtifactPickup : MonoBehaviour
         // GameStateManager에 artifactID가 이미 저장되어 있다면
         if (GameStateManager.Instance != null && GameStateManager.Instance.collectedArtifactIDs.Contains(artifactID))
         {
-            // 오브젝트를 비활성화
             gameObject.SetActive(false);
             Debug.Log($"아티팩트 '{artifactID}'는 이미 획득했습니다.");
         }
-
+        _eventViewer = ArtifactEventViewer.Instance;
     }
     void Update()
     {
         if (!_playerInRange || (CutsceneManager.Instance != null && CutsceneManager.IsCutscenePlaying))
+        {
+            return;
+        }
+
+        if (DialogueManager.Instance != null && DialogueManager.Instance.isDialogue)
         {
             return;
         }
@@ -63,39 +59,69 @@ public class ArtifactPickup : MonoBehaviour
 
     private void PickUp()
     {
-        if (hasFlashbackCutscene)
+        if (artifactDatabase == null)
         {
-            // 회상 씬이 있는 경우: CutsceneManager에게 데이터를 넘기고 씬 이동
-            Debug.Log($"[ArtifactProximityPickup] PickUp called. artifactID: '{artifactID}'");
-            CutsceneManager.Instance.SetFlashbackData(artifactSprite, SceneManager.GetActiveScene().name, artifactID);
+            Debug.LogError("ArtifactDatabase가 ArtifactPickup에 연결되지 않았습니다!", gameObject);
+            return;
+        }
+
+        ArtifactDefinition def = artifactDatabase.GetArtifactByID(artifactID);
+        if (def == null)
+        {
+            Debug.LogError($"ArtifactDatabase에서 ID '{artifactID}'를 찾을 수 없습니다.", gameObject);
+            return;
+        }
+
+        if (def.hasInPlaceEvent && _eventViewer != null)
+        {
+            Debug.Log($"인플레이스 이벤트 시작: {artifactID}");
+            if (promptUI) promptUI.SetActive(false);
+            _playerInRange = false;
+
+            // 이벤트 뷰어를 보여주고, 이벤트가 끝나면 AddArtifactToSystem을 호출하도록 콜백 전달
+            _eventViewer.ShowEvent(def, () => {
+                AddArtifactToSystem();
+            });
+
+        }
+        else if (!string.IsNullOrEmpty(def.flashbackSceneName))
+        {
+            Debug.Log($"[ArtifactPickup] 회상 씬 로드: {def.flashbackSceneName}");
+            CutsceneManager.Instance.SetFlashbackData(def.artifactSprite, SceneManager.GetActiveScene().name, artifactID);
 
             gameObject.SetActive(false);
-            SceneManager.LoadScene(flashbackSceneName);
+            SceneManager.LoadScene(def.flashbackSceneName);
         }
+        // 3. 아무 이벤트 없는 경우 (즉시 획득)
         else
         {
-            // 회상 씬이 없는 경우: GameStateManager에 즉시 기록
-            if (GameStateManager.Instance != null && !GameStateManager.Instance.collectedArtifactIDs.Contains(artifactID))
-            {
-                GameStateManager.Instance.collectedArtifactIDs.Add(artifactID);
-                Debug.Log($"GameStateManager에 아티팩트 ID '{artifactID}' 기록됨.");
-
-                ArtifactMenu currentMenu = FindObjectOfType<ArtifactMenu>();
-                if (currentMenu != null)
-                {
-                    currentMenu.RepopulateUI();
-                    Debug.Log("현재 씬의 ArtifactMenu UI 새로고침 요청됨.");
-                }
-                else
-                {
-                    Debug.LogWarning("현재 씬에서 ArtifactMenu를 찾을 수 없어 UI를 새로고침할 수 없습니다.");
-                }
-            }
-            gameObject.SetActive(false);
+            Debug.Log($"즉시 획득: {artifactID}");
+            AddArtifactToSystem();
         }
     }
 
-        void OnTriggerEnter2D(Collider2D other)
+    private void AddArtifactToSystem()
+    {
+        if (GameStateManager.Instance != null && !GameStateManager.Instance.collectedArtifactIDs.Contains(artifactID))
+        {
+            GameStateManager.Instance.collectedArtifactIDs.Add(artifactID);
+            Debug.Log($"GameStateManager에 아티팩트 ID '{artifactID}' 기록됨.");
+
+            ArtifactMenu currentMenu = FindObjectOfType<ArtifactMenu>();
+            if (currentMenu != null)
+            {
+                currentMenu.RepopulateUI();
+                Debug.Log("현재 씬의 ArtifactMenu UI 새로고침 요청됨.");
+            }
+            else
+            {
+                Debug.LogWarning("현재 씬에서 ArtifactMenu를 찾을 수 없어 UI를 새로고침할 수 없습니다.");
+            }
+        }
+        gameObject.SetActive(false);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag(playerTag))
             {
