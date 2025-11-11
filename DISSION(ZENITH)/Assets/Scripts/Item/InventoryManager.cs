@@ -111,4 +111,43 @@ public class InventoryManager : MonoBehaviour
             newSlot.SetItem(newData);
         }
     }
+
+    // 아이템 소비
+    public bool ConsumeItem(string itemId, int amount = 1)
+    {
+        if (amount <= 0)
+        {
+            Debug.LogWarning("ConsumeItem 호출 시 amount는 1 이상이어야 합니다.");
+            return false;
+        }
+
+        var inventory = GameStateManager.Instance.inventoryItems;
+
+        // 해당 아이템이 없으면 실패
+        if (!inventory.ContainsKey(itemId))
+        {
+            Debug.LogWarning($"ConsumeItem 실패: 인벤토리에 {itemId}가 없습니다.");
+            return false;
+        }
+
+        // 수량이 부족한 경우
+        if (inventory[itemId] < amount)
+        {
+            Debug.LogWarning($"ConsumeItem 실패: {itemId} 수량이 부족합니다. (현재 {inventory[itemId]}, 필요 {amount})");
+            return false;
+        }
+
+        // 수량 감소
+        inventory[itemId] -= amount;
+
+        // 0개가 되면 인벤토리에서 삭제
+        if (inventory[itemId] <= 0)
+        {
+            inventory.Remove(itemId);
+        }
+
+        // UI 갱신
+        RedrawInventoryUI();
+        return true;
+    }
 }

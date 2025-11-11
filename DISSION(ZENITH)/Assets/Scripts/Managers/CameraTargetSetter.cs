@@ -39,12 +39,7 @@ public class CameraTargetSetter : MonoBehaviour
         {
             target = PlayerController.Instance.transform;
         }
-        else
-        {
-            // 2) 소문자 playercontroller도 찾아보기
-            var p = FindObjectOfType<playercontroller>();
-            if (p != null) target = p.transform;
-        }
+        
 
         if (target != null && vcam != null)
         {
