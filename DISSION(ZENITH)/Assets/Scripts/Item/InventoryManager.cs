@@ -73,7 +73,19 @@ public class InventoryManager : MonoBehaviour
 
     public void RedrawInventoryUI()
     {
-        if (gridLayout == null) return;
+        if (gridLayout == null)
+        {
+            UIManager ui = FindObjectOfType<UIManager>();
+            if (ui != null)
+            {
+                ui.ForceRegisterInventory();
+            }
+            if (gridLayout == null)
+            {
+                Debug.LogWarning("Inventory UI 연결 실패로 인해 Redraw 중단");
+                return;
+            }
+        }
 
         // 1. 기존에 생성된 모든 슬롯 UI를 삭제
         foreach (Transform child in gridLayout)
@@ -130,20 +142,27 @@ public class InventoryManager : MonoBehaviour
             return false;
         }
 
+        int before = inventory[itemId];
         // 수량이 부족한 경우
-        if (inventory[itemId] < amount)
+        if (before < amount)
         {
-            Debug.LogWarning($"ConsumeItem 실패: {itemId} 수량이 부족합니다. (현재 {inventory[itemId]}, 필요 {amount})");
+            Debug.LogWarning($"[Inventory] Consume FAIL: not enough '{itemId}' ({before} < {amount})");
             return false;
         }
 
         // 수량 감소
         inventory[itemId] -= amount;
+        int after = inventory.ContainsKey(itemId) ? inventory[itemId] : 0;
 
         // 0개가 되면 인벤토리에서 삭제
         if (inventory[itemId] <= 0)
         {
             inventory.Remove(itemId);
+            Debug.Log($"[Inventory] Removed '{itemId}' (went from {before} -> 0)");
+        }
+        else
+        {
+            Debug.Log($"[Inventory] Consumed '{itemId}' ({before} -> {inventory[itemId]})");
         }
 
         // UI 갱신
