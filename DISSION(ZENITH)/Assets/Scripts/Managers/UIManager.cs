@@ -59,4 +59,9 @@ public class UIManager : MonoBehaviour
             panel.SetActive(!panel.activeSelf);
         }
     }
+
+    public void ForceRegisterInventory()
+    {
+        InventoryManager.Instance.RegisterInventoryUI(inventoryGridLayout);
+    }
 }

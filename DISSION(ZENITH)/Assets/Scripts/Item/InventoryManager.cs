@@ -73,7 +73,19 @@ public class InventoryManager : MonoBehaviour
 
     public void RedrawInventoryUI()
     {
-        if (gridLayout == null) return;
+        if (gridLayout == null)
+        {
+            UIManager ui = FindObjectOfType<UIManager>();
+            if (ui != null)
+            {
+                ui.ForceRegisterInventory();
+            }
+            if (gridLayout == null)
+            {
+                Debug.LogWarning("Inventory UI 연결 실패로 인해 Redraw 중단");
+                return;
+            }
+        }
 
         // 1. 기존에 생성된 모든 슬롯 UI를 삭제
         foreach (Transform child in gridLayout)
@@ -110,5 +122,51 @@ public class InventoryManager : MonoBehaviour
 
             newSlot.SetItem(newData);
         }
+    }
+
+    // 아이템 소비
+    public bool ConsumeItem(string itemId, int amount = 1)
+    {
+        if (amount <= 0)
+        {
+            Debug.LogWarning("ConsumeItem 호출 시 amount는 1 이상이어야 합니다.");
+            return false;
+        }
+
+        var inventory = GameStateManager.Instance.inventoryItems;
+
+        // 해당 아이템이 없으면 실패
+        if (!inventory.ContainsKey(itemId))
+        {
+            Debug.LogWarning($"ConsumeItem 실패: 인벤토리에 {itemId}가 없습니다.");
+            return false;
+        }
+
+        int before = inventory[itemId];
+        // 수량이 부족한 경우
+        if (before < amount)
+        {
+            Debug.LogWarning($"[Inventory] Consume FAIL: not enough '{itemId}' ({before} < {amount})");
+            return false;
+        }
+
+        // 수량 감소
+        inventory[itemId] -= amount;
+        int after = inventory.ContainsKey(itemId) ? inventory[itemId] : 0;
+
+        // 0개가 되면 인벤토리에서 삭제
+        if (inventory[itemId] <= 0)
+        {
+            inventory.Remove(itemId);
+            Debug.Log($"[Inventory] Removed '{itemId}' (went from {before} -> 0)");
+        }
+        else
+        {
+            Debug.Log($"[Inventory] Consumed '{itemId}' ({before} -> {inventory[itemId]})");
+        }
+
+        // UI 갱신
+        RedrawInventoryUI();
+        return true;
     }
 }

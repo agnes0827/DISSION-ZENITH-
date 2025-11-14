@@ -1227,6 +1227,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 42.78
       objectReference: {fileID: 0}
+    - target: {fileID: 6609197052597899504, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7970243458678221927, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_Name
       value: Inventory

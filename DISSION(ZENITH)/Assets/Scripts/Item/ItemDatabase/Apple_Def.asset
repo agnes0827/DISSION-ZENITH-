@@ -15,4 +15,6 @@ MonoBehaviour:
   itemId: apple
   itemName: "\uC0AC\uACFC"
   itemIcon: {fileID: 0}
+  canUseFromInventory: 1
+  hpRestoreAmount: 10
   itemDescription: 
