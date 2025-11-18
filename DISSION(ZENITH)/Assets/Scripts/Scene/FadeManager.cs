@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class FadeManager : MonoBehaviour
 {
@@ -26,6 +27,22 @@ public class FadeManager : MonoBehaviour
             Debug.LogWarning("FadeManager 중복 인스턴스 발견. 파괴합니다.");
             Destroy(gameObject); // 중복이면 파괴
         }
+    }
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 씬이 로드되면 검은 화면(Alpha 1)에서 투명하게(Alpha 0) 만듦
+        // duration은 필요에 따라 조절 (예: 0.5f)
+        FadeIn(0.5f);
     }
 
     private void FadePanel()
