@@ -8,7 +8,7 @@ using TMPro;
 public class BattleManager : MonoBehaviour
 {
     [Header("UI 연결")]
-    [SerializeField] private GameObject battleInventoryMenu; // 인벤토리 메뉴 패널 (전투 시작 시 활성화)
+    // [SerializeField] private GameObject battleInventoryMenu; // 인벤토리 메뉴 패널 (전투 시작 시 활성화)
     public WeaponSlotManager weaponSlotManager;              // 플레이어 무기 슬롯 관리 스크립트
 
     // 전투 정보 표시 UI
@@ -43,6 +43,10 @@ public class BattleManager : MonoBehaviour
         {"손", 10 },
         {"칼", 15 }
     }; // 적 무기 이름별 기본 공격력
+
+    // 무기 리스트
+    public List<WeaponData> allWeaponDatabase;
+    public WeaponData defaultHandWeapon; // 기본 '손' 데이터 (인스펙터에서 설정)
 
 
     [Header("전투 모션 설정")]
@@ -97,9 +101,40 @@ public class BattleManager : MonoBehaviour
                 enemyHpSlider.value = enemy.hp;
             }
         }
+        LoadPlayerWeapons(); // 무기 장착
         StartCoroutine(StartBattleSequence());
     }
 
+    void LoadPlayerWeapons()
+    {
+        if (GameStateManager.Instance == null) return;
+
+        List<WeaponData> myWeapons = new List<WeaponData>();
+
+        // 1. 인벤토리(문자열 ID)를 실제 무기 데이터(WeaponData)로 변환
+        foreach (var item in GameStateManager.Instance.inventoryItems)
+        {
+            string itemId = item.Key;
+
+            // 도감에서 이름이 같은 무기를 찾음
+            WeaponData foundWeapon = allWeaponDatabase.Find(w => w.name == itemId);
+
+            if (foundWeapon != null)
+            {
+                myWeapons.Add(foundWeapon);
+            }
+        }
+
+        // 2. 무기가 없으면 '손' 추가
+        if (myWeapons.Count == 0 && defaultHandWeapon != null)
+        {
+            myWeapons.Add(defaultHandWeapon);
+        }
+
+        // 3. WeaponSlotManager에게 전달
+        weaponSlotManager.SetupWeaponSlots(myWeapons);
+
+    }
     void UpdatePlayerHPUI()
     {
         // 플레이어 텍스트 & 슬라이더 갱신
@@ -138,7 +173,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator StartBattleSequence()
     {
         // 1. 인벤토리 숨기고 패널 켜기
-        battleInventoryMenu.SetActive(false);
+        // battleInventoryMenu.SetActive(false);
         panel.SetActive(true);
         isActionInProgress = true;
 
@@ -150,7 +185,7 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         // 4. 인벤토리 열기 및 입력 대기 상태 전환
-        battleInventoryMenu.SetActive(true);
+        // battleInventoryMenu.SetActive(true);
         isActionInProgress = false;
 
         // 안내 문구 지우기 or "행동을 선택하세요" 등으로 변경 가능
