@@ -226,8 +226,10 @@ public class BattleManager : MonoBehaviour
     {
         int damage = Random.Range(data.minDamage, data.maxDamage + 1); // 공격력 랜덤
 
+        string printName = string.IsNullOrEmpty(data.name) ? data.name : data.name;
+
         // 1. 공격 선언 (타이핑)
-        yield return StartCoroutine(TypeWriterEffect($"{data.name}(으)로 공격!"));
+        yield return StartCoroutine(TypeWriterEffect($"{data.displayName}(으)로 공격!"));
         yield return new WaitForSeconds(0.2f); // 텍스트 읽을 시간
 
         // 2. 플레이어 모션 실행

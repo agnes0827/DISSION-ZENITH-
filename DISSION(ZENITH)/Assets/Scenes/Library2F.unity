@@ -1296,7 +1296,7 @@ MonoBehaviour:
   rewardSpawnPoint: {fileID: 0}
   bounceScale: 0.7
   bounceDuration: 0.15
-  suckDuration: 0.4
+  suckDuration: 0.5
 --- !u!61 &818943457
 BoxCollider2D:
   m_ObjectHideFlags: 0
