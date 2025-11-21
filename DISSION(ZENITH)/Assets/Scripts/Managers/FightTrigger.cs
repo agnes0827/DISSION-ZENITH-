@@ -10,14 +10,17 @@ public class FightTrigger : MonoBehaviour
     [Header("몬스터 정보")]
     public string monsterId = "LibraryBoss";
 
-    [Header("전투 설정")]
+    [Header("전투 Scene 불러오기")]
     public string fightSceneName = "Fight"; // 로드할 전투 씬 이름
-    public Image fadePanel;                 // 페이드 효과에 사용할 이미지
-    public float fadeDuration = 1f;
 
     [Header("보상 설정")]
     public GameObject rewardArtifactPrefab; // 처치 후 생성될 아티팩트 프리팹 (ArtifactProximityPickup 붙어있어야 함)
     public Transform rewardSpawnPoint;      // 생성 위치 (없으면 몬스터 위치)
+
+    [Header("전투 시작 연출")]
+    public float bounceScale = 0.7f;
+    public float bounceDuration = 0.15f;
+    public float suckDuration = 0.6f;
 
     private bool _isLoading = false;
     private Collider2D triggerCollider;
@@ -40,14 +43,6 @@ public class FightTrigger : MonoBehaviour
                 if (triggerCollider != null) triggerCollider.enabled = false;
                 return;
             }
-            else // 아직 처치 안 됨
-            {
-                Debug.Log($"몬스터 '{monsterId}'가 전투 대기 중입니다.");
-            }
-        }
-        else
-        {
-            Debug.LogError("FightTrigger: GameStateManager를 찾을 수 없습니다!");
         }
     }
 
@@ -57,50 +52,74 @@ public class FightTrigger : MonoBehaviour
         if (_isLoading || !other.CompareTag("Player")) return;
         _isLoading = true;
 
-        // 이미 전투 진입 로직이 시작되었다면 중복 실행 방지
-        _isLoading = true;
-
-        Debug.Log($"플레이어가 '{monsterId}'와 전투를 시작합니다.");
+        Debug.Log($"'{monsterId}'와 전투 시작");
 
         // GameStateManager에 전투 정보 기록
-        if (PlayerController.Instance != null && GameStateManager.Instance != null)
+        if (GameStateManager.Instance != null)
         {
             GameStateManager.Instance.playerPositionBeforeBattle = PlayerController.Instance.transform.position;
             GameStateManager.Instance.returnSceneAfterBattle = SceneManager.GetActiveScene().name;
             GameStateManager.Instance.currentMonsterId = monsterId; // 현재 싸울 몬스터 ID 저장
-            Debug.Log($"전투 정보 저장: 위치({GameStateManager.Instance.playerPositionBeforeBattle}), 복귀씬({GameStateManager.Instance.returnSceneAfterBattle}), 몬스터ID({monsterId})");
-
             PlayerController.Instance.StopMovement();
+
+            Debug.Log($"전투 정보 저장: 위치({GameStateManager.Instance.playerPositionBeforeBattle}), 복귀씬({GameStateManager.Instance.returnSceneAfterBattle}), 몬스터ID({monsterId})");
         }
         else
         {
-            Debug.LogError("FightTrigger: PlayerController 또는 GameStateManager를 찾을 수 없어 정보 저장을 못했습니다!");
             _isLoading = false; // 로딩 취소
             return;
         }
 
         // 페이드 후 전투 씬으로 이동
-        if (fadePanel != null)
-            StartCoroutine(FadeAndLoad());
-        else
-            SceneManager.LoadScene(fightSceneName);
+        StartCoroutine(EncounterSequence());
     }
 
-    private IEnumerator FadeAndLoad()
+    // 전투 시작 연출 코루틴
+    private IEnumerator EncounterSequence()
     {
-        float t = 0f;
-        Color c = fadePanel.color;
+        Camera cam = Camera.main;
+        float originalSize = cam.orthographicSize;
 
-        if (fadePanel.gameObject != null) fadePanel.gameObject.SetActive(true);
+        // 1-1. 하얗게 세팅
+        FadeManager.Instance.SetFadeColor(Color.white);
 
-        while (t < fadeDuration)
+        // 1-2. "쿵!" (순간 확대) + 하얀색 팍!
+        // 병렬로 실행: 카메라는 줄어들고(줌인), 화면은 하얘짐
+        FadeManager.Instance.FadeOut(bounceDuration);
+        yield return StartCoroutine(ChangeCameraSize(cam, originalSize, originalSize * bounceScale, bounceDuration));
+
+        // 1-3. "탁!" (원상 복구) + 하얀색 빠짐
+        FadeManager.Instance.FadeIn(bounceDuration);
+        yield return StartCoroutine(ChangeCameraSize(cam, originalSize * bounceScale, originalSize, bounceDuration));
+
+        // 잠깐 대기 (리듬감)
+        yield return new WaitForSeconds(0.1f);
+
+        // 2-1. 검은색 세팅
+        FadeManager.Instance.SetFadeColor(Color.black);
+
+        FadeManager.Instance.FadeOut(suckDuration);
+
+        yield return StartCoroutine(ChangeCameraSize(cam, originalSize, 0.1f, suckDuration));
+
+        SceneManager.LoadScene(fightSceneName);
+    }
+
+    private IEnumerator ChangeCameraSize(Camera cam, float startSize, float endSize, float time)
+    {
+        float elapsed = 0f;
+        while (elapsed < time)
         {
-            t += Time.unscaledDeltaTime;
-            c.a = Mathf.Lerp(0f, 1f, t / fadeDuration);
-            fadePanel.color = c;
+            elapsed += Time.unscaledDeltaTime;
+            cam.orthographicSize = Mathf.Lerp(startSize, endSize, elapsed / time);
             yield return null;
         }
+        cam.orthographicSize = endSize;
+    }
 
+    private IEnumerator ProcessBattleStart()
+    {
+        yield return FadeManager.Instance.WipeOut(0.5f);
         SceneManager.LoadScene(fightSceneName);
     }
 

@@ -2150,6 +2150,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 180199370}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
+      propertyPath: moveDuration
+      value: 0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: playerVisual
       value: 
       objectReference: {fileID: 1285690444}

@@ -1292,10 +1292,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterId: LibraryBoss
   fightSceneName: Fight
-  fadePanel: {fileID: 4270922395544475825, guid: ddfb2784a2abe184683e6edda8fba97a, type: 3}
-  fadeDuration: 2
   rewardArtifactPrefab: {fileID: 800963431278335092, guid: 4d6d90dd370bc4749807d0f23dc7ad80, type: 3}
   rewardSpawnPoint: {fileID: 0}
+  bounceScale: 0.7
+  bounceDuration: 0.15
+  suckDuration: 0.4
 --- !u!61 &818943457
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2811,7 +2812,7 @@ MonoBehaviour:
   monsterFocusCam: {fileID: 1954137008}
   monsterObject: {fileID: 818943452}
   focusDelay: 1
-  focusDuration: 3.5
+  focusDuration: 3
 --- !u!4 &1767899640
 Transform:
   m_ObjectHideFlags: 0
