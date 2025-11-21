@@ -20,6 +20,12 @@ public class BattleManager : MonoBehaviour
     public Slider playerHpSlider;
     public Slider enemyHpSlider;
 
+    // 턴 indicator
+    public TurnIndicator turnIndicator;
+
+    public Vector3 playerIndicatorOffset = new Vector3(0, 100f, 0); // 플레이어
+    public Vector3 enemyIndicatorOffset = new Vector3(0, 200f, 0);  // enemy
+
     [Header("Dialogue 설정")]
     public float typingSpeed = 0.05f;
 
@@ -102,6 +108,10 @@ public class BattleManager : MonoBehaviour
             }
         }
         LoadPlayerWeapons(); // 무기 장착
+
+        // 시작 전 indicator 비활성화
+        if (turnIndicator != null) turnIndicator.SetTarget(null, Vector3.zero);
+
         StartCoroutine(StartBattleSequence());
     }
 
@@ -172,24 +182,19 @@ public class BattleManager : MonoBehaviour
     // 전투 시작 연출
     IEnumerator StartBattleSequence()
     {
-        // 1. 인벤토리 숨기고 패널 켜기
-        // battleInventoryMenu.SetActive(false);
         panel.SetActive(true);
         isActionInProgress = true;
 
-        // 2. 몬스터 이름 가져오기 (Enemy 스크립트에 이름이 없다면 태그나 게임오브젝트 이름 사용)
+        // 몬스터 이름 가져오기
         string monsterName = (enemy != null) ? enemy.enemyName : "몬스터";
-
-        // 3. 텍스트 타이핑: "{몬스터}이(가) 공격해왔다!"
         yield return StartCoroutine(TypeWriterEffect($"{monsterName}이(가) 공격해왔다!"));
         yield return new WaitForSeconds(1.5f);
 
-        // 4. 인벤토리 열기 및 입력 대기 상태 전환
-        // battleInventoryMenu.SetActive(true);
-        isActionInProgress = false;
+        // indicator: 플레이어 턴
+        if (turnIndicator != null)
+            turnIndicator.SetTarget(playerVisual, playerIndicatorOffset);
 
-        // 안내 문구 지우기 or "행동을 선택하세요" 등으로 변경 가능
-        // DialogText.text = ""; 
+        isActionInProgress = false;
     }
 
     // 타이핑 효과 함수
@@ -263,6 +268,10 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
+        // indicator: enemy 턴
+        if (turnIndicator != null)
+            turnIndicator.SetTarget(enemyVisual, enemyIndicatorOffset);
+
         string selectedWeapon = enemyWeapons[Random.Range(0, enemyWeapons.Length)];
         int damage = enemyDamageMap[selectedWeapon];
 
@@ -290,22 +299,34 @@ public class BattleManager : MonoBehaviour
         yield return StartCoroutine(TypeWriterEffect($"{damage}의 데미지를 입었다."));
         yield return new WaitForSeconds(1.0f);
 
+        // 패배
         if (GameStateManager.Instance.playerHP <= 0 && !battleEnded)
         {
             battleEnded = true;
             if (PlayerHpText != null) PlayerHpText.enabled = false;
+
+            // indicator 비활성화
+            if (turnIndicator != null) turnIndicator.SetTarget(null, Vector3.zero);
+
             yield return StartCoroutine(TypeWriterEffect("눈앞이 깜깜해진다..."));
             yield return new WaitForSeconds(2.0f);
             EndBattle("DialogueTest");
         }
-        else if (!battleEnded)
+        else if (!battleEnded) // enemy가 살아있다면
         {
-            isActionInProgress = false; 
+            isActionInProgress = false;
+
+            // indicator: 플레이어 턴
+            if (turnIndicator != null)
+                turnIndicator.SetTarget(playerVisual, playerIndicatorOffset);
         }
     }
 
     IEnumerator VictorySequence()
     {
+        // indicator 비활성화
+        if (turnIndicator != null) turnIndicator.SetTarget(null, Vector3.zero);
+
         yield return StartCoroutine(TypeWriterEffect("적을 쓰러트렸다!"));
         yield return new WaitForSeconds(1.5f);
 
