@@ -2191,11 +2191,11 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: ca88699928e1ac045b14dc6d35e2df0f, type: 3}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: defaultHandWeapon.maxDamage
-      value: 10
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: defaultHandWeapon.minDamage
-      value: 5
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: allWeaponDatabase.Array.size

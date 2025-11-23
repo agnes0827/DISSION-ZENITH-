@@ -171,8 +171,6 @@ public class BattleManager : MonoBehaviour
         if (battleEnded) return;
         battleEnded = true;
 
-        if (PlayerHpText != null) PlayerHpText.enabled = false;
-
         if (enemyHpSlider != null)
         {
             enemyHpSlider.gameObject.SetActive(false);

@@ -46,13 +46,15 @@ public class GameStateManager : MonoBehaviour
 
     // 전투
     [HideInInspector] public Vector3 playerPositionBeforeBattle; // 전투 전 플레이어 위치
-    [HideInInspector] public string returnSceneAfterBattle;     // 전투 후 돌아갈 씬 이름
-    [HideInInspector] public string currentMonsterId;           // 현재 전투 중인 몬스터 ID
+    [HideInInspector] public string returnSceneAfterBattle;      // 전투 후 돌아갈 씬 이름
+    [HideInInspector] public string currentMonsterId;            // 현재 전투 중인 몬스터 ID
 
     // 진행 상황 플래그
     [Header("Event Flags")]
     public HashSet<string> triggeredNoticeIds = new HashSet<string>();       // NoticeUI
-    public bool collectedLibraryBossReward = false;                          // 보상 아이템 획득 여부
+
+    public bool collectedLibraryBossReward = false;                          // 도서관 보상 아이템 획득 여부
+    public bool isLibraryPurified = false;                                   // 도서관 정화 여부
 
     [Header("Combat States")]
     public HashSet<string> defeatedMonsterIds = new HashSet<string>();
