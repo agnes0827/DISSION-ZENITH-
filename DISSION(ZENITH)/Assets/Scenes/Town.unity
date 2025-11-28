@@ -648,7 +648,7 @@ GameObject:
   - component: {fileID: 535404289}
   - component: {fileID: 535404291}
   m_Layer: 0
-  m_Name: Libraryimg
+  m_Name: TownImg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -862,11 +862,11 @@ PrefabInstance:
       objectReference: {fileID: 8957809312697036735, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
     - target: {fileID: 1065903476920661168, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.43
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1065903476920661168, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.92
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1065903476920661168, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1205,27 +1205,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 180.52
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 30.44
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -48.739998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 42.78
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6609197052597899504, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_IsActive
@@ -1237,7 +1237,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7970243458678221927, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
