@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 
     public string currentMapName; //∏  ¿Ã∏ß
     public float speed = 3f;
-    public float runSpeed;
+    public float runSpeed = 4f;
     private float applyRunSpeed;
     private bool canMove = true;
 
@@ -100,6 +100,8 @@ public class PlayerController : MonoBehaviour
         //¿Ãµø
         while (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
+            bool isRunning = Input.GetKey(KeyCode.LeftShift);
+            
             applyRunSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : 0;
 
             moveVector.x = Input.GetAxisRaw("Horizontal");
@@ -125,10 +127,7 @@ public class PlayerController : MonoBehaviour
             boxCollider.enabled = true;
 
             if (hit.transform != null)
-            {
                 break;
-
-            }
 
             transform.Translate(moveVector * (speed + applyRunSpeed) * Time.deltaTime);
 

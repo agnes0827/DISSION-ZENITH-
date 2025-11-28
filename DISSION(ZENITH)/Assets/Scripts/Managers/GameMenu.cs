@@ -7,6 +7,7 @@ public class GameMenu : MonoBehaviour
 {
     [Header("Menu Root")]
     public GameObject go; // menu 객체 여기에 넣기
+    public GameObject saveMenu; // saveMenu 객체 여기에 넣기
     private bool activated; // menu 화면 활성화/비활성화
 
     private void Start()
@@ -29,6 +30,15 @@ public class GameMenu : MonoBehaviour
     public void Continue()
     {
         SetMenu(false);
+    }
+
+    /// <summary>
+    /// 세이브 버튼: 세이브 패널 열기
+    /// </summary>
+    public void SavePanel()
+    {
+        SetMenu(false);
+        saveMenu.SetActive(true);
     }
 
     /// <summary>
