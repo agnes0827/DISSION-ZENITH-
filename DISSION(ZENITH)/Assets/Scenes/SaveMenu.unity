@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 511851197}
   - component: {fileID: 511851196}
   - component: {fileID: 511851195}
+  - component: {fileID: 511851198}
   m_Layer: 5
   m_Name: SavePanel2
   m_TagString: Untagged
@@ -366,6 +367,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 511851198}
+        m_TargetAssemblyTypeName: PlayTimeTextUI, Assembly-CSharp
+        m_MethodName: ShowPlayTime
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &511851196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,6 +417,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511851193}
   m_CullTransparentMesh: 1
+--- !u!114 &511851198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511851193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd0d27343f8271e40924c01b1e921cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playTimeText: {fileID: 2021085290}
 --- !u!1 &528837468
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,7 +621,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1:01:03
+  m_text: "\u314E\u3147\u3147\u314E\uC544\uB7EC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 76e3593adae87974f92f3cedc01a1b85, type: 2}
   m_sharedMaterial: {fileID: 6786666431722446707, guid: 76e3593adae87974f92f3cedc01a1b85, type: 2}
@@ -1008,6 +1034,7 @@ GameObject:
   - component: {fileID: 802994421}
   - component: {fileID: 802994420}
   - component: {fileID: 802994419}
+  - component: {fileID: 802994422}
   m_Layer: 5
   m_Name: SavePanel1
   m_TagString: Untagged
@@ -1105,6 +1132,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 802994422}
+        m_TargetAssemblyTypeName: PlayTimeTextUI, Assembly-CSharp
+        m_MethodName: ShowPlayTime
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &802994420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1143,6 +1182,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 802994417}
   m_CullTransparentMesh: 1
+--- !u!114 &802994422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802994417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd0d27343f8271e40924c01b1e921cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playTimeText: {fileID: 537139644}
 --- !u!1 &1082329991
 GameObject:
   m_ObjectHideFlags: 0
@@ -1689,6 +1741,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1922531240
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1922531242}
+  - component: {fileID: 1922531241}
+  m_Layer: 0
+  m_Name: GameStateManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1922531241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922531240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78aac91942d329d4284bdb2d2db31d4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextSpawnPointId: 
+  playerHP: 0
+  playerMaxHP: 100
+  playerGold: 0
+  collectedArtifactIDs: []
+  playerPositionBeforeBattle: {x: 0, y: 0, z: 0}
+  returnSceneAfterBattle: 
+  currentMonsterId: 
+  collectedLibraryBossReward: 0
+  isLibraryPurified: 0
+  isDustCleaningQuestCompleted: 0
+  totalPlayTime: 0
+  isCountingTime: 1
+--- !u!4 &1922531242
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922531240}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 476.08682, y: 301.54095, z: -2.983372}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1988096539
 GameObject:
   m_ObjectHideFlags: 0
@@ -1835,6 +1944,7 @@ GameObject:
   - component: {fileID: 2011311677}
   - component: {fileID: 2011311676}
   - component: {fileID: 2011311675}
+  - component: {fileID: 2011311678}
   m_Layer: 5
   m_Name: SavePanel3
   m_TagString: Untagged
@@ -1932,6 +2042,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 2011311678}
+        m_TargetAssemblyTypeName: PlayTimeTextUI, Assembly-CSharp
+        m_MethodName: ShowPlayTime
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &2011311676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1970,6 +2092,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2011311673}
   m_CullTransparentMesh: 1
+--- !u!114 &2011311678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011311673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd0d27343f8271e40924c01b1e921cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playTimeText: {fileID: 1988096541}
 --- !u!1 &2021085288
 GameObject:
   m_ObjectHideFlags: 0
@@ -2111,3 +2246,4 @@ SceneRoots:
   - {fileID: 1414739626}
   - {fileID: 1916676777}
   - {fileID: 1815930078}
+  - {fileID: 1922531242}
