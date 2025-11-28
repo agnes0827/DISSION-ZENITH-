@@ -4196,6 +4196,10 @@ PrefabInstance:
       propertyPath: m_DefaultBlend.m_Time
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2616274575068400186, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
+      propertyPath: m_DefaultBlend.m_Style
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3839036313128782792, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -4228,6 +4232,84 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1001 &3731328423233376634
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4278885173925201280, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_Name
+      value: PollutionArea
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6628476794632905090, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4278885173925201280, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3731328423233376636}
+  m_SourcePrefab: {fileID: 100100000, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+--- !u!1 &3731328423233376635 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4278885173925201280, guid: 2b0aa2e18dc418b4a9ae83033431bfb8, type: 3}
+  m_PrefabInstance: {fileID: 3731328423233376634}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3731328423233376636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3731328423233376635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cdd3af3e2351524bbcdc52ac8ddadd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myPollution: {fileID: 0}
 --- !u!4 &4271648742118727928
 Transform:
   m_ObjectHideFlags: 0
@@ -4511,6 +4593,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 3286794272787953534}
+  - {fileID: 3731328423233376634}
   - {fileID: 1282376284}
   - {fileID: 1934020571}
   - {fileID: 943900150}

@@ -12,7 +12,6 @@ public class ItemSlot : MonoBehaviour
     [SerializeField] private Button slotButton; // 이 슬롯을 클릭하는 버튼
     [SerializeField] private Image backgroundImage; // 배경 이미지 (회색 처리용)
 
-
     private ItemData itemData;
     private ItemDefinition definition;
     private bool isUsable; // 인벤토리에서 바로 사용 가능한가?

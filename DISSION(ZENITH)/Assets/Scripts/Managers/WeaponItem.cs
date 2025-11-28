@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 public class WeaponItem : MonoBehaviour
 {
+    public string weaponId;
     public Image weaponImage; // 이 무기의 이미지 (프리팹 내부에 연결)
     public Text weaponNameText; // 무기의 이름
+
     public int minDamage; // 최소 공격력
     public int maxDamage; // 최대 공격력
 
@@ -20,8 +22,9 @@ public class WeaponItem : MonoBehaviour
     void OnClick()
     {
         var slotManager = FindObjectOfType<WeaponSlotManager>();
+        if (slotManager == null) return;
 
-        string weaponName = weaponNameText.text;
-        slotManager.AssignWeaponToSlot(weaponImage.sprite, weaponName, minDamage, maxDamage);
+        string displayName = weaponNameText.text;
+        slotManager.AssignWeaponToSlot(weaponImage.sprite, weaponId, displayName, minDamage, maxDamage);
     }
 }
