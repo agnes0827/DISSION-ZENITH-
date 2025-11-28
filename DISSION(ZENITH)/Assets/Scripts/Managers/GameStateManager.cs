@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq; // ToList 쓰려면 필요
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 게임의 모든 영구 데이터를 저장하고 관리하는 중앙 데이터베이스입니다.
@@ -145,6 +147,38 @@ public class GameStateManager : MonoBehaviour
         int m = (totalSec % 3600) / 60;
         int s = totalSec % 60;
         return $"{h}:{m:00}:{s:00}";   // 1:01:35 이렇게
+    }
+
+    // 해쉬셋 저장 리스트로 변환 
+    public SaveData CreateSaveData() // 해쉬셋 리스트로 변환
+    {
+        SaveData data = new SaveData();
+
+        // 기본 스탯
+        data.playerHP = playerHP;
+        data.playerMaxHP = playerMaxHP;
+        data.playerGold = playerGold;
+        data.totalPlayTime = totalPlayTime;
+
+        data.nextSpawnPointId = nextSpawnPointId;
+        data.currentSceneName = SceneManager.GetActiveScene().name;
+
+        // 인벤토리 (Dictionary → 두 개의 List로 분해)
+        data.inventoryItemKeys = inventoryItems.Keys.ToList();
+        data.inventoryItemValues = inventoryItems.Values.ToList();
+
+        // HashSet → List
+        data.collectedSceneObjectIDs = collectedSceneObjectIDs.ToList();
+        data.acceptedQuests = acceptedQuests.ToList();
+        data.completedQuests = completedQuests.ToList();
+        data.objectiveReachedQuests = objectiveReachedQuests.ToList();
+        data.defeatedMonsterIds = defeatedMonsterIds.ToList();
+        data.cleanedDustIds = cleanedDustIds.ToList();
+
+        data.isDustCleaningQuestCompleted = isDustCleaningQuestCompleted;
+        data.collectedLibraryBossReward = collectedLibraryBossReward;
+
+        return data;
     }
 
     // 1회성 이벤트 실행 여부 확인
