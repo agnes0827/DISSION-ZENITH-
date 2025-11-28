@@ -1231,6 +1231,7 @@ MonoBehaviour:
   returnSceneAfterBattle: 
   currentMonsterId: 
   collectedLibraryBossReward: 0
+  isLibraryPurified: 0
   isDustCleaningQuestCompleted: 0
   totalPlayTime: 0
   isCountingTime: 1
@@ -1572,6 +1573,10 @@ PrefabInstance:
     - target: {fileID: 5465506933837067724, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6578521916374233572, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
+      propertyPath: runSpeed
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7186858601658356173, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
       propertyPath: m_Enabled
