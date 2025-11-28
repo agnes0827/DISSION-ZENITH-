@@ -20,10 +20,41 @@ public class DialogueTrigger : MonoBehaviour
     public string npcId;
     public bool isReportNpc = false;
 
+    [Header("트리거 옵션")]
+    [Tooltip("플레이어가 닿으면 자동으로 대화가 시작됩니다.")]
+    public bool triggerOnEnter = false;
+
+    [Tooltip("게임 전체에서 딱 한 번만 실행됩니다.")]
+    public bool isOneTimeOnly = false;
+
+    [Tooltip("1회성 이벤트 식별 ID (isOneTimeOnly가 true일 때만 필수)")]
+    public string oneTimeEventId;
+
 
 
     public void TriggerDialogue()
     {
+        // 1. 1회성 이벤트 체크
+        if (isOneTimeOnly)
+        {
+            // ID가 비어있으면 경고
+            if (string.IsNullOrEmpty(oneTimeEventId))
+            {
+                Debug.LogWarning($"[DialogueTrigger] {gameObject.name} : 1회성 이벤트 ID가 없습니다!");
+                return;
+            }
+
+            // 이미 실행된 이벤트라면 대화 시작 안 함
+            if (GameStateManager.Instance.HasExecutedEvent(oneTimeEventId))
+            {
+                // 필요하다면 여기서 collider를 끄거나 오브젝트를 비활성화 할 수도 있음
+                return;
+            }
+
+            // 실행 처리 등록
+            GameStateManager.Instance.SetEventExecuted(oneTimeEventId);
+        }
+
         string selectedId = defaultId;
 
         // 1. 선행 퀘스트 미완료 → locked 대사 출력
