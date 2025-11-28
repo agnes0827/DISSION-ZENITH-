@@ -18,5 +18,6 @@ public class PlayTimeTextUI : MonoBehaviour
         {
             Debug.LogWarning("GameStateManager 또는 playTimeText가 연결되지 않았습니다.");
         }
+        SaveSystem.SaveGame();
     }
 }
