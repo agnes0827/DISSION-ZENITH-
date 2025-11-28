@@ -12,7 +12,22 @@ public class DialogueInteraction : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        currentDialogueTarget = other.GetComponent<DialogueTrigger>();
+        DialogueTrigger trigger = other.GetComponent<DialogueTrigger>();
+
+        if (trigger != null)
+        {
+            currentDialogueTarget = trigger;
+
+            // 접촉 시 자동 실행 옵션이 켜져 있다면
+            if (currentDialogueTarget.triggerOnEnter)
+            {
+                // 현재 대화 중이거나 미니게임 중이 아니라면 실행
+                if (!IsSystemLocked())
+                {
+                    currentDialogueTarget.TriggerDialogue();
+                }
+            }
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
@@ -27,6 +42,7 @@ public class DialogueInteraction : MonoBehaviour
     void Update()
     {
         if (currentDialogueTarget == null) return;
+        if (IsSystemLocked()) return;
 
         bool dialogueLocked = (dialogueManager != null && dialogueManager.isDialogue);
         bool miniGameLocked = MiniGameManager.IsMiniGameActive;
@@ -36,12 +52,16 @@ public class DialogueInteraction : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            // DialogueTrigger가 붙어 있으면 대화 시작 (기존 시스템)
-            if (currentDialogueTarget.GetComponent<DialogueTrigger>() != null)
-            {
-                currentDialogueTarget.GetComponent<DialogueTrigger>().TriggerDialogue();
-            }
+            currentDialogueTarget.TriggerDialogue();
         }
     }
-}
 
+        private bool IsSystemLocked()
+    {
+        bool dialogueLocked = (dialogueManager != null && dialogueManager.isDialogue);
+        bool miniGameLocked = MiniGameManager.IsMiniGameActive;
+        // CutsceneManager 체크 등 추가 가능
+
+        return dialogueLocked || miniGameLocked;
+    }
+}

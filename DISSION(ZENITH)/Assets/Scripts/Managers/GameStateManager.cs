@@ -35,6 +35,7 @@ public class GameStateManager : MonoBehaviour
     // 씬 오브젝트 상태
     [Header("Scene Object States")]
     public HashSet<string> collectedSceneObjectIDs = new HashSet<string>();
+    public HashSet<string> executedOneTimeEvents = new HashSet<string>();
 
     // 퀘스트
     [Header("Quest Status")]
@@ -108,6 +109,7 @@ public class GameStateManager : MonoBehaviour
 
         collectedSceneObjectIDs.Clear();
         defeatedMonsterIds.Clear();
+        executedOneTimeEvents.Clear();
     }
 
     public bool IsMonsterDefeated(string monsterId)
@@ -177,6 +179,21 @@ public class GameStateManager : MonoBehaviour
         data.collectedLibraryBossReward = collectedLibraryBossReward;
 
         return data;
+    }
+
+    // 1회성 이벤트 실행 여부 확인
+    public bool HasExecutedEvent(string eventId)
+    {
+        return executedOneTimeEvents.Contains(eventId);
+    }
+
+    // 1회성 이벤트 실행 등록
+    public void SetEventExecuted(string eventId)
+    {
+        if (!executedOneTimeEvents.Contains(eventId))
+        {
+            executedOneTimeEvents.Add(eventId);
+        }
     }
 }
 
