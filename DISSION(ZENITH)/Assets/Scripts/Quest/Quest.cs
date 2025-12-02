@@ -7,7 +7,8 @@ using UnityEngine;
 public enum QuestType
 {
     TalkToNPC,
-    HaveItem
+    HaveItem,
+    ReachLocation
     //KillTarget,
     //DeliverItem,
     //CollectItem,
