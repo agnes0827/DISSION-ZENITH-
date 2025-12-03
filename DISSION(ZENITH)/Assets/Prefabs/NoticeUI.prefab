@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "WASD\uB85C \uC774\uB3D9\uD558\uC790."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4562990a105928c45bd807b750e406c2, type: 2}
-  m_sharedMaterial: {fileID: 2982589044490962923, guid: 4562990a105928c45bd807b750e406c2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 59cd8ea8e6613794dbdcdc8aecdd9dc3, type: 2}
+  m_sharedMaterial: {fileID: 1296598428560455513, guid: 59cd8ea8e6613794dbdcdc8aecdd9dc3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

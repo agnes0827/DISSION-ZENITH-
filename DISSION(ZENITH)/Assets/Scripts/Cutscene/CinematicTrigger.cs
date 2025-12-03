@@ -12,12 +12,19 @@ public class CinematicTrigger : MonoBehaviour
 
     [Header("레터박스 설정")]
     public bool showLetterbox = true;
-    public GameObject cinematicBars;
+    [Tooltip("위쪽 검은 띠의 RectTransform")]
+    public RectTransform topBar;
+    [Tooltip("아래쪽 검은 띠의 RectTransform")]
+    public RectTransform bottomBar;
+    [Tooltip("띠가 들어오고 나가는 시간 (초)")]
+    public float slideDuration = 0.5f;
+
+    private Vector2 topShowPos;
+    private Vector2 bottomShowPos;
 
     [Header("카메라 연출")]
     [Tooltip("연출 시작 전, 현재 화면(플레이어)을 비추며 대기할 시간")]
     public float startDelay = 1.0f;
-
     [Tooltip("연출 시 활성화할 타겟 카메라")]
     public CinemachineVirtualCamera targetCam;
     [Tooltip("기본 플레이어 카메라")]
@@ -33,14 +40,21 @@ public class CinematicTrigger : MonoBehaviour
 
     private bool isRunning = false;
 
+    private void Awake()
+    {
+        if (topBar != null) topShowPos = topBar.anchoredPosition;
+        if (bottomBar != null) bottomShowPos = bottomBar.anchoredPosition;
+    }
+
     private void Start()
     {
-        // [추가됨] 시작하자마자 실행 (보스전 인트로용)
-        if (playOnStart)
+        if (showLetterbox && topBar != null && bottomBar != null)
         {
-            // 약간의 딜레이를 주어 다른 스크립트 초기화 후 실행되게 함 (안전장치)
-            StartCoroutine(CheckAndPlaySequence());
+            SetBarsPosition(hidden: true);
+            if (topBar.parent != null) topBar.parent.gameObject.SetActive(true);
         }
+
+        if (playOnStart) StartCoroutine(CheckAndPlaySequence());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -76,24 +90,20 @@ public class CinematicTrigger : MonoBehaviour
         if (PlayerController.Instance != null) PlayerController.Instance.StopMovement();
 
         // [옵션] 레터박스 ON
-        if (showLetterbox && cinematicBars != null)
+        if (showLetterbox && topBar != null && bottomBar != null)
         {
-            cinematicBars.SetActive(true);
+            yield return StartCoroutine(SlideBars(show: true));
         }
 
         // 카메라 이동 전, 잠시 대기
-        if (startDelay > 0)
-        {
-            yield return new WaitForSeconds(startDelay);
-        }
+        if (startDelay > 0) yield return new WaitForSeconds(startDelay);
 
         // 카메라 전환
         int originalPriority = 0;
         if (targetCam != null && playerCam != null)
         {
             originalPriority = targetCam.Priority;
-            targetCam.Priority = playerCam.Priority + 1; // 타겟 카메라 활성화
-
+            targetCam.Priority = playerCam.Priority + 1;
             yield return new WaitForSeconds(focusDuration);
         }
 
@@ -104,19 +114,69 @@ public class CinematicTrigger : MonoBehaviour
             yield return new WaitForSeconds(1.5f); // 돌아오는 시간 대기
         }
 
-        // 레터박스 OFF
-        if (showLetterbox && cinematicBars != null)
-        {
-            cinematicBars.SetActive(false);
-        }
-
         // [옵션] 대사 출력
         if (!string.IsNullOrEmpty(dialogueId))
         {
             DialogueManager.Instance.StartDialogue(dialogueId);
         }
 
+        // 레터박스 OFF
+        if (showLetterbox && topBar != null && bottomBar != null)
+        {
+            yield return StartCoroutine(SlideBars(show: false));
+        }
+
         // 플레이어 재개
         if (PlayerController.Instance != null) PlayerController.Instance.ResumeMovement();
+    }
+
+    IEnumerator SlideBars(bool show)
+    {
+        float timer = 0f;
+        float topHeight = topBar.rect.height;
+        float bottomHeight = bottomBar.rect.height;
+
+        // 목표 위치 설정
+        // show(나타남): Y = 0 (원래 위치)
+        // hide(사라짐): Y = 높이만큼 밖으로 (Top은 +, Bottom은 -)
+        Vector2 topTarget = show ? topShowPos : topShowPos + new Vector2(0, topHeight);
+        Vector2 bottomTarget = show ? bottomShowPos : bottomShowPos - new Vector2(0, bottomHeight);
+
+        Vector2 topStart = topBar.anchoredPosition;
+        Vector2 bottomStart = bottomBar.anchoredPosition;
+
+        while (timer < slideDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / slideDuration;
+
+            // SmoothStep을 쓰면 더 부드럽게 움직임 (가속-감속)
+            t = t * t * (3f - 2f * t);
+
+            topBar.anchoredPosition = Vector2.Lerp(topStart, topTarget, t);
+            bottomBar.anchoredPosition = Vector2.Lerp(bottomStart, bottomTarget, t);
+
+            yield return null;
+        }
+
+        topBar.anchoredPosition = topTarget;
+        bottomBar.anchoredPosition = bottomTarget;
+    }
+
+    private void SetBarsPosition(bool hidden)
+    {
+        float topHeight = topBar.rect.height;
+        float bottomHeight = bottomBar.rect.height;
+
+        if (hidden)
+        {
+            topBar.anchoredPosition = topShowPos + new Vector2(0, topHeight);
+            bottomBar.anchoredPosition = bottomShowPos - new Vector2(0, bottomHeight);
+        }
+        else
+        {
+            topBar.anchoredPosition = topShowPos;
+            bottomBar.anchoredPosition = bottomShowPos;
+        }
     }
 }
