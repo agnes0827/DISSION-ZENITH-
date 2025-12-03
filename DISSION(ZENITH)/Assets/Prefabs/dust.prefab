@@ -107,6 +107,9 @@ MonoBehaviour:
   QuestId: Q02
   npcId: 
   isReportNpc: 0
+  triggerOnEnter: 0
+  isOneTimeOnly: 0
+  oneTimeEventId: 
 --- !u!61 &5291444402228361310
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -150,5 +153,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.74}
+  m_Size: {x: 0.9434761, y: 1.0303887}
   m_EdgeRadius: 0

@@ -98,7 +98,7 @@ public class ArtifactEventViewer : MonoBehaviour
 
         panelRoot.SetActive(false);
 
-        // [수정 2] 콜백(아티팩트 등록)을 실행합니다.
+        // 콜백(아티팩트 등록)을 실행합니다.
         _onEventCompleteCallback?.Invoke();
         _onEventCompleteCallback = null;
     }

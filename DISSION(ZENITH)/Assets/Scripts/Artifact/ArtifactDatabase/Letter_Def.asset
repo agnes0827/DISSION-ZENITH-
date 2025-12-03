@@ -19,4 +19,4 @@ MonoBehaviour:
   flashbackSceneName: 
   hasInPlaceEvent: 1
   eventImage: {fileID: 21300000, guid: d5f7f08aac3b29c418da4456a5842adc, type: 3}
-  eventDialogueID: 10000
+  eventDialogueID: 40008

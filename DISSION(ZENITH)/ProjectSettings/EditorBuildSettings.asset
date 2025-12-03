@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Library1F.unity
     guid: a0ee80d5eb89bac4da1c490d8cbc3c92
   - enabled: 1
+    path: Assets/Scenes/Intro.unity
+    guid: 1e80394bf41f71340b82aa6423e8d325
+  - enabled: 1
     path: Assets/Scenes/CutsceneTest.unity
     guid: af68cd2c8144d844ea51e441339a09ee
   - enabled: 1

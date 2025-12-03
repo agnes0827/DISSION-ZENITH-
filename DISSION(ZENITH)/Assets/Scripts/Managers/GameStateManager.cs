@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq; // ToList 쓰려면 필요
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 게임의 모든 영구 데이터를 저장하고 관리하는 중앙 데이터베이스입니다.
@@ -33,6 +35,7 @@ public class GameStateManager : MonoBehaviour
     // 씬 오브젝트 상태
     [Header("Scene Object States")]
     public HashSet<string> collectedSceneObjectIDs = new HashSet<string>();
+    public HashSet<string> executedOneTimeEvents = new HashSet<string>();
 
     // 퀘스트
     [Header("Quest Status")]
@@ -46,13 +49,15 @@ public class GameStateManager : MonoBehaviour
 
     // 전투
     [HideInInspector] public Vector3 playerPositionBeforeBattle; // 전투 전 플레이어 위치
-    [HideInInspector] public string returnSceneAfterBattle;     // 전투 후 돌아갈 씬 이름
-    [HideInInspector] public string currentMonsterId;           // 현재 전투 중인 몬스터 ID
+    [HideInInspector] public string returnSceneAfterBattle;      // 전투 후 돌아갈 씬 이름
+    [HideInInspector] public string currentMonsterId;            // 현재 전투 중인 몬스터 ID
 
     // 진행 상황 플래그
     [Header("Event Flags")]
     public HashSet<string> triggeredNoticeIds = new HashSet<string>();       // NoticeUI
-    public bool collectedLibraryBossReward = false;                          // 보상 아이템 획득 여부
+
+    public bool collectedLibraryBossReward = false;                          // 도서관 보상 아이템 획득 여부
+    public bool isLibraryPurified = false;                                   // 도서관 정화 여부
 
     [Header("Combat States")]
     public HashSet<string> defeatedMonsterIds = new HashSet<string>();
@@ -104,6 +109,7 @@ public class GameStateManager : MonoBehaviour
 
         collectedSceneObjectIDs.Clear();
         defeatedMonsterIds.Clear();
+        executedOneTimeEvents.Clear();
     }
 
     public bool IsMonsterDefeated(string monsterId)
@@ -141,6 +147,53 @@ public class GameStateManager : MonoBehaviour
         int m = (totalSec % 3600) / 60;
         int s = totalSec % 60;
         return $"{h}:{m:00}:{s:00}";   // 1:01:35 이렇게
+    }
+
+    // 해쉬셋 저장 리스트로 변환 
+    public SaveData CreateSaveData() // 해쉬셋 리스트로 변환
+    {
+        SaveData data = new SaveData();
+
+        // 기본 스탯
+        data.playerHP = playerHP;
+        data.playerMaxHP = playerMaxHP;
+        data.playerGold = playerGold;
+        data.totalPlayTime = totalPlayTime;
+
+        data.nextSpawnPointId = nextSpawnPointId;
+        data.currentSceneName = SceneManager.GetActiveScene().name;
+
+        // 인벤토리 (Dictionary → 두 개의 List로 분해)
+        data.inventoryItemKeys = inventoryItems.Keys.ToList();
+        data.inventoryItemValues = inventoryItems.Values.ToList();
+
+        // HashSet → List
+        data.collectedSceneObjectIDs = collectedSceneObjectIDs.ToList();
+        data.acceptedQuests = acceptedQuests.ToList();
+        data.completedQuests = completedQuests.ToList();
+        data.objectiveReachedQuests = objectiveReachedQuests.ToList();
+        data.defeatedMonsterIds = defeatedMonsterIds.ToList();
+        data.cleanedDustIds = cleanedDustIds.ToList();
+
+        data.isDustCleaningQuestCompleted = isDustCleaningQuestCompleted;
+        data.collectedLibraryBossReward = collectedLibraryBossReward;
+
+        return data;
+    }
+
+    // 1회성 이벤트 실행 여부 확인
+    public bool HasExecutedEvent(string eventId)
+    {
+        return executedOneTimeEvents.Contains(eventId);
+    }
+
+    // 1회성 이벤트 실행 등록
+    public void SetEventExecuted(string eventId)
+    {
+        if (!executedOneTimeEvents.Contains(eventId))
+        {
+            executedOneTimeEvents.Add(eventId);
+        }
     }
 }
 

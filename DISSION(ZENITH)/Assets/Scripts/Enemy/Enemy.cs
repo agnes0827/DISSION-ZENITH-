@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("몬스터 정보")]
+    public string enemyName = "몬스터";
     public int hp = 100;
 
     public event Action<int, int> OnDamaged;  // 남은 HP 전달
