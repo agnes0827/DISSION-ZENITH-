@@ -1,346 +1,121 @@
-////using System.Collections;
-////using System.Collections.Generic;
-////using UnityEngine;
-////public class PetC : MonoBehaviour
-////{
-////    public GameObject player;
-////    public float smoothTime = 0.2f;       // 펫 부드럽게 따라오기 속도
-////    public float tileSize = 1f;           // 격자 크기
-////    public float maxDistance = 3f;        // 일정 거리 이상 떨어지면 순간이동
-////    public int teleportOffset = 2;        // 순간이동 시 플레이어 뒤쪽 거리 (타일 기준)
-////    public float yOffset = 0.2f;          // 순간이동 시 Y축 오프셋 (발 아래 겹침 방지)
-////    public float followDistance = 1f;     //펫과 플레이어 간의 거리
-
-////    private Queue<Vector3Int> playerHistory = new Queue<Vector3Int>();
-////    private Vector3Int lastPlayerGridPos;
-////    private Vector3 targetPetWorldPos;
-////    private Vector3 velocity = Vector3.zero;
-
-////    void Start()
-////    {
-////        lastPlayerGridPos = WorldToGrid(player.transform.position);
-////        targetPetWorldPos = transform.position;
-////    }
-
-////    void Update()
-////    {
-////        Vector3Int currentPlayerGrid = WorldToGrid(player.transform.position);
-
-////        // 플레이어가 새로운 칸으로 이동했을 때 기록
-////        if (currentPlayerGrid != lastPlayerGridPos)
-////        {
-////            playerHistory.Enqueue(lastPlayerGridPos);
-////            lastPlayerGridPos = currentPlayerGrid;
-////        }
-
-////        if (Vector3.Distance(transform.position, player.transform.position) > maxDistance)
-////        {
-////            Vector3Int moveDir = currentPlayerGrid - lastPlayerGridPos;
-////            if (moveDir == Vector3Int.zero)
-////            {
-////                moveDir = Vector3Int.up;
-////            }
-
-////            Vector3Int behindPos = currentPlayerGrid - moveDir * teleportOffset;
-////            Vector3 behindWorld = GridToWorld(behindPos);
-
-////            //  시작: 위로 이동 시 펫과 일정 거리 유지, 좌우 이동 시 한 칸 아래
-////            if (Mathf.Abs(moveDir.y) > Mathf.Abs(moveDir.x))
-////            {
-////                float playerLegY = player.transform.position.y - (player.transform.localScale.y / 2f); // 다리 위치
-
-////                if (Mathf.Abs(moveDir.y) > Mathf.Abs(moveDir.x))
-////                {
-////                    // 세로 이동
-////                    if (moveDir.y > 0)
-////                    {
-////                        // 플레이어 위로 이동 → 펫 발 아래에서 followDistance 유지
-////                        behindWorld.y = playerLegY - followDistance;
-////                    }
-////                    else
-////                    {
-////                        // 플레이어 아래로 이동 → 발 아래 살짝 yOffset
-////                        behindWorld.y = playerLegY + yOffset;
-////                    }
-////                }
-////                else
-////                {
-////                    // 좌우 이동 → 발 아래 한 칸(tileSize) 떨어진 위치
-////                    behindWorld.y = playerLegY - tileSize;
-////                }
-
-////            }
-
-
-////            targetPetWorldPos = behindWorld;
-////            transform.position = targetPetWorldPos;
-////            playerHistory.Clear();
-////        }
-
-////        // 펫이 목표에 거의 도달했으면 다음 목표로
-////        if (Vector3.Distance(transform.position, targetPetWorldPos) < 0.05f && playerHistory.Count > 0)
-////        {
-////            Vector3Int nextGrid = playerHistory.Dequeue();
-////            targetPetWorldPos = GridToWorld(nextGrid);
-////        }
-
-////        // SmoothDamp로 부드럽게 이동
-////        transform.position = Vector3.SmoothDamp(
-////            transform.position,
-////            targetPetWorldPos,
-////            ref velocity,
-////            smoothTime
-////        );
-////    }
-
-////    // 월드 → 격자 좌표
-////    Vector3Int WorldToGrid(Vector3 worldPos)
-////    {
-////        return new Vector3Int(
-////            Mathf.RoundToInt(worldPos.x / tileSize),
-////            Mathf.RoundToInt(worldPos.y / tileSize),
-////            0
-////        );
-////    }
-
-////    // 격자 → 월드 좌표
-////    Vector3 GridToWorld(Vector3Int gridPos)
-////    {
-////        return new Vector3(
-////            gridPos.x * tileSize,
-////            gridPos.y * tileSize,
-////            0f
-////        );
-////    }
-////}
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-
-//public class PetC : MonoBehaviour
-//{
-//    public GameObject player;
-//    public float smoothTime = 0.1f;       // 부드러운 따라오기 속도
-//    public float tileSize = 0.5f;           // 격자 크기
-//    public float maxDistance = 3f;        // 순간이동 트리거 거리
-//    public int teleportOffset = 2;        // 순간이동 시 플레이어 뒤쪽 거리 (타일 기준)
-//    public float yOffset = 0.2f;          // 순간이동 시 Y축 오프셋
-
-//    private Queue<Vector3Int> playerHistory = new Queue<Vector3Int>();
-//    private Vector3Int lastPlayerGridPos;
-//    private Vector3 targetPetWorldPos;
-//    private Vector3 velocity = Vector3.zero;
-
-//    void Start()
-//    {
-//        lastPlayerGridPos = WorldToGrid(player.transform.position);
-//        targetPetWorldPos = transform.position;
-//    }
-
-//    void Update()
-//    {
-//        Vector3Int currentPlayerGrid = WorldToGrid(player.transform.position);
-
-//        // 플레이어가 새로운 칸으로 이동했을 때 기록
-//        if (currentPlayerGrid != lastPlayerGridPos)
-//        {
-//            playerHistory.Enqueue(lastPlayerGridPos);
-//            lastPlayerGridPos = currentPlayerGrid;
-//        }
-
-//        //  플레이어와 펫 거리 체크 (순간이동)
-//        if (Vector3.Distance(transform.position, player.transform.position) > maxDistance)
-//        {
-//            Vector3Int moveDir = currentPlayerGrid - lastPlayerGridPos;
-//            if (moveDir == Vector3Int.zero)
-//            {
-//                moveDir = Vector3Int.up;
-//            }
-
-//            Vector3Int behindPos = currentPlayerGrid - moveDir * teleportOffset;
-//            Vector3 behindWorld = GridToWorld(behindPos);
-
-//            // 세로 이동 시
-//            if (Mathf.Abs(moveDir.y) > Mathf.Abs(moveDir.x))
-//            {
-//                float playerLegY = player.transform.position.y - (player.transform.localScale.y / 2f);
-
-//                if (moveDir.y > 0)
-//                {
-//                    // 위로 이동 → 플레이어 발 바로 아래 followDistance 유지
-//                    behindWorld.y = playerLegY - 1f;   // 여기서 1f 대신 public float followDistance 쓰면 조절 가능
-//                }
-//                else
-//                {
-//                    // 아래로 이동 → 발 밑 살짝 겹쳐도 됨
-//                    behindWorld.y = playerLegY + yOffset;
-//                }
-//            }
-//            else
-//            {
-//                // 좌우 이동 → 플레이어 발보다 한 칸 아래
-//                float playerLegY = player.transform.position.y - (player.transform.localScale.y / 2f);
-//                behindWorld.y = playerLegY - tileSize;
-//            }
-
-//            targetPetWorldPos = behindWorld;
-//            transform.position = targetPetWorldPos;
-//            velocity = Vector3.zero;
-//            playerHistory.Clear();
-
-//        }
-
-//        // 펫이 목표에 거의 도달했으면 다음 목표로
-//        if (Vector3.Distance(transform.position, targetPetWorldPos) < 0.05f && playerHistory.Count > 0)
-//        {
-//            Vector3Int nextGrid = playerHistory.Dequeue();
-//            targetPetWorldPos = GridToWorld(nextGrid);
-//        }
-
-//        // SmoothDamp로 부드럽게 이동
-//        transform.position = Vector3.SmoothDamp(
-//            transform.position,
-//            targetPetWorldPos,
-//            ref velocity,
-//            smoothTime
-//        );
-//    }
-
-//    Vector3Int WorldToGrid(Vector3 worldPos)
-//    {
-//        return new Vector3Int(
-//            Mathf.RoundToInt(worldPos.x / tileSize),
-//            Mathf.RoundToInt(worldPos.y / tileSize),
-//            0
-//        );
-//    }
-
-//    Vector3 GridToWorld(Vector3Int gridPos)
-//    {
-//        return new Vector3(
-//            gridPos.x * tileSize,
-//            gridPos.y * tileSize,
-//            0f
-//        );
-//    }
-//}
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PetC : MonoBehaviour
 {
-    public GameObject player;
-    public float smoothTime = 0.05f;       // 부드러운 따라오기 속도
-    public float tileSize = 1f;           // 격자 크기
-    public float maxDistance = 3f;        // 순간이동 트리거 거리
-    public int teleportOffset = 2;        // 순간이동 시 플레이어 뒤쪽 거리 (타일 기준)
-    public float yOffset = 0.2f;          // 순간이동 시 Y축 오프셋
-    public float followDistance = 1f;     // 이동 시 유지할 거리
+    public Transform player;
 
-    private Queue<Vector3Int> playerHistory = new Queue<Vector3Int>();
-    private Vector3Int lastPlayerGridPos;
-    private Vector3 targetPetWorldPos;
+    public float smoothTime = 0.1f;    // 부드럽게 따라오기 시간
+    public float minDistance = 0.5f;   // 플레이어와 유지할 최소 거리
+    public float warpDistance = 4f;    // 순간이동 트리거 거리
+    public float followOffset = 0.8f;  // 플레이어 반대쪽에 있을 때 거리
+
     private Vector3 velocity = Vector3.zero;
+    private Animator anim;
+
+    private Vector3 lastPlayerPos;
+    private Vector3 lastMoveDir;       // 플레이어의 마지막 이동 방향 (반대 위치 계산용)
+    private Vector3 lastMoveForAnim;   // 애니메이션용 마지막 방향 (Idle 시 유지)
 
     void Start()
     {
-        lastPlayerGridPos = WorldToGrid(player.transform.position);
-        targetPetWorldPos = transform.position;
+        lastPlayerPos = player.position;
+        lastMoveDir = Vector3.down;
+        lastMoveForAnim = Vector3.down;
+        anim = GetComponent<Animator>();
     }
 
     void Update()
     {
-        Vector3Int currentPlayerGrid = WorldToGrid(player.transform.position);
+        // 플레이어 입력 값 확인 (Input 기반으로 isMoving 판정)
+        float dx = Input.GetAxisRaw("Horizontal");
+        float dy = Input.GetAxisRaw("Vertical");
+        bool playerInputMoving = (Mathf.Abs(dx) > 0.01f || Mathf.Abs(dy) > 0.01f);
 
-        // 플레이어가 새로운 칸으로 이동했을 때 기록
-        if (currentPlayerGrid != lastPlayerGridPos)
+        // 플레이어 입력이 있으면 그 입력을 기준으로 마지막 이동 방향 갱신
+        if (playerInputMoving)
         {
-            playerHistory.Enqueue(lastPlayerGridPos);
-            lastPlayerGridPos = currentPlayerGrid;
+            Vector3 inputDir = new Vector3(dx, dy, 0f).normalized;
+            lastMoveDir = inputDir;
+            lastMoveForAnim = inputDir; // 움직일 때 애니메이션은 입력 방향을 사용
+        }
+        else
+        {
+            // 입력이 없으면 실제 플레이어 위치 변화로 방향을 갱신할 수 있음
+            Vector3 currentPlayerPos = player.position;
+            Vector3 posDelta = currentPlayerPos - lastPlayerPos;
+            if (posDelta.magnitude > 0.01f)
+            {
+                lastMoveDir = posDelta.normalized;
+                // posDelta는 플레이어 이동이 이미 멈춘 프레임에 0이 될 수 있으므로
+                // 애니메이션은 입력이 없을 때는 이전 lastMoveForAnim 유지 (Idle)
+            }
+            lastPlayerPos = currentPlayerPos;
         }
 
-        bool teleported = false;
+        // isMoving은 플레이어 입력 기준으로 설정: 플레이어가 멈추면 false
+        bool isMoving = playerInputMoving;
+        anim.SetBool("isMoving", isMoving);
 
-        // 플레이어와 펫 거리 체크 (순간이동)
-        if (Vector3.Distance(transform.position, player.transform.position) > maxDistance)
+        // 애니메이션의 inputX, inputY는 움직일 때는 lastMoveForAnim (갱신된 값),
+        // 멈출 때는 마지막으로 저장된 lastMoveForAnim 값이 유지된다.
+        anim.SetFloat("inputX", lastMoveForAnim.x);
+        anim.SetFloat("inputY", lastMoveForAnim.y);
+
+        // 순간이동 조건: 플레이어와 거리가 너무 멀면 워프
+        if (Vector3.Distance(transform.position, player.position) > warpDistance)
         {
-            Vector3Int moveDir = currentPlayerGrid - lastPlayerGridPos;
-            if (moveDir == Vector3Int.zero)
-            {
-                moveDir = Vector3Int.up;
-            }
-
-            Vector3Int behindPos = currentPlayerGrid - moveDir * teleportOffset;
-            Vector3 behindWorld = GridToWorld(behindPos);
-
-            // 플레이어 위치 기준 계산
-            float playerCenterY = player.transform.position.y;
-            float playerHeadY = player.transform.position.y + (player.transform.localScale.y / 2f);
-            float playerLegY = player.transform.position.y - (player.transform.localScale.y / 2f);
-
-            // 방향별 위치 보정
-            if (Mathf.Abs(moveDir.y) > Mathf.Abs(moveDir.x))
-            {
-                if (moveDir.y > 0)
-                {
-                    // 위로 이동 → 중심과 머리 사이보다 조금 더 아래
-                    behindWorld.y = (playerCenterY * 2f + playerHeadY) / 3f + followDistance * 0.1f;
-                }
-                else
-                {
-                    // 아래로 이동 → 발 밑
-                    behindWorld.y = playerLegY + yOffset;
-                }
-            }
-            else
-            {
-                // 좌우 이동 → 중심보다 살짝 위
-                behindWorld.y = playerCenterY + followDistance * 0.1f;
-            }
-
-            targetPetWorldPos = behindWorld;
-            transform.position = targetPetWorldPos;
+            transform.position = GetOppositePosition();
             velocity = Vector3.zero;
-            playerHistory.Clear();
-
-            teleported = true;
+            return;
         }
 
-        // 펫이 목표에 거의 도달했으면 다음 목표로
-        if (Vector3.Distance(transform.position, targetPetWorldPos) < 0.05f && playerHistory.Count > 0)
-        {
-            Vector3Int nextGrid = playerHistory.Dequeue();
-            targetPetWorldPos = GridToWorld(nextGrid);
-        }
+        // 자연스럽게 따라가기: 플레이어 이동 반대쪽 위치를 목표로 한다
+        Vector3 targetPos = GetOppositePosition();
+        float dist = Vector3.Distance(transform.position, targetPos);
 
-        // SmoothDamp 이동 (순간이동하지 않았을 때만)
-        if (!teleported)
+        if (dist > minDistance)
         {
             transform.position = Vector3.SmoothDamp(
                 transform.position,
-                targetPetWorldPos,
+                targetPos,
                 ref velocity,
                 smoothTime
             );
         }
     }
 
-    Vector3Int WorldToGrid(Vector3 worldPos)
+    // 플레이어 이동의 반대 위치를 계산
+    Vector3 GetOppositePosition()
     {
-        return new Vector3Int(
-            Mathf.RoundToInt(worldPos.x / tileSize),
-            Mathf.RoundToInt(worldPos.y / tileSize),
-            0
-        );
-    }
+        Vector3 p = player.position;
+        Vector3 d = lastMoveDir;
 
-    Vector3 GridToWorld(Vector3Int gridPos)
-    {
-        return new Vector3(
-            gridPos.x * tileSize,
-            gridPos.y * tileSize,
-            0f
-        );
+        Vector3 opposite;
+
+        if (Mathf.Abs(d.x) > Mathf.Abs(d.y))
+        {
+            if (d.x > 0f)
+                opposite = p + Vector3.left * followOffset;
+            else
+                opposite = p + Vector3.right * followOffset;
+        }
+        else
+        {
+            if (d.y > 0f)
+                opposite = p + Vector3.down * followOffset;
+            else
+                opposite = p + Vector3.up * followOffset;
+        }
+
+        // 플레이어와 극히 가까워서 겹칠 위험이 있으면 약간 밀어냄
+        if (Vector3.Distance(opposite, p) < minDistance)
+        {
+            Vector3 push = (opposite - p).normalized * minDistance;
+            if (push.magnitude > 0f) opposite = p + push;
+        }
+
+        return opposite;
     }
 }

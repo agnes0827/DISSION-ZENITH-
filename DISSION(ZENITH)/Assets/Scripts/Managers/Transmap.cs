@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+//원하는 씬 이름 쓰기
+
 public class Transmap : MonoBehaviour
 {
     public string sceneToLoad; // 로드할 씬 번호
-    private FadeManager theFade; //페이드메니저 호출
+    //private FadeManager theFade; //페이드메니저 호출
     private PlayerController thePlayer; //플레이어 호출
 
     void Start()
     {
-        theFade = FindObjectOfType<FadeManager>();
+        //theFade = FindObjectOfType<FadeManager>();
         thePlayer = FindObjectOfType<PlayerController>();
     }
 
@@ -30,12 +32,12 @@ public class Transmap : MonoBehaviour
     IEnumerator TransferCoroutine()
     {
 
-        theFade.FadeOut();
+        //theFade.FadeOut();
         yield return new WaitForSeconds(1f);
         Debug.Log(sceneToLoad + "로 이동");
         SceneManager.LoadScene(sceneToLoad); // 지정된 번호의 씬으로 이동
 
-        theFade.FadeIn();
+        //theFade.FadeIn();
 
     }
 }

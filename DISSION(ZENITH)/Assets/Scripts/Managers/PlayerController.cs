@@ -7,14 +7,16 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
+    //이동 관련
     public string currentMapName; //맵 이름
-    public float speed = 3f;
-    public float runSpeed;
+    public float speed = 3f; //스피드
+    public float runSpeed; 
     private float applyRunSpeed;
     private bool canMove = true;
 
     public int walkCount;
 
+    //콜라이더, 레이어 마스크
     private BoxCollider2D boxCollider;
     public LayerMask layermask; //이동 불가 지역
 
@@ -23,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        //플레이어 생성
         if (Instance == null)
         {
             Instance = this;
@@ -36,6 +39,7 @@ public class PlayerController : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    //씬 로드 시 행동 조절(OnSceneLoaded함수와 함께 사용)
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -110,12 +114,12 @@ public class PlayerController : MonoBehaviour
 
             lastMove = moveVector;
 
-            //애니메이션 파라미터
+            //애니메이션 파라미터 -움직임-
             anim.SetFloat("InputX", moveVector.x);
             anim.SetFloat("InputY", moveVector.y);
             anim.SetBool("isMoving", true);
 
-            //레이어 마스크
+            //레이어 마스크 (레이어 태그 DontGo)
             RaycastHit2D hit;
             Vector2 start = transform.position;
             Vector2 end = start + moveVector * 0.5f;
@@ -135,6 +139,7 @@ public class PlayerController : MonoBehaviour
             yield return null; // 다음 프레임까지 대기
         }
 
+        //애니메이션 -안 움직임-
         anim.SetBool("isMoving", false);
         anim.SetFloat("InputX", lastMove.x);
         anim.SetFloat("InputY", lastMove.y);
@@ -153,14 +158,14 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
+    //움직임 멈춤
     public void StopMovement()
     {
         StopAllCoroutines();
         anim.SetBool("isMoving", false);
         canMove = false;
     }
-
+    //다시 움직이게 함
     public void ResumeMovement()
     {
         canMove = true;

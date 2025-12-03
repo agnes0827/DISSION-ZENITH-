@@ -3690,6 +3690,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: dust
       objectReference: {fileID: 0}
+    - target: {fileID: 5291444402228361310, guid: 8c4984b7813aa964fbfaaed9708993ac, type: 3}
+      propertyPath: m_Size.x
+      value: 0.79602337
+      objectReference: {fileID: 0}
+    - target: {fileID: 5291444402228361310, guid: 8c4984b7813aa964fbfaaed9708993ac, type: 3}
+      propertyPath: m_Size.y
+      value: 1.1695515
+      objectReference: {fileID: 0}
+    - target: {fileID: 5291444402228361310, guid: 8c4984b7813aa964fbfaaed9708993ac, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.023011684
+      objectReference: {fileID: 0}
+    - target: {fileID: 5291444402228361310, guid: 8c4984b7813aa964fbfaaed9708993ac, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.24477571
+      objectReference: {fileID: 0}
     - target: {fileID: 7725009760885552617, guid: 8c4984b7813aa964fbfaaed9708993ac, type: 3}
       propertyPath: dustObject
       value: 
