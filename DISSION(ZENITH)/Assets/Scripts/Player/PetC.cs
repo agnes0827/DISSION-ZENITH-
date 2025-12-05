@@ -18,12 +18,37 @@ public class PetC : MonoBehaviour
     private Vector3 lastMoveDir;       // 플레이어의 마지막 이동 방향 (반대 위치 계산용)
     private Vector3 lastMoveForAnim;   // 애니메이션용 마지막 방향 (Idle 시 유지)
 
+    public static PetC Instance { get; private set; } // 싱글턴 + DontDestroyOnLoad 패턴
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // 이 오브젝트를 씬이 바뀌어도 계속 유지
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         lastPlayerPos = player.position;
         lastMoveDir = Vector3.down;
         lastMoveForAnim = Vector3.down;
         anim = GetComponent<Animator>();
+
+        // 씬이 로드될 때 플레이어 싱글턴을 찾아서 타겟으로 설정
+        if (PlayerController.Instance != null)
+        {
+            player = PlayerController.Instance.transform;
+        }
+        else
+        {
+            Debug.LogError("PetFollow: PlayerController.Instance를 찾을 수 없습니다!");
+        }
     }
 
     void Update()

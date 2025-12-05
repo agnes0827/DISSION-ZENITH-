@@ -12,6 +12,7 @@ public class SimpleSceneLoaderButton : MonoBehaviour
     /// </summary>
     public void LoadTargetScene()
     {
+        Debug.Log("버튼 눌림, sceneToLoad = " + sceneToLoad);
         // sceneToLoad 변수에 이름이 비어있는지 확인합니다.
         if (string.IsNullOrEmpty(sceneToLoad))
         {
