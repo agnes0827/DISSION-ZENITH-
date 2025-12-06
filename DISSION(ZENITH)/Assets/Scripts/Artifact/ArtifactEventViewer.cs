@@ -7,12 +7,17 @@ public class ArtifactEventViewer : MonoBehaviour
 {
     public static ArtifactEventViewer Instance { get; private set; }
 
-    [SerializeField] private GameObject panelRoot;   // 이 스크립트가 붙은 객체(ex: 특정 패널)
-    [SerializeField] private Image eventImageHolder; // 편지 같은 큰 이미지를 보여줄 곳
+    [Header("UI 연결")]
+    [SerializeField] private GameObject panelRoot;   // 이 스크립트가 붙은 객체
+    [SerializeField] private Image eventImageHolder;
+
+    [Header("효과음")]
+    [SerializeField] private AudioClip popupSound;   // [추가] 재생할 효과음 클립
+    private AudioSource _audioSource;                // [추가] 소리를 낼 스피커 컴포넌트
 
     private Action _onEventCompleteCallback;
     private ArtifactDefinition _currentDef;
-    private bool _isWaitingForKeyToCloseLetter = false; // 1. 편지 닫기 대기 상태
+    private bool _isWaitingForKeyToCloseLetter = false; // 편지 닫기 대기 상태
 
     void Awake()
     {
@@ -26,6 +31,8 @@ public class ArtifactEventViewer : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        _audioSource = GetComponent<AudioSource>();
 
         if (panelRoot == null)
         {
@@ -82,6 +89,17 @@ public class ArtifactEventViewer : MonoBehaviour
         // 패널 활성화
         panelRoot.SetActive(true);
         _isWaitingForKeyToCloseLetter = true;
+
+        // 효과음 재생
+        PlayPopupSound();
+    }
+
+    private void PlayPopupSound()
+    {
+        if (_audioSource != null && popupSound != null)
+        {
+            _audioSource.PlayOneShot(popupSound);
+        }
     }
 
     private IEnumerator WaitForDialogueEnd()
@@ -93,8 +111,6 @@ public class ArtifactEventViewer : MonoBehaviour
         {
             yield return null;
         }
-
-        Debug.Log("Artifact Event Dialogue 끝. 패널을 닫고 콜백을 실행합니다.");
 
         panelRoot.SetActive(false);
 
