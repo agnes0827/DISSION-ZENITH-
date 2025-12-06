@@ -1568,6 +1568,70 @@ PrefabInstance:
       propertyPath: m_Name
       value: Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.size
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 5af3a42dde5e126408a13b85c7599e40, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: 82e4acba10eeee547bcee9369141bbf1, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 2b38b2f2a5856f84c997d89c81e11d6f, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 18142db45f26dd64f897f665c9c9b59e, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[5]
+      value: 
+      objectReference: {fileID: 8300000, guid: eee799a8477e2d54b8e5280044b3f0ae, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[6]
+      value: 
+      objectReference: {fileID: 8300000, guid: 76a7c1add58f6254d901af2f53079813, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[7]
+      value: 
+      objectReference: {fileID: 8300000, guid: d53d3f81cc0d653428715a7d8b7a45b4, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[8]
+      value: 
+      objectReference: {fileID: 8300000, guid: 6eee6fe7fd711a6488b7bf0c1a6517d2, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[9]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4243868be21c72241b191caab8ee5971, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: e7292a4231fdcfd429cfd8789b19085e, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[11]
+      value: 
+      objectReference: {fileID: 8300000, guid: 6d258ab4f832e2c448e64f19529fb397, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[12]
+      value: 
+      objectReference: {fileID: 8300000, guid: 3abf3c1e1f4be214a9bf7fab803cad7f, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[13]
+      value: 
+      objectReference: {fileID: 8300000, guid: 20364f8bd41a6c048babefcf109ff65b, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[14]
+      value: 
+      objectReference: {fileID: 8300000, guid: c4f6f8c9da762444fa0b939b3bcaaff4, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[15]
+      value: 
+      objectReference: {fileID: 8300000, guid: d70f52d0063ca304db0c376e1272dcd9, type: 3}
     - target: {fileID: 8113391196986179061, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
       propertyPath: m_LocalPosition.x
       value: 346.96667
