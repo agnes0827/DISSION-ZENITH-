@@ -114,16 +114,21 @@ public class CinematicTrigger : MonoBehaviour
             yield return new WaitForSeconds(1.5f); // 돌아오는 시간 대기
         }
 
-        // [옵션] 대사 출력
-        if (!string.IsNullOrEmpty(dialogueId))
-        {
-            DialogueManager.Instance.StartDialogue(dialogueId);
-        }
-
         // 레터박스 OFF
         if (showLetterbox && topBar != null && bottomBar != null)
         {
             yield return StartCoroutine(SlideBars(show: false));
+        }
+
+        // [옵션] 대사 출력
+        if (!string.IsNullOrEmpty(dialogueId))
+        {
+            DialogueManager.Instance.StartDialogue(dialogueId);
+
+            while (DialogueManager.Instance.isDialogue)
+            {
+                yield return null;
+            }
         }
 
         // 플레이어 재개
