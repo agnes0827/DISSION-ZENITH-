@@ -12,48 +12,61 @@ public class FadeManager : MonoBehaviour
 
     void Awake()
     {
-        // 싱글톤 패턴
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            Debug.Log("FadeManager 싱글톤 생성");
-
-            // 시작 시 투명하게 초기화
             FadePanel();
         }
         else
         {
-            Debug.LogWarning("FadeManager 중복 인스턴스 발견. 파괴합니다.");
-            Destroy(gameObject); // 중복이면 파괴
+            Destroy(gameObject);
         }
     }
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
 
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+    private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 씬이 로드되면 검은 화면(Alpha 1)에서 투명하게(Alpha 0) 만듦
-        // duration은 필요에 따라 조절 (예: 0.5f)
-        if (blackFadePanel != null)
+        if (blackFadePanel == null) return;
+
+        // 1. 기본값 설정 (기존 FadeManager의 하드코딩 값과 동일)
+        float finalInDuration = 0.95f; // 들어올 때 시간
+        float finalDelay = 0.15f;      // 대기 시간
+        Color finalColor = Color.black;
+        bool shouldFade = true;
+
+        // 2. 현재 씬에 FadeSettings가 있는지 확인
+        FadeSettings settings = FindObjectOfType<FadeSettings>();
+
+        if (settings != null)
         {
-            blackFadePanel.color = Color.black;
-
-            Color c = blackFadePanel.color;
-            c.a = 1f;
-            blackFadePanel.color = c;
-
-            blackFadePanel.fillAmount = 1f;
-            blackFadePanel.gameObject.SetActive(true);
+            shouldFade = settings.enableFade;
+            if (shouldFade)
+            {
+                finalColor = settings.fadeColor;
+                finalInDuration = settings.fadeInDuration; // 설정된 In 시간 적용
+                finalDelay = settings.startDelay;
+            }
         }
-        FadeIn(0.95f, 0.15f);
+
+        // 3. 페이드 안 함 설정이면 패널 끄고 종료
+        if (!shouldFade)
+        {
+            blackFadePanel.gameObject.SetActive(false);
+            return;
+        }
+
+        // 4. 페이드 인 실행
+        // (이전 씬에서 WipeOut을 했든 FadeOut을 했든, 새 씬은 설정된 색상으로 꽉 채워서 시작)
+        finalColor.a = 1f;
+        blackFadePanel.color = finalColor;
+        blackFadePanel.fillAmount = 1f; // 혹시 Wipe로 닫혔을 경우를 대비해 꽉 채움
+        blackFadePanel.gameObject.SetActive(true);
+
+        // 설정된 시간으로 부드럽게 열림
+        FadeIn(finalInDuration, finalDelay);
     }
 
     private void FadePanel()
@@ -63,10 +76,6 @@ public class FadeManager : MonoBehaviour
             blackFadePanel.color = new Color(0, 0, 0, 0);        // 완전 투명
             blackFadePanel.raycastTarget = false;                // 클릭 통과
             blackFadePanel.gameObject.SetActive(true);           // 항상 켜둠 (알파값으로 제어)
-        }
-        else
-        {
-            Debug.LogError("FadeManager: Fade Panel이 연결되지 않았습니다!");
         }
     }
 
