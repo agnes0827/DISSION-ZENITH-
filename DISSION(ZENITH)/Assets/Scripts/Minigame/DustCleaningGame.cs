@@ -18,6 +18,7 @@ public class DustCleaningGame : MonoBehaviour
     [Header("타이머 설정")]
     [SerializeField] private float timeLimit = 3f;
     [SerializeField] private Image timerBarFill;
+    public AudioSource clockAudioSource;
     private float timeRemaining;
     private Coroutine timerCoroutine;
 
@@ -41,6 +42,12 @@ public class DustCleaningGame : MonoBehaviour
 
         isPlaying = true;
         gameObject.SetActive(true);
+
+        if (clockAudioSource != null)
+        {
+            clockAudioSource.loop = true; // 반복 설정
+            clockAudioSource.Play();      // 재생
+        }
 
         GenerateRandomSequence();
         CreateArrowUI();
@@ -84,6 +91,8 @@ public class DustCleaningGame : MonoBehaviour
     {
         if (!isPlaying) return;
 
+        if (clockAudioSource != null) clockAudioSource.Stop();
+
         isPlaying = false;
         Debug.Log("미니게임 시간 초과");
 
@@ -106,7 +115,7 @@ public class DustCleaningGame : MonoBehaviour
     private void GenerateRandomSequence()
     {
         keySequence.Clear();
-        int arrowCount = Random.Range(4, 6); // 4~5개
+        int arrowCount = Random.Range(4, 7); // 4~6개
         for (int i = 0; i < arrowCount; i++)
             keySequence.Add(ARROWS[Random.Range(0, ARROWS.Length)]);
 
@@ -168,6 +177,8 @@ public class DustCleaningGame : MonoBehaviour
         {
             if (pressed == keySequence[currentIndex])
             {
+                SoundManager.Instance.PlaySFX(SfxType.DustClean, 0.5f);
+
                 arrowImages[currentIndex].color = correctColor;
                 currentIndex++;
 
@@ -204,6 +215,8 @@ public class DustCleaningGame : MonoBehaviour
     private void OnSuccess()
     {
         isPlaying = false;
+        if (clockAudioSource != null) clockAudioSource.Stop();
+
         gameObject.SetActive(false);
         onDustCleaned?.Invoke(currentDustObject); // 먼지 제거 콜백(Manager에서 처리)
     }
