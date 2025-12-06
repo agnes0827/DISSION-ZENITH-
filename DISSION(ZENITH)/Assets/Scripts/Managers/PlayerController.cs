@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     //콜라이더, 레이어 마스크
     private BoxCollider2D boxCollider;
     public LayerMask layermask; //이동 불가 지역
+    private SpriteRenderer spriteRenderer;
 
     private Vector2 lastMove = Vector2.down;
     Animator anim;
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
             anim = GetComponent<Animator>();
             boxCollider = GetComponent<BoxCollider2D>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
         }
         else
         {
@@ -55,6 +57,15 @@ public class PlayerController : MonoBehaviour
     {
         ResumeMovement();
         currentMapName = scene.name;
+
+        if (scene.name == "Town")
+        {
+            spriteRenderer.maskInteraction = SpriteMaskInteraction.None;
+        }
+        else
+        {
+            spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+        }
 
         if (GameStateManager.Instance != null && !string.IsNullOrEmpty(GameStateManager.Instance.returnSceneAfterBattle) && scene.name == GameStateManager.Instance.returnSceneAfterBattle)
         {
