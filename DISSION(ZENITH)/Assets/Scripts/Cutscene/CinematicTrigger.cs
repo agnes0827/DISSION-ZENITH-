@@ -32,10 +32,14 @@ public class CinematicTrigger : MonoBehaviour
     [Tooltip("카메라가 타겟으로 이동한 뒤 대기할 시간")]
     public float focusDuration = 2.0f;
 
+    [Header("퀘스트 연동")]
+    [Tooltip("이 ID의 퀘스트가 완료되면 자동으로 연출 시작 (비워두면 작동 X)")]
+    public string autoPlayQuestId;
+
     [Header("대사 및 조건")]
     [Tooltip("출력할 대사 ID (비워두면 대사 출력 X)")]
     public string dialogueId;
-    [Tooltip("몬스터 고유 ID, 특정 몬스터 처치 시 실행 안 함 (보스 전용, 비워두면 무시)")]
+    [Tooltip("몬스터 고유 ID, 특정 몬스터 처치 시 실행 안 함 (비워두면 작동 X)")]
     public string disableIfMonsterDefeated;
 
     private bool isRunning = false;
@@ -54,12 +58,35 @@ public class CinematicTrigger : MonoBehaviour
             if (topBar.parent != null) topBar.parent.gameObject.SetActive(true);
         }
 
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.OnQuestCompleted += OnQuestFinished;
+        }
+
         if (playOnStart) StartCoroutine(CheckAndPlaySequence());
+    }
+
+    private void OnDestroy()
+    {
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.OnQuestCompleted -= OnQuestFinished;
+        }
+    }
+
+    private void OnQuestFinished(string completedQuestId)
+    {
+        // 설정된 퀘스트 ID가 있고
+        // 지금 완료된 퀘스트가 그 ID와 같다면 실행
+        if (!string.IsNullOrEmpty(autoPlayQuestId) && completedQuestId == autoPlayQuestId)
+        {
+            StartCoroutine(CheckAndPlaySequence());
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 플레이어가 밟아서 실행 (맵 탐험용)
+        // 플레이어가 밟아서 실행
         // playOnStart가 꺼져있을 때만 작동
         if (!playOnStart && collision.CompareTag("Player"))
         {
@@ -71,12 +98,23 @@ public class CinematicTrigger : MonoBehaviour
     {
         if (isRunning) yield break;
 
-        // 1. 이미 본 이벤트인지 체크
+        // 이미 본 이벤트인지 체크
         if (GameStateManager.Instance.HasExecutedEvent(eventId)) yield break;
 
-        // 2. 보스전 조건 체크 (이미 잡았으면 스킵)
+        // 보스 조건 체크 (이미 잡았으면 스킵)
         if (!string.IsNullOrEmpty(disableIfMonsterDefeated) &&
             GameStateManager.Instance.IsMonsterDefeated(disableIfMonsterDefeated)) yield break;
+
+        // 플레이어 멈춤
+        if (PlayerController.Instance != null) PlayerController.Instance.StopMovement();
+        yield return null;
+        yield return null;
+
+        if (DialogueManager.Instance != null && DialogueManager.Instance.isDialogue)
+        {
+            // !isDialogue 가 될 때까지 기다림
+            yield return new WaitUntil(() => !DialogueManager.Instance.isDialogue);
+        }
 
         yield return StartCoroutine(PlaySequence());
     }

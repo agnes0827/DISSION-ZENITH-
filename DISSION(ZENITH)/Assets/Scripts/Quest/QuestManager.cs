@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
     [SerializeField] private QuestLoader questLoader;
     private QuestUI questUI;
+
+    // 퀘스트 완료 알림용
+    public event Action<string> OnQuestCompleted;
 
     void Awake()
     {
@@ -81,6 +85,8 @@ public class QuestManager : MonoBehaviour
 
             UpdateQuestIcons();
             Debug.Log($"[퀘스트 완료] ID: {questId}");
+
+            OnQuestCompleted?.Invoke(questId);
         }
     }
 

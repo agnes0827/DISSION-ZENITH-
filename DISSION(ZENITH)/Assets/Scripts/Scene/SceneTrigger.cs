@@ -10,8 +10,9 @@ public class SceneTrigger : MonoBehaviour
     [SerializeField] string nextSceneName;
 
     [Header("조건 설정")]
-    [SerializeField] string requiredItemId;     // 이 문을 통과하기 위해 아이템이 필요한 경우
-    [SerializeField] string lockedDialogueId;   // 조건 미충족시 출력할 대사
+    [SerializeField] string requiredCompletedQuestId;   // 이 문을 통과하기 위한 선행 퀘스트가 있는 경우     
+    [SerializeField] string requiredItemId;             // 이 문을 통과하기 위해 아이템이 필요한 경우
+    [SerializeField] string lockedDialogueId;           // 조건 미충족시 출력할 대사
 
     [Header("스폰포인트 설정")]
     [SerializeField] string targetSpawnPointId;
@@ -48,12 +49,24 @@ public class SceneTrigger : MonoBehaviour
             Debug.Log("SceneTrigger: SceneLoader가 이미 로딩 중이므로 무시합니다.");
             return;
         }
+
         // 아이템 조건 확인
         if (!string.IsNullOrEmpty(requiredItemId) && !InventoryManager.Instance.HasItem(requiredItemId))
         {
             lastInteractionTime = Time.time;
             DialogueManager.Instance.StartDialogue(lockedDialogueId);
             return;
+        }
+
+        // 퀘스트 조건 확인
+        if (!string.IsNullOrEmpty(requiredCompletedQuestId))
+        {
+            if (QuestManager.Instance != null && !QuestManager.Instance.HasCompleted(requiredCompletedQuestId))
+            {
+                lastInteractionTime = Time.time;
+                DialogueManager.Instance.StartDialogue(lockedDialogueId); // "아직 나갈 수 없어" 같은 대사 출력
+                return;
+            }
         }
 
         PlayerController.Instance.StopMovement();

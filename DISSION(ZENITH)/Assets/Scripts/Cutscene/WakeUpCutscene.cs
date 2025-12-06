@@ -92,6 +92,7 @@ public class WakeUpCutscene : MonoBehaviour
 
         // 기상 연출
         if (wakeUpGuideUI != null) wakeUpGuideUI.SetActive(false);
+        PlayerController.Instance.StopMovement();
 
         // 페이드
         yield return StartCoroutine(FadeRoutine(0f, 1f, 1.5f));
@@ -106,8 +107,6 @@ public class WakeUpCutscene : MonoBehaviour
                 _realPlayer.transform.position = wakeUpPosition.position;
 
             _realPlayer.SetActive(true);
-            var controller = _realPlayer.GetComponent<PlayerController>();
-            if (controller != null) controller.ResumeMovement();
         }
 
         // 카메라 복귀(MainCamera), 픽셀 퍼펙트 복구
@@ -115,6 +114,7 @@ public class WakeUpCutscene : MonoBehaviour
         if (pixelPerfectCam != null) pixelPerfectCam.enabled = true;
 
         yield return StartCoroutine(FadeRoutine(1f, 0f, 2.5f));
+        PlayerController.Instance.ResumeMovement();
 
         // 6. 퀘스트 수락 및 저장
         if (QuestManager.Instance != null)
