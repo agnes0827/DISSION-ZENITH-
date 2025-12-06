@@ -1947,7 +1947,7 @@ MonoBehaviour:
   acceptedId: 30007
   objectiveId: 
   completedId: 30000
-  QuestId: Q02
+  QuestId: Q05
   npcId: Libray_Key_Floor2
   isReportNpc: 0
   triggerOnEnter: 0

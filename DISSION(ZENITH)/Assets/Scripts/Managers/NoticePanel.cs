@@ -11,9 +11,14 @@ public class NoticePanel : MonoBehaviour
 
     private Vector2 originalPos;
 
-    void Start()
+    void Awake()
     {
-        originalPos = panel.anchoredPosition;
+        if (panel != null)
+            originalPos = panel.anchoredPosition;
+    }
+
+    public void ShowNotice()
+    {
         StartCoroutine(PanelFlow());
     }
 
