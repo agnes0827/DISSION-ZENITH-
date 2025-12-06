@@ -2465,7 +2465,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 662e2531d2d6e6b4e81a4a3b4ce7846b, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3076,8 +3076,7 @@ MonoBehaviour:
   requiredItemId: 
   lockedDialogueId: 
   targetSpawnPointId: HouseStart
-  enterSfx: {fileID: 0}
-  sfxVolume: 1
+  playSFXSound: 0
 --- !u!61 &1846475808
 BoxCollider2D:
   m_ObjectHideFlags: 0

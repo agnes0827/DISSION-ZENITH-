@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7710135614641241582}
   - component: {fileID: 8728913585552578073}
   - component: {fileID: 5640131150669254005}
+  - component: {fileID: 8028520064313315973}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -59,7 +60,10 @@ MonoBehaviour:
   returnSceneAfterBattle: 
   currentMonsterId: 
   collectedLibraryBossReward: 0
+  isLibraryPurified: 0
   isDustCleaningQuestCompleted: 0
+  totalPlayTime: 0
+  isCountingTime: 1
 --- !u!114 &4631179644670033453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,3 +143,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLoading: 0
+--- !u!114 &8028520064313315973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4191938908106082822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227955eaaac0ea448b9de14b68d9c8d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxClips:
+  - {fileID: 8300000, guid: 4f9c94b3aca43e04f9a083fa603e0d36, type: 3}
+  - {fileID: 8300000, guid: 6a2824915a212f848802242e530d0413, type: 3}
+  channels: 10

@@ -17,9 +17,8 @@ public class SceneTrigger : MonoBehaviour
     [Header("스폰포인트 설정")]
     [SerializeField] string targetSpawnPointId;
 
-    [Header("SFX")]
-    [SerializeField] AudioClip enterSfx;
-    [SerializeField] float sfxVolume = 1f;
+    [Header("오디오 설정")]
+    [SerializeField] private bool playSFXSound = true;
 
     private float interactionCooldown = 1f;
     private float lastInteractionTime = -1f; 
@@ -30,13 +29,6 @@ public class SceneTrigger : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(nextSceneName))
             Debug.LogError("nextSceneName이 비어있어요");
-        if (enterSfx != null)
-        {
-            _audio = GetComponent<AudioSource>();
-            if (_audio == null) _audio = gameObject.AddComponent<AudioSource>();
-            _audio.playOnAwake = false;
-            _audio.spatialBlend = 0f;
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -46,7 +38,6 @@ public class SceneTrigger : MonoBehaviour
 
         if (SceneLoader.Instance != null && SceneLoader.Instance.isLoading)
         {
-            Debug.Log("SceneTrigger: SceneLoader가 이미 로딩 중이므로 무시합니다.");
             return;
         }
 
@@ -75,7 +66,8 @@ public class SceneTrigger : MonoBehaviour
         GameStateManager.Instance.nextSpawnPointId = targetSpawnPointId;
 
         // 효과음 재생
-        if (enterSfx && _audio) _audio.PlayOneShot(enterSfx, sfxVolume);
+        if (playSFXSound)
+            SoundManager.Instance.PlaySFX(SfxType.Door);
 
         // SceneLoader에게 씬 로드 요청
         SceneLoader.Instance.LoadSceneWithFade(nextSceneName, 0.8f);
