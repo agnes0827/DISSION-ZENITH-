@@ -13,6 +13,8 @@ public class FruitTimingMiniGame : MonoBehaviour
     public float halfWidth; // 전체 구간
     public float successhalfwidth; // 성공 구간
 
+    public System.Action onSuccess;
+
     public GameObject playUI;          // 바 + 화살표 + SPACE 안내
     public GameObject resultUI;        // "열매 획득!" + 이미지
 
@@ -90,6 +92,9 @@ public class FruitTimingMiniGame : MonoBehaviour
         playUI.SetActive(false);
         resultUI.SetActive(true);
 
+        onSuccess?.Invoke();
+        StartCoroutine(CloseAfterDelay(4f));
+
         // 여기서 펫 언락도 가능:
         // if (PetC.Instance != null) PetC.Instance.followUnlocked = true;
     }
@@ -116,5 +121,13 @@ public class FruitTimingMiniGame : MonoBehaviour
     {
         gameObject.SetActive(true);
         ResetGame();
+    }
+
+    private IEnumerator CloseAfterDelay(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        // 미니게임 종료 (Prefab 오브젝트 자체를 비활성화)
+        gameObject.SetActive(false);
     }
 }
