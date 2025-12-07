@@ -2201,7 +2201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1767838012125647900, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: orthographic size
-      value: 10
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 2616274575068400186, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: m_DefaultBlend.m_Time
@@ -2890,35 +2890,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1875215684202712009, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 180.52
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 30.44
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -48.739998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3786781143440767299, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 42.78
-      objectReference: {fileID: 0}
-    - target: {fileID: 3958420596103731539, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6609197052597899504, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
+    - target: {fileID: 7164710615248083344, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -2930,12 +2930,9 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9045847032168862712, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: aabf635aa28bede4694e4c7e7061c53f, type: 3}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7164710615248083344, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff4485be90daf3944955ac107ea9b5d0, type: 3}
@@ -3081,6 +3078,7 @@ MonoBehaviour:
   scenePickupID: apple
   itemDatabase: {fileID: 11400000, guid: 3d05d3bf198fd814690f8d054a293165, type: 2}
   desiredColor: ffc200
+  specificDialogueID: 
 --- !u!61 &1074799760
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4089,7 +4087,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1413547292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5059,10 +5057,10 @@ RectTransform:
   m_Children:
   - {fileID: 1048883588}
   - {fileID: 1180699612}
-  - {fileID: 113186381}
   - {fileID: 1782808397}
-  - {fileID: 313942653}
   - {fileID: 1308565007}
+  - {fileID: 113186381}
+  - {fileID: 313942653}
   - {fileID: 1889709831}
   - {fileID: 1388706941}
   m_Father: {fileID: 0}
@@ -6212,8 +6210,8 @@ SceneRoots:
   - {fileID: 2122722318}
   - {fileID: 1995777459}
   - {fileID: 1838045809}
-  - {fileID: 1851640588}
   - {fileID: 1413547293}
+  - {fileID: 1851640588}
   - {fileID: 1919131951}
   - {fileID: 583108950}
   - {fileID: 1049974498}

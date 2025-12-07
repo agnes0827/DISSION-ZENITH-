@@ -104,7 +104,7 @@ public class GameStateManager : MonoBehaviour
 
         // 인벤토리 초기화 후 기본템(사과) 추가
         inventoryItems.Clear();
-        inventoryItems.Add("apple", 2);
+        // inventoryItems.Add("apple", 2);
         // 예: questStates.Clear();
 
         collectedSceneObjectIDs.Clear();
