@@ -9,22 +9,31 @@ public class Inventory : MonoBehaviour {
     public void Continue()
     {
         activated = false; // activated 상태 변경
+        if (PlayerController.Instance != null)
+            PlayerController.Instance.ResumeMovement();
+
         inventory.SetActive(false); // inventory 화면 비활성화
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab)) // Tab 키 클릭 시
         {
             activated = !activated; // activated 상태 변경
+            SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.7f, false);
 
             if (activated)
             {
+                if (PlayerController.Instance != null)
+                    PlayerController.Instance.StopMovement();
+
                 inventory.SetActive(true); // inventory 화면 활성화
             }
             else
             {
+                if (PlayerController.Instance != null)
+                    PlayerController.Instance.ResumeMovement();
+
                 inventory.SetActive(false); // inventory 화면 비활성화
             }
         }

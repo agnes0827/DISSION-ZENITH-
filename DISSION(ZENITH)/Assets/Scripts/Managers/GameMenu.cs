@@ -18,9 +18,16 @@ public class GameMenu : MonoBehaviour
 
     void Update()
     {
-        if (!activated && Input.GetKeyDown(KeyCode.Escape))
+        // Esc 키 입력 감지
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SetMenu(true); // Esc 버튼은 열기 전용
+            if (saveMenu.activeSelf)
+            {
+                saveMenu.SetActive(false);
+                return;
+            }
+
+            SetMenu(!activated);
         }
     }
 
@@ -39,6 +46,7 @@ public class GameMenu : MonoBehaviour
     {
         SetMenu(false);
         saveMenu.SetActive(true);
+        SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.5f, false);
     }
 
     /// <summary>
@@ -57,10 +65,30 @@ public class GameMenu : MonoBehaviour
     private void SetMenu(bool show)
     {
         activated = show;
+
+        // 메뉴 켜질 때 효과음 재생
+        if (show == true)
+        {
+            SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.5f, false);
+        }
+
+        // 플레이어 움직임 설정
+        if (PlayerController.Instance != null)
+        {
+            if (show)
+            {
+                PlayerController.Instance.StopMovement();
+            }
+            else
+            {
+                PlayerController.Instance.ResumeMovement();
+            }
+        }
+
+        // 패널 활성화
         if (go != null) go.SetActive(show);
 
-        // 게임 일시정지/해제(원하면 사용)
-        // show가 true면 0으로 멈추고, false면 1로 재생
-        // Time.timeScale = show ? 0f : 1f;
+        // 시간 정지
+        Time.timeScale = show ? 0f : 1f;
     }
 }

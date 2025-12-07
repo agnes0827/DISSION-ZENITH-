@@ -42,6 +42,8 @@ public class ItemUsePanel : MonoBehaviour
 
     public void OnClickYes()
     {
+        SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.7f, false);
+
         // 먼저 인벤토리에서 1개 소비 시도
         bool consumed = InventoryManager.Instance.ConsumeItem(currentItem.itemId, 1);
 
