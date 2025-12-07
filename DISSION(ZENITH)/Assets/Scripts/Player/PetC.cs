@@ -54,41 +54,28 @@ public class PetC : MonoBehaviour
         lastMoveDir = Vector3.down;
         lastMoveForAnim = Vector3.down;
 
-        StartCoroutine(SitForSeconds(4f));
-    }
-
-    // 씬 시작 시 앉아있는 상태로 시작
-    private System.Collections.IEnumerator SitForSeconds(float seconds)
-    {
+        // 씬 시작 시부터 계속 앉아 있는 상태로 세팅
         isSitting = true;
         anim.SetBool("isSit", true);
         anim.SetBool("isMoving", false);
-
-        yield return new WaitForSeconds(seconds);
-
-        // 중간에 G키로 이미 일어서면 그대로 두기
-        if (isSitting)
-        {
-            isSitting = false;
-            anim.SetBool("isSit", false);
-        }
     }
 
     void Update()
     {
-        // G 키로 앉기 토글
-        if (Input.GetKeyDown(KeyCode.G))
+        // G 키를 눌렀을 때 처음으로 일어나게 (한 번만)
+        if (Input.GetKeyDown(KeyCode.G) && isSitting)
         {
-            isSitting = !isSitting;
-            anim.SetBool("isSit", isSitting);
+            isSitting = false;
+            anim.SetBool("isSit", false);
+            // 일어난 뒤에는 그냥 기존 로직대로 따라다님
         }
 
-        // 앉은 동안은 이동/애니메이션 갱신 정지
-        if(isSitting)
+        // 앉아 있는 동안에는 아무것도 안 하게
+        if (isSitting || player == null)
         {
-            anim.SetBool("isMoving", false); // 걷기 애니 끄기
-            velocity = Vector3.zero; // 움직임 중지
-            return; // 따라가기 로직 실행 x
+            anim.SetBool("isMoving", false);
+            velocity = Vector3.zero;
+            return;
         }
 
         // 플레이어 입력 값 확인 (Input 기반으로 isMoving 판정)
