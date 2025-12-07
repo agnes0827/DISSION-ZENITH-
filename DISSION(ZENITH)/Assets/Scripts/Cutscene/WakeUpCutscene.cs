@@ -123,11 +123,11 @@ public class WakeUpCutscene : MonoBehaviour
             QuestManager.Instance.AcceptQuest(questIdToAccept);
         }
         GameStateManager.Instance.SetEventExecuted(eventId);
+        if (bgmAudioSource != null) StartCoroutine(FadeInBGM(2.0f));
         DialogueManager.Instance.StartDialogue("10000");
 
         if (noticePanel != null) noticePanel.ShowNotice();
         yield return new WaitForSeconds(0.5f);
-        if (bgmAudioSource != null) StartCoroutine(FadeInBGM(2.0f));
     }
 
     IEnumerator FadeInBGM(float duration)

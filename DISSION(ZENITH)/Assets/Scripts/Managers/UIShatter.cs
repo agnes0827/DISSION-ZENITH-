@@ -30,6 +30,8 @@ public class UIShatter : MonoBehaviour
 
     public IEnumerator Play()
     {
+        SoundManager.Instance.PlaySFX(SfxType.EnemyDeath, 0.5f, false);
+
         if (src.sprite == null) yield break;
         if (piecesX < 1) piecesX = 1;
         if (piecesY < 1) piecesY = 1;

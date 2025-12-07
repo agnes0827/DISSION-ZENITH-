@@ -168,7 +168,6 @@ public class BattleManager : MonoBehaviour
 
     void HandleEnemyDied()
     {
-        SoundManager.Instance.PlaySFX(SfxType.EnemyDeath, 0.5f, false);
         if (battleEnded) return;
         battleEnded = true;
 
@@ -231,6 +230,10 @@ public class BattleManager : MonoBehaviour
         yield return StartCoroutine(TypeWriterEffect($"{data.displayName}(으)로 공격!"));
         yield return new WaitForSeconds(0.2f); // 텍스트 읽을 시간
 
+        // 사운드 재생
+        SfxType soundToPlay = GetWeaponSound(data.name);
+        SoundManager.Instance.PlaySFX(soundToPlay, 0.5f);
+
         // 2. 플레이어 모션 실행
         if (playerVisual != null)
             yield return StartCoroutine(AttackMotion(playerVisual, playerOriginalPos, true));
@@ -259,7 +262,7 @@ public class BattleManager : MonoBehaviour
             StartCoroutine(EnemyCounterAttack()); // 적 반격 시작
         }
     }
-    
+
     // 적 반격 코루틴
     IEnumerator EnemyCounterAttack()
     {
@@ -281,6 +284,7 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         // 2. 적 공격 모션
+        SoundManager.Instance.PlaySFX(SfxType.Attack3, 0.5f);
         if (enemyVisual != null)
             yield return StartCoroutine(AttackMotion(enemyVisual, enemyOriginalPos, false));
         else
@@ -289,13 +293,14 @@ public class BattleManager : MonoBehaviour
         if (enemy == null || battleEnded) yield break;
 
         // 3. 플레이어 데미지 및 피격 모션
+        SoundManager.Instance.PlaySFX(SfxType.Hit, 0.5f);
         GameStateManager.Instance.ChangeHP(-damage);
         UpdatePlayerHPUI();
         playerVisual.GetComponent<DamageFlash>().FlashRed(0.4f);
 
         if (playerVisual != null)
             StartCoroutine(HitMotion(playerVisual, playerOriginalPos, true));
-       
+
         // 4. 결과 텍스트 출력 (타이핑)
         yield return StartCoroutine(TypeWriterEffect($"{damage}의 데미지를 입었다."));
         yield return new WaitForSeconds(1.0f);
@@ -430,5 +435,21 @@ public class BattleManager : MonoBehaviour
 
         // 3. 씬이 로드되면 FadeManager의 OnSceneLoaded가 자동으로 실행되어
         //    새로운 씬에서 FadeIn(화면 밝아짐)이 수행됩니다.
+    }
+
+    // 무기 종류별 사운드
+    SfxType GetWeaponSound(string weaponName)
+    {
+        switch (weaponName)
+        {
+            case "axe":
+                return SfxType.Attack4;
+
+            case "fireball":
+                return SfxType.Attack2;
+
+            default:
+                return SfxType.Attack1;     // 그 외 무기는 기본 소리
+        }
     }
 }
