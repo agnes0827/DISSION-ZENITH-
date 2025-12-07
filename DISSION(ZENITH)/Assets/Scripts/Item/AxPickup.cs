@@ -29,6 +29,7 @@ public class AxPickup : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
+            Debug.Log("[AxPickup] F 키 입력 감지됨"); 
             Pickup();
         }
     }
@@ -74,6 +75,7 @@ public class AxPickup : MonoBehaviour
         if (other.CompareTag(playerTag))
         {
             isPlayerInRange = true;
+            Debug.Log("[AxPickup] 플레이어 범위 진입");
             if (uiTextObject) uiTextObject.SetActive(true);
         }
     }
@@ -83,7 +85,7 @@ public class AxPickup : MonoBehaviour
         if (other.CompareTag(playerTag))
         {
             isPlayerInRange = false;
-            Debug.Log("플레이어가 도끼 범위 안에 들어옴");
+            Debug.Log("플레이어 범위 이탈");
             if (uiTextObject) uiTextObject.SetActive(false);
         }
     }
