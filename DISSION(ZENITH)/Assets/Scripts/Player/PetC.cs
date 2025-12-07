@@ -160,32 +160,24 @@ public class PetC : MonoBehaviour
     Vector3 GetOppositePosition()
     {
         Vector3 p = player.position;
-        Vector3 d = lastMoveDir;
 
-        Vector3 opposite;
+        // lastMoveDir이 0이 아닐 때만 정규화, 0이면 기본값은 아래쪽
+        Vector3 d = lastMoveDir.sqrMagnitude > 0.001f
+            ? lastMoveDir.normalized
+            : Vector3.down;
 
-        if (Mathf.Abs(d.x) > Mathf.Abs(d.y))
-        {
-            if (d.x > 0f)
-                opposite = p + Vector3.left * followOffset;
-            else
-                opposite = p + Vector3.right * followOffset;
-        }
-        else
-        {
-            if (d.y > 0f)
-                opposite = p + Vector3.down * followOffset;
-            else
-                opposite = p + Vector3.up * followOffset;
-        }
+        // 플레이어가 바라보는 방향의 정반대 방향으로 일정 거리만큼 떨어진 지점
+        Vector3 target = p - d * followOffset;
 
-        // 플레이어와 극히 가까워서 겹칠 위험이 있으면 약간 밀어냄
-        if (Vector3.Distance(opposite, p) < minDistance)
+        // 플레이어와 너무 가까우면 약간 밀어내기
+        float distToPlayer = Vector3.Distance(target, p);
+        if (distToPlayer < minDistance)
         {
-            Vector3 push = (opposite - p).normalized * minDistance;
-            if (push.magnitude > 0f) opposite = p + push;
+            Vector3 push = (target - p).normalized * minDistance;
+            if (push.sqrMagnitude > 0f)
+                target = p + push;
         }
 
-        return opposite;
+        return target;
     }
 }

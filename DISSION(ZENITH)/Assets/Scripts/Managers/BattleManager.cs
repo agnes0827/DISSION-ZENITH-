@@ -28,6 +28,11 @@ public class BattleManager : MonoBehaviour
     private string currentMonsterId;
     private string sceneToReturn;
 
+    // 추가: 공격 횟수 카운트 + 펫 도움 발동 여부
+    private int playerAttackCount = 0;
+    private int enemyAttackCount = 0;
+    private bool petAssistUsed = false;
+
     private string[] enemyWeapons = { "주먹", "칼" };
     private Dictionary<string, int> enemyDamageMap = new Dictionary<string, int>()
     {
@@ -201,6 +206,9 @@ public class BattleManager : MonoBehaviour
         yield return StartCoroutine(TypeWriterEffect($"적에게 {damage}의 피해를 입혔다."));
         yield return new WaitForSeconds(1.0f);
 
+        // 플레이어 공격 카운트 증가
+        playerAttackCount++;
+
         if (battleEnded)
         {
             StartCoroutine(VictorySequence());
@@ -261,6 +269,9 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
+        // 적 공격 카운트 증가
+        enemyAttackCount++;
+
         if (turnIndicator != null) turnIndicator.SetTarget(enemyVisual, enemyIndicatorOffset);
         string selectedWeapon = enemyWeapons[Random.Range(0, enemyWeapons.Length)];
         int damage = enemyDamageMap[selectedWeapon];
@@ -283,6 +294,16 @@ public class BattleManager : MonoBehaviour
         yield return StartCoroutine(TypeWriterEffect($"{damage}의 피해를 입었다."));
         yield return new WaitForSeconds(1.0f);
 
+        // 여기서 펫 도움 개입 여부 체크
+        yield return StartCoroutine(CheckPetAssist());
+
+        // 펫이 물어서 바로 승리해버렸을 수도 있으니 한 번 더 확인
+        if (battleEnded)
+        {
+            isActionInProgress = false;
+            yield break;
+        }
+
         if (GameStateManager.Instance.playerHP <= 0 && !battleEnded)
         {
             battleEnded = true;
@@ -296,6 +317,46 @@ public class BattleManager : MonoBehaviour
         {
             isActionInProgress = false;
             if (turnIndicator != null) turnIndicator.SetTarget(playerVisual, playerIndicatorOffset);
+        }
+    }
+
+    IEnumerator CheckPetAssist()
+    {
+        // 이미 한 번 발동했으면 다시 안 함
+        if (petAssistUsed) yield break;
+
+        // 서로 3번씩 공격한 이후에만
+        if (playerAttackCount < 3 || enemyAttackCount < 3) yield break;
+
+        if (battleEnded || enemy == null || GameStateManager.Instance == null)
+            yield break;
+
+        float playerHP = GameStateManager.Instance.playerHP;
+        int enemyHP = enemy.hp;
+
+        // 적 HP가 내 HP보다 많을 때만 발동
+        if (enemyHP <= playerHP) yield break;
+
+        // 여기서 펫 개입 발동
+        petAssistUsed = true;
+
+        // 펫이 도와주는 연출
+        yield return StartCoroutine(TypeWriterEffect("펫이 먼지괴물을 물었다!"));
+        yield return new WaitForSeconds(0.3f);
+
+        int extraDamage = 15;
+
+        // 적에게 추가 피해
+        enemy.TakeDamage(extraDamage);
+        enemy.GetComponent<DamageFlash>()?.FlashRed(0.4f);
+        if (enemyVisual != null)
+            yield return StartCoroutine(HitMotion(enemyVisual, enemyOriginalPos, false));
+
+        // 혹시 이 한 방에 적이 죽었으면 바로 승리 처리
+        if (enemy.hp <= 0 && !battleEnded)
+        {
+            battleEnded = true;
+            StartCoroutine(VictorySequence());
         }
     }
 
