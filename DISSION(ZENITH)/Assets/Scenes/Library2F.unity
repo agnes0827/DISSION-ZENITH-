@@ -4994,7 +4994,7 @@ MonoBehaviour:
   scenePickupID: Fireball_Book
   itemDatabase: {fileID: 11400000, guid: 3d05d3bf198fd814690f8d054a293165, type: 2}
   desiredColor: ffc200
-  specificDialogueID: 40018
+  specificDialogueID: 40021
 --- !u!61 &1631164150
 BoxCollider2D:
   m_ObjectHideFlags: 0
