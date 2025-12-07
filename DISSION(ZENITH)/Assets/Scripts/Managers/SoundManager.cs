@@ -21,7 +21,10 @@ public enum SfxType
     Attack4 = 12,           // Element 12
     Hit = 13,               // Element 13
     BattleEncounter = 14,   // Element 14
-    EnemyDeath = 15         // Element 15
+    EnemyDeath = 15,        // Element 15
+    UISound = 16,           // Element 16
+    ItemPickup = 17,        // Element 17
+    Torch = 18,             // Element 18
 }
 
 public class SoundManager : MonoBehaviour

@@ -34,6 +34,7 @@ public class WakeUpCutscene : MonoBehaviour
     [Header("퀘스트")]
     public string questIdToAccept = "Q02";
 
+    public AudioSource bgmAudioSource;
     private GameObject _realPlayer;
     private bool _isWakingUp = false;
 
@@ -125,6 +126,27 @@ public class WakeUpCutscene : MonoBehaviour
         DialogueManager.Instance.StartDialogue("10000");
 
         if (noticePanel != null) noticePanel.ShowNotice();
+        yield return new WaitForSeconds(0.5f);
+        if (bgmAudioSource != null) StartCoroutine(FadeInBGM(2.0f));
+    }
+
+    IEnumerator FadeInBGM(float duration)
+    {
+        float currentTime = 0;
+        float startVolume = 0f;    // 0에서 시작
+        float targetVolume = 0.2f; // 최종 볼륨
+
+        bgmAudioSource.volume = startVolume;
+        bgmAudioSource.Play();
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            bgmAudioSource.volume = Mathf.Lerp(startVolume, targetVolume, currentTime / duration);
+            yield return null; // 한 프레임 대기
+        }
+
+        bgmAudioSource.volume = targetVolume;
     }
 
     // 페이드 효과용 코루틴

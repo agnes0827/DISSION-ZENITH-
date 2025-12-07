@@ -50,6 +50,7 @@ public class TorchPickup : MonoBehaviour
 
     void GetTorch()
     {
+        SoundManager.Instance.PlaySFX(SfxType.Torch, 0.5f);
         if (playerLightObject != null)
         {
             playerLightObject.SetActive(true);

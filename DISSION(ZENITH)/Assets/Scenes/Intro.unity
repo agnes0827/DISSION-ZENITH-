@@ -1971,7 +1971,7 @@ Transform:
   m_GameObject: {fileID: 1055791563}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.06, y: 32.89, z: 0}
+  m_LocalPosition: {x: 1.06, y: 34.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2031,7 +2031,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1767838012125647900, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: orthographic size
-      value: 10
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 2616274575068400186, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: m_DefaultBlend.m_Time
@@ -2169,6 +2169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1269196135}
   - component: {fileID: 1269196136}
+  - component: {fileID: 1269196137}
   m_Layer: 0
   m_Name: TorchLight
   m_TagString: Untagged
@@ -2207,7 +2208,7 @@ MonoBehaviour:
   m_LightType: 2
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.75
-  m_Color: {r: 0.4509804, g: 0.4392157, b: 0.40784314, a: 1}
+  m_Color: {r: 0.4490565, g: 0.393532, b: 0.35500884, a: 1}
   m_Intensity: 2
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
@@ -2241,6 +2242,23 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &1269196137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269196134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44a63910ab503954691cdf324459250f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseIntensity: 2
+  intensityFluctuation: 0.5
+  baseRadius: 10
+  radiusFluctuation: 0.1
+  flickerSpeed: 2.7
 --- !u!1 &1275145720
 GameObject:
   m_ObjectHideFlags: 0
@@ -2559,6 +2577,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1559437694}
   - component: {fileID: 1559437693}
+  - component: {fileID: 1559437695}
   m_Layer: 0
   m_Name: TorchLight
   m_TagString: Untagged
@@ -2582,7 +2601,7 @@ MonoBehaviour:
   m_LightType: 2
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.75
-  m_Color: {r: 0.4509804, g: 0.4392157, b: 0.40784314, a: 1}
+  m_Color: {r: 0.2679245, g: 0.21999282, b: 0.19361335, a: 1}
   m_Intensity: 2
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
@@ -2626,11 +2645,28 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.03999996, z: 0}
-  m_LocalScale: {x: 18, y: 18, z: 18}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 191770242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1559437695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559437692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44a63910ab503954691cdf324459250f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseIntensity: 2
+  intensityFluctuation: 0.2
+  baseRadius: 3
+  radiusFluctuation: 0.1
+  flickerSpeed: 3
 --- !u!1 &1736834435
 GameObject:
   m_ObjectHideFlags: 0

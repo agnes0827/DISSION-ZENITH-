@@ -79,6 +79,7 @@ public class FightTrigger : MonoBehaviour
     {
         Camera cam = Camera.main;
         float originalSize = cam.orthographicSize;
+        SoundManager.Instance.PlaySFX(SfxType.BattleEncounter);
 
         // 1-1. ÇÏ¾é°Ô ¼¼ÆÃ
         FadeManager.Instance.SetFadeColor(Color.white);
