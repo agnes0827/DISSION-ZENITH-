@@ -21,6 +21,7 @@ public class PetC : MonoBehaviour
     public static PetC Instance { get; private set; } // 싱글턴 + DontDestroyOnLoad 패턴
 
     private bool isSitting = false; // 앉음 상태 추가
+    public bool followUnlocked = false;  // 퀘스트 이후 언락 여부
 
     private void Awake()
     {
@@ -54,14 +55,33 @@ public class PetC : MonoBehaviour
         lastMoveDir = Vector3.down;
         lastMoveForAnim = Vector3.down;
 
-        // 씬 시작 시부터 계속 앉아 있는 상태로 세팅
+        // 씬 시작 시부터 계속 앉아 있는 상태로 세팅. 아직 언락되지 않은 상태
         isSitting = true;
+        followUnlocked = false;
         anim.SetBool("isSit", true);
         anim.SetBool("isMoving", false);
     }
 
+    // 외부에서 호출할 언락 함수
+    public void UnlockFollow()
+    {
+        followUnlocked = true;
+        isSitting = false;              // 바로 따라오게
+        anim.SetBool("isSit", false);
+        Debug.Log("[PetC] 펫이 이제 플레이어를 따라옵니다!");
+    }
+
     void Update()
     {
+        // 아직 언락 안 됐으면 계속 앉아서 대기
+        if (!followUnlocked)
+        {
+            anim.SetBool("isSit", true);
+            anim.SetBool("isMoving", false);
+            velocity = Vector3.zero;
+            return;
+        }
+
         // G 키를 눌렀을 때 처음으로 일어나게 (한 번만)
         if (Input.GetKeyDown(KeyCode.G) && isSitting)
         {
