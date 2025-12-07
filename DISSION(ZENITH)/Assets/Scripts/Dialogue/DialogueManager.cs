@@ -237,6 +237,7 @@ public class DialogueManager : MonoBehaviour
         }
         else if (!string.IsNullOrEmpty(nextId))
         {
+            SoundManager.Instance.PlaySFX(SfxType.UISound, 0.3f, false);
             DisplayDialogue(nextId);
         }
         else
