@@ -3,64 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class WeaponSlotManager : MonoBehaviour
 {
-    public Image[] weaponIcons; // ½½·Ô ÀÌ¹ÌÁö
+    public Image[] weaponIcons; // ë¬´ê¸° ì•„ì´ì½˜ë“¤
+    public Image[] cooldownOverlays; // ì¿¨íƒ€ì„ UI 
 
-    private List<WeaponData> equippedWeapons = new List<WeaponData>(); // ½½·Ô¿¡ ÀúÀåµÈ ¹«±â Á¤º¸ ÀúÀå
-
-    public void AssignWeaponToSlot(Sprite weaponSprite, string id, string displayName, int minDamage, int maxDamage)
-    {
-        for (int i = 0; i < weaponIcons.Length; i++)
-        {
-            if (weaponIcons[i].sprite == null) // ºñ¾îÀÖ´Â ½½·Ô Ã£±â
-            {
-                weaponIcons[i].sprite = weaponSprite;
-                weaponIcons[i].color = Color.white;
-                weaponIcons[i].gameObject.SetActive(true);
-
-                WeaponData data = new WeaponData(id, displayName, weaponSprite, minDamage, maxDamage);
-
-                // ¸®½ºÆ® Å©±â º¸Á¤
-                while (equippedWeapons.Count <= i)
-                {
-                    equippedWeapons.Add(null);
-                }
-
-                equippedWeapons[i] = data;
-                break;
-            }
-        }
-    }
+    private List<WeaponData> equippedWeapons = new List<WeaponData>(); // ì¥ì°©ëœ ë¬´ê¸° ë°ì´í„° ë¦¬ìŠ¤íŠ¸
 
     public void SetupWeaponSlots(List<WeaponData> weaponsToEquip)
     {
-        // ±âÁ¸ Á¤º¸ ÃÊ±âÈ­
         equippedWeapons.Clear();
 
-        // ½½·Ô °³¼ö¸¸Å­ ¹İº¹
         for (int i = 0; i < weaponIcons.Length; i++)
         {
             if (i < weaponsToEquip.Count)
             {
                 WeaponData data = weaponsToEquip[i];
-
-                weaponIcons[i].gameObject.SetActive(true); // ½½·Ô ÄÑ±â
-                weaponIcons[i].sprite = data.image;        // ÀÌ¹ÌÁö º¯°æ
-
-                Color c = weaponIcons[i].color;
-                c.a = 1f;
-                weaponIcons[i].color = c;
-
-                // ³»ºÎ ¸®½ºÆ®¿¡ ÀúÀå
                 equippedWeapons.Add(data);
+
+                weaponIcons[i].gameObject.SetActive(true);
+                weaponIcons[i].sprite = data.image;
+                weaponIcons[i].color = Color.white;
+
+                // ì¿¨íƒ€ì„ UI ì´ˆê¸°í™”
+                if (cooldownOverlays[i] != null)
+                {
+                    cooldownOverlays[i].fillAmount = 0;
+                }
             }
-            // µ¥ÀÌÅÍ°¡ ¾øÀ¸¸é
             else
             {
-                weaponIcons[i].sprite = null; // ÀÌ¹ÌÁö ºñ¿ì±â
-                weaponIcons[i].gameObject.SetActive(false); // ½½·Ô ¼û±â±â
+                weaponIcons[i].gameObject.SetActive(false);
+                if (cooldownOverlays.Length > i && cooldownOverlays[i] != null) cooldownOverlays[i].gameObject.SetActive(false);
             }
         }
     }
@@ -70,5 +44,61 @@ public class WeaponSlotManager : MonoBehaviour
         if (slotIndex >= 0 && slotIndex < equippedWeapons.Count)
             return equippedWeapons[slotIndex];
         return null;
+    }
+
+    public void StartCooldown(int slotIndex, float duration)
+    {
+        if (slotIndex < 0 || slotIndex >= cooldownOverlays.Length) return;
+
+        StartCoroutine(CooldownCoroutine(slotIndex, duration));
+    }
+
+    private IEnumerator CooldownCoroutine(int slotIndex, float duration)
+    {
+        Image overlay = cooldownOverlays[slotIndex];
+
+        if (overlay == null) yield break;
+
+        overlay.gameObject.SetActive(true);
+
+        float timer = duration;
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            overlay.fillAmount = timer / duration;
+
+            yield return null;
+        }
+
+        overlay.fillAmount = 0;
+        overlay.gameObject.SetActive(false);
+    }
+
+    public void AssignWeaponToSlot(Sprite image, string id, string displayName, int minDamage, int maxDamage)
+    {
+        // ìŠ¬ë¡¯ì´ ê½‰ ì°¼ìœ¼ë©´ ë¬´ì‹œ
+        if (equippedWeapons.Count >= weaponIcons.Length)
+        {
+            Debug.Log("ë” ì´ìƒ ë¬´ê¸°ë¥¼ ì¥ì°©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+            return;
+        }
+
+        // ìƒˆ ë¬´ê¸° ë°ì´í„° ìƒì„±
+        WeaponData newWeapon = new WeaponData(id, displayName, image, minDamage, maxDamage);
+
+        // ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
+        equippedWeapons.Add(newWeapon);
+
+        // UI ê°±ì‹ 
+        int slotIndex = equippedWeapons.Count - 1;
+        weaponIcons[slotIndex].gameObject.SetActive(true);
+        weaponIcons[slotIndex].sprite = image;
+        weaponIcons[slotIndex].color = Color.white;
+
+        if (cooldownOverlays[slotIndex] != null)
+        {
+            cooldownOverlays[slotIndex].fillAmount = 0;
+            cooldownOverlays[slotIndex].gameObject.SetActive(false);
+        }
     }
 }
