@@ -20,6 +20,8 @@ public class PetC : MonoBehaviour
 
     public static PetC Instance { get; private set; } // 싱글턴 + DontDestroyOnLoad 패턴
 
+    private bool isSitting = false; // 앉음 상태 추가
+
     private void Awake()
     {
         if (Instance == null)
@@ -35,24 +37,60 @@ public class PetC : MonoBehaviour
 
     void Start()
     {
-        lastPlayerPos = player.position;
-        lastMoveDir = Vector3.down;
-        lastMoveForAnim = Vector3.down;
+
         anim = GetComponent<Animator>();
 
-        // 씬이 로드될 때 플레이어 싱글턴을 찾아서 타겟으로 설정
+        // 먼저 PlayerController.Instance로 이전 씬에서 넘어온 플레이어 찾기
         if (PlayerController.Instance != null)
         {
             player = PlayerController.Instance.transform;
+            lastPlayerPos = player.position;
         }
         else
         {
             Debug.LogError("PetFollow: PlayerController.Instance를 찾을 수 없습니다!");
+            return;
+        }
+        lastMoveDir = Vector3.down;
+        lastMoveForAnim = Vector3.down;
+
+        StartCoroutine(SitForSeconds(4f));
+    }
+
+    // 씬 시작 시 앉아있는 상태로 시작
+    private System.Collections.IEnumerator SitForSeconds(float seconds)
+    {
+        isSitting = true;
+        anim.SetBool("isSit", true);
+        anim.SetBool("isMoving", false);
+
+        yield return new WaitForSeconds(seconds);
+
+        // 중간에 G키로 이미 일어서면 그대로 두기
+        if (isSitting)
+        {
+            isSitting = false;
+            anim.SetBool("isSit", false);
         }
     }
 
     void Update()
     {
+        // G 키로 앉기 토글
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            isSitting = !isSitting;
+            anim.SetBool("isSit", isSitting);
+        }
+
+        // 앉은 동안은 이동/애니메이션 갱신 정지
+        if(isSitting)
+        {
+            anim.SetBool("isMoving", false); // 걷기 애니 끄기
+            velocity = Vector3.zero; // 움직임 중지
+            return; // 따라가기 로직 실행 x
+        }
+
         // 플레이어 입력 값 확인 (Input 기반으로 isMoving 판정)
         float dx = Input.GetAxisRaw("Horizontal");
         float dy = Input.GetAxisRaw("Vertical");

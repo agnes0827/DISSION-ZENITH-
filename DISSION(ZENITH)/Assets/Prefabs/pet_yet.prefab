@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8934165689292947343}
   - component: {fileID: 2176900996224078461}
   - component: {fileID: -9091455734373802581}
+  - component: {fileID: 8743189124262340585}
   m_Layer: 0
   m_Name: pet_yet
   m_TagString: Untagged
@@ -114,6 +115,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 5465506933837067724, guid: f0d20cf75b3419446a2dc7eb39f69c6d, type: 3}
-  speed: 2
-  followDistance: 0.5
-  lockToGround: 0
+  smoothTime: 0.1
+  minDistance: 0.5
+  warpDistance: 4
+  followOffset: 0.8
+--- !u!95 &8743189124262340585
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284481798169668863}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 99cb5cbdafba54d418674930cb7c06fb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
