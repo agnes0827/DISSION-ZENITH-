@@ -67,7 +67,7 @@ public class SceneTrigger : MonoBehaviour
 
         // 효과음 재생
         if (playSFXSound)
-            SoundManager.Instance.PlaySFX(SfxType.Door);
+            SoundManager.Instance.PlaySFX(SfxType.Door, 0.5f);
 
         // SceneLoader에게 씬 로드 요청
         SceneLoader.Instance.LoadSceneWithFade(nextSceneName, 0.8f);

@@ -9,6 +9,9 @@ public class MiniGameManager : MonoBehaviour
     private PlayerController playerController;
     public static bool IsMiniGameActive { get; private set; } = false;
 
+    private AudioSource currentBgmSource;
+    private float savedBgmVolume;        
+
     void Awake()
     {
         if (Instance == null)
@@ -96,8 +99,26 @@ public class MiniGameManager : MonoBehaviour
         playerController.StopMovement();
         IsMiniGameActive = true;
 
+        FindAndLowerBGM();
+
         dustCleaningGameUI.gameObject.SetActive(true);
         dustCleaningGameUI.BeginGame(dustObject, this.OnDustCleaned);
+    }
+
+    private void FindAndLowerBGM()
+    {
+        AudioSource[] allSources = FindObjectsOfType<AudioSource>();
+
+        foreach (var source in allSources)
+        {
+            if (source.isPlaying && source != dustCleaningGameUI.clockAudioSource)
+            {
+                currentBgmSource = source;
+                savedBgmVolume = source.volume; // 원래 볼륨 저장 (예: 0.35)
+                source.volume = 0.15f;           // 0.1로 줄임
+                break;
+            }
+        }
     }
 
     // 먼지 하나 제거 성공 시 호출됨
@@ -137,6 +158,12 @@ public class MiniGameManager : MonoBehaviour
     public void EndDustCleaning()
     {
         IsMiniGameActive = false;
+
+        if (currentBgmSource != null)
+        {
+            currentBgmSource.volume = savedBgmVolume; // 저장해둔 볼륨으로 복구
+            currentBgmSource = null; // 참조 해제
+        }
 
         if (dustCleaningGameUI != null)
         {

@@ -131,6 +131,7 @@ public class DialogueManager : MonoBehaviour
         {
             selectedChoiceIndex = (selectedChoiceIndex == 1) ? 2 : 1;
             dialogueUI.HighlightChoice(selectedChoiceIndex);
+
             inputProcessed = true;
         }
         else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
@@ -237,7 +238,7 @@ public class DialogueManager : MonoBehaviour
         }
         else if (!string.IsNullOrEmpty(nextId))
         {
-            SoundManager.Instance.PlaySFX(SfxType.UISound, 0.3f, false);
+            SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.4f, false);
             DisplayDialogue(nextId);
         }
         else

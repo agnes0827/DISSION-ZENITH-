@@ -1644,6 +1644,10 @@ PrefabInstance:
       propertyPath: sfxClips.Array.data[18]
       value: 
       objectReference: {fileID: 8300000, guid: 1b1b7710d6f626a49a2698306013a792, type: 3}
+    - target: {fileID: 8028520064313315973, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
+      propertyPath: sfxClips.Array.data[19]
+      value: 
+      objectReference: {fileID: 8300000, guid: 88d20a6790ff6bf4dac5aeb4abac2633, type: 3}
     - target: {fileID: 8113391196986179061, guid: 6e9229ed9b89a8a4cbbc26882aaf1877, type: 3}
       propertyPath: m_LocalPosition.x
       value: 346.96667

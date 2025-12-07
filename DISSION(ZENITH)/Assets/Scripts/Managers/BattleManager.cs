@@ -168,6 +168,7 @@ public class BattleManager : MonoBehaviour
 
     void HandleEnemyDied()
     {
+        SoundManager.Instance.PlaySFX(SfxType.EnemyDeath, 0.5f, false);
         if (battleEnded) return;
         battleEnded = true;
 
