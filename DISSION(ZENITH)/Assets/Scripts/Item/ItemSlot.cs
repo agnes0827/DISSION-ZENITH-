@@ -86,5 +86,10 @@ public class ItemSlot : MonoBehaviour
                 backgroundImage.color = new Color(0.6f, 0.6f, 0.6f, 1f); // È¸»ö
             }
         }
+
+        if (amountText != null)
+        {
+            amountText.gameObject.SetActive(isUsable);
+        }
     }
 }

@@ -6,14 +6,14 @@ public class ItemPickup : MonoBehaviour
     [Header("아이템 정보")]
     [Tooltip("ItemDatabase에 정의된 고유 ID")]
     public string itemId;
-
     [Tooltip("이 '씬 오브젝트'의 고유 ID. 씬 내에서 절대 중복 금지.")]
     public string scenePickupID; // 예: "Library_Potion_01", "Hallway_Key_Pickup"
-
     [Tooltip("참조할 아이템 데이터베이스")]
     public ItemDatabase itemDatabase;
-
     public string desiredColor = "ffc200";
+
+    // 이어지는 특수 대화가 필요한 경우
+    public string specificDialogueID;
     private bool isPlayerInRange = false;
 
     private void Start()
@@ -65,8 +65,6 @@ public class ItemPickup : MonoBehaviour
 
         // 1. 데이터베이스에서 아이템 '이름' 찾기
         ItemDefinition definition = itemDatabase.GetItemByID(itemId);
-
-        // definition.itemName은 "도서관 2층 열쇠"
         string itemName = (definition != null) ? definition.itemName : itemId;
         string highlightedName = $"<color=#{desiredColor}>{itemName}</color>";
 
@@ -75,7 +73,14 @@ public class ItemPickup : MonoBehaviour
         GameStateManager.Instance.collectedSceneObjectIDs.Add(scenePickupID);
 
         // 3. 다이얼로그 매니저에 '이름'으로 알림 요청 (UI 표시)
-        DialogueManager.Instance.ShowItemGetNotice(highlightedName);
+        if (!string.IsNullOrEmpty(specificDialogueID))
+        {
+            DialogueManager.Instance.StartDialogue(specificDialogueID);
+        }
+        else
+        {
+            DialogueManager.Instance.ShowItemGetNotice(highlightedName);
+        }
 
         // 4. 아이템 오브젝트 파괴
         Destroy(gameObject);
