@@ -7,10 +7,14 @@ using UnityEngine.UI;
 public class WeaponData
 {
     public string name;
-    public string displayName;   // ¹«±â ÀÌ¸§ ÀúÀå
-    public Sprite image;         // ¹«±â ÀÌ¹ÌÁö ÀúÀå
-    public int minDamage;        // ÃÖ¼Ò °ø°İ·Â
-    public int maxDamage;        // ÃÖ´ë °ø°İ·Â
+    public string displayName;   // í‘œì‹œ ì´ë¦„
+    public Sprite image;         // UI ì´ë¯¸ì§€
+    public int minDamage;        // ìµœì†Œ ê³µê²©ë ¥
+    public int maxDamage;        // ìµœëŒ€ ê³µê²©ë ¥
+    public float cooldown = 0f;  // ì¿¨íƒ€ì„ (ê¸°ë³¸ 0)
+
+    [System.NonSerialized]
+    public float lastUseTime = -9999f; // ë§ˆì§€ë§‰ ì‚¬ìš© ì‹œê°„
 
     public WeaponData(string name, string displayName, Sprite image, int minDamage, int maxDamage)
     {

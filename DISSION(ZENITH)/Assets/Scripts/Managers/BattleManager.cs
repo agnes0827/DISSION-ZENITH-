@@ -7,86 +7,62 @@ using TMPro;
 
 public class BattleManager : MonoBehaviour
 {
-    [Header("UI ¿¬°á")]
-    // [SerializeField] private GameObject battleInventoryMenu; // ÀÎº¥Åä¸® ¸Ş´º ÆĞ³Î (ÀüÅõ ½ÃÀÛ ½Ã È°¼ºÈ­)
-    public WeaponSlotManager weaponSlotManager;              // ÇÃ·¹ÀÌ¾î ¹«±â ½½·Ô °ü¸® ½ºÅ©¸³Æ®
-
-    // ÀüÅõ Á¤º¸ Ç¥½Ã UI
-    public TextMeshProUGUI DialogText;      // ´ÙÀÌ¾ó·Î±× (ÀüÅõ »óÈ² ¸Ş½ÃÁö) Ãâ·Â ÅØ½ºÆ®
-    public TextMeshProUGUI PlayerHpText;    // ÇÃ·¹ÀÌ¾î ÇöÀç Ã¼·Â Ç¥½Ã ÅØ½ºÆ®
-    public GameObject panel;                // ÀÚ¸·À» ¶ç¿ï UI ÆĞ³Î
-
-    // Ã¼·Â¹Ù ½½¶óÀÌ´õ
+    [Header("UI ìš”ì†Œ")]
+    public WeaponSlotManager weaponSlotManager;              // í”Œë ˆì´ì–´ ë¬´ê¸° ìŠ¬ë¡¯ ê´€ë¦¬ ìŠ¤í¬ë¦½íŠ¸
+    public TextMeshProUGUI DialogText;      // ë‹¤ì´ì–¼ë¡œê·¸ (ì „íˆ¬ ìƒí™© ë©”ì‹œì§€) ìš© í…ìŠ¤íŠ¸
+    public TextMeshProUGUI PlayerHpText;    // í”Œë ˆì´ì–´ í˜„ì¬ ì²´ë ¥ í‘œì‹œ í…ìŠ¤íŠ¸
+    public GameObject panel;                // ì „ì²´ì ì¸ UI íŒ¨ë„
     public Slider playerHpSlider;
     public Slider enemyHpSlider;
-
-    // ÅÏ indicator
     public TurnIndicator turnIndicator;
+    public Vector3 playerIndicatorOffset = new Vector3(0, 100f, 0);
+    public Vector3 enemyIndicatorOffset = new Vector3(0, 200f, 0);
 
-    public Vector3 playerIndicatorOffset = new Vector3(0, 100f, 0); // ÇÃ·¹ÀÌ¾î
-    public Vector3 enemyIndicatorOffset = new Vector3(0, 200f, 0);  // enemy
-
-    [Header("Dialogue ¼³Á¤")]
+    [Header("Dialogue ê´€ë ¨")]
     public float typingSpeed = 0.05f;
 
+    [Header("ì „íˆ¬ ì°¸ì—¬ì ë° ì”¬ ì •ë³´")]
+    public Enemy enemy;
+    private bool battleEnded = false;
+    private bool isActionInProgress = false;
+    private string currentMonsterId;
+    private string sceneToReturn;
 
-    [Header("ÀüÅõ µ¥ÀÌÅÍ ¹× »óÅÂ °ü¸®")]
-    // Ä³¸¯ÅÍ Á¤º¸
-    public Enemy enemy;                     // ÇöÀç ÀüÅõ ÁßÀÎ Àû ½ºÅ©¸³Æ® (µ¥¹ÌÁö Àü´Ş ´ë»ó)
-
-    // ÀüÅõ »óÅÂ
-    private bool battleEnded = false;       // ÀüÅõ°¡ Á¾·áµÇ¾ú´ÂÁö ¿©ºÎ
-    private bool isActionInProgress = false; // ÇöÀç ÇÃ·¹ÀÌ¾î ¶Ç´Â ÀûÀÇ Çàµ¿ÀÌ ÁøÇà ÁßÀÎÁö (Áßº¹ ÀÔ·Â ¹æÁö)
-
-    // ¾À ¹× ¸ó½ºÅÍ Á¤º¸ (GameStateManager¿¡¼­ ÃÊ±âÈ­µÊ)
-    private string currentMonsterId;        // ÇöÀç ½Î¿ì´Â ¸ó½ºÅÍÀÇ °íÀ¯ ID
-    private string sceneToReturn;           // ÀüÅõ Á¾·á ÈÄ µ¹¾Æ°¥ ÀÌÀü ¾À ÀÌ¸§
-
-    // ÀûÀÇ °ø°İ ÆĞÅÏ
-    private string[] enemyWeapons = { "¼Õ", "Ä®" }; // ÀûÀÌ »ç¿ëÇÒ ¼ö ÀÖ´Â ¹«±â ¸ñ·Ï
+    private string[] enemyWeapons = { "ì£¼ë¨¹", "ì¹¼" };
     private Dictionary<string, int> enemyDamageMap = new Dictionary<string, int>()
     {
-        {"¼Õ", 10 },
-        {"Ä®", 15 }
-    }; // Àû ¹«±â ÀÌ¸§º° ±âº» °ø°İ·Â
+        {"ì£¼ë¨¹", 10 },
+        {"ì¹¼", 15 }
+    };
 
-    // ¹«±â ¸®½ºÆ®
     public List<WeaponData> allWeaponDatabase;
-    public WeaponData defaultHandWeapon; // ±âº» '¼Õ' µ¥ÀÌÅÍ (ÀÎ½ºÆåÅÍ¿¡¼­ ¼³Á¤)
+    public WeaponData defaultHandWeapon;
 
+    [Header("ì „íˆ¬ ëª¨ì…˜ ê´€ë ¨")]
+    public Transform playerVisual;
+    public Transform enemyVisual;
+    public Vector3 playerOriginalPos;
+    public Vector3 enemyOriginalPos;
+    public float attackMoveDistance = 0.5f;
+    public float hitKnockbackDistance = 0.3f;
+    public float moveDuration = 0.15f;
 
-    [Header("ÀüÅõ ¸ğ¼Ç ¼³Á¤")]
-    public Transform playerVisual;          // ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍÀÇ Transform
-    public Transform enemyVisual;           // Àû Ä³¸¯ÅÍÀÇ Transform
-
-    public Vector3 playerOriginalPos;       // ÇÃ·¹ÀÌ¾îÀÇ ÀüÅõ ½ÃÀÛ ÃÊ±â À§Ä¡
-    public Vector3 enemyOriginalPos;        // ÀûÀÇ ÀüÅõ ½ÃÀÛ ÃÊ±â À§Ä¡
-
-    public float attackMoveDistance = 0.5f; // °ø°İ ½Ã ¾ÕÀ¸·Î ÀüÁøÇÏ´Â °Å¸®
-    public float hitKnockbackDistance = 0.3f; // ÇÇ°İ ½Ã µÚ·Î ¹Ğ·Á³ª´Â °Å¸®
-    public float moveDuration = 0.15f;      // Áö¼Ó ½Ã°£
-
-    [Header("ÀÌÆåÆ® ÇÁ¸®ÆÕ")]
-    public GameObject fireballPrefab; // ÀÎ½ºÆåÅÍ¿¡¼­ ÆÄÀÌ¾îº¼ ÇÁ¸®ÆÕ ³ÖÀ» °÷
-    public Transform firePoint;       // ÆÄÀÌ¾îº¼ÀÌ ¹ß»çµÉ À§Ä¡
+    [Header("ì´í™íŠ¸ í”„ë¦¬íŒ¹")]
+    public GameObject fireballPrefab;
+    public Transform firePoint;
 
     void Start()
     {
-        // À§Ä¡ ÃÊ±âÈ­
         if (playerVisual != null) playerOriginalPos = playerVisual.position;
         if (enemyVisual != null) enemyOriginalPos = enemyVisual.position;
 
-        // GameStateManager µ¥ÀÌÅÍ ·Îµå
         if (GameStateManager.Instance != null)
         {
             currentMonsterId = GameStateManager.Instance.currentMonsterId;
             sceneToReturn = GameStateManager.Instance.returnSceneAfterBattle;
-            Debug.Log($"BattleManager ½ÃÀÛ: ¸ó½ºÅÍID({currentMonsterId}), º¹±Í¾À({sceneToReturn})");
-
             if (enemy == null) enemy = FindObjectOfType<Enemy>();
-            if (enemy == null) { Debug.LogError("BattleManager: Enemy¸¦ Ã£°Å³ª ¼³Á¤ÇÒ ¼ö ¾ø½À´Ï´Ù!"); return; }
+            if (enemy == null) { Debug.LogError("BattleManager: Enemyë¥¼ ì°¾ê±°ë‚˜ ìƒì„±í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤!"); return; }
 
-            // ÇÃ·¹ÀÌ¾î HP ÃÊ±âÈ­
             if (playerHpSlider != null)
             {
                 playerHpSlider.maxValue = GameStateManager.Instance.playerMaxHP;
@@ -96,113 +72,79 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("BattleManager: GameStateManager¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù!"); return;
+            Debug.LogError("BattleManager: GameStateManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤!"); return;
         }
 
-        // Àû ÀÌº¥Æ® ¿¬°á ¹× HP ÃÊ±âÈ­
         if (enemy != null)
         {
             enemy.OnDamaged += HandleEnemyDamaged;
             enemy.OnDied += HandleEnemyDied;
-
             if (enemyHpSlider != null)
             {
                 enemyHpSlider.maxValue = enemy.hp;
                 enemyHpSlider.value = enemy.hp;
             }
         }
-        LoadPlayerWeapons(); // ¹«±â ÀåÂø
+        LoadPlayerWeapons();
 
-        // ½ÃÀÛ Àü indicator ºñÈ°¼ºÈ­
         if (turnIndicator != null) turnIndicator.SetTarget(null, Vector3.zero);
-
         StartCoroutine(StartBattleSequence());
     }
 
     void LoadPlayerWeapons()
     {
         if (GameStateManager.Instance == null) return;
-
         List<WeaponData> myWeapons = new List<WeaponData>();
-
-        // 1. ÀÎº¥Åä¸®(¹®ÀÚ¿­ ID)¸¦ ½ÇÁ¦ ¹«±â µ¥ÀÌÅÍ(WeaponData)·Î º¯È¯
         foreach (var item in GameStateManager.Instance.inventoryItems)
         {
-            string itemId = item.Key;
-
-            // µµ°¨¿¡¼­ ÀÌ¸§ÀÌ °°Àº ¹«±â¸¦ Ã£À½
-            WeaponData foundWeapon = allWeaponDatabase.Find(w => w.name == itemId);
-
+            WeaponData foundWeapon = allWeaponDatabase.Find(w => w.name == item.Key);
             if (foundWeapon != null)
             {
                 myWeapons.Add(foundWeapon);
             }
         }
-
-        // 2. ¹«±â°¡ ¾øÀ¸¸é '¼Õ' Ãß°¡
         if (myWeapons.Count == 0 && defaultHandWeapon != null)
         {
             myWeapons.Add(defaultHandWeapon);
         }
-
-        // 3. WeaponSlotManager¿¡°Ô Àü´Ş
         weaponSlotManager.SetupWeaponSlots(myWeapons);
-
     }
+
     void UpdatePlayerHPUI()
     {
-        // ÇÃ·¹ÀÌ¾î ÅØ½ºÆ® & ½½¶óÀÌ´õ °»½Å
         if (GameStateManager.Instance != null)
         {
-            if (PlayerHpText != null)
-                PlayerHpText.text = $"{GameStateManager.Instance.playerHP}";
-
-            if (playerHpSlider != null)
-                playerHpSlider.value = GameStateManager.Instance.playerHP;
+            if (PlayerHpText != null) PlayerHpText.text = $"{GameStateManager.Instance.playerHP}";
+            if (playerHpSlider != null) playerHpSlider.value = GameStateManager.Instance.playerHP;
         }
     }
 
     void HandleEnemyDamaged(int currentHP, int damage)
     {
-        if (enemyHpSlider != null)
-        {
-            enemyHpSlider.value = currentHP;
-        }
+        if (enemyHpSlider != null) enemyHpSlider.value = currentHP;
     }
 
     void HandleEnemyDied()
     {
         if (battleEnded) return;
         battleEnded = true;
-
-        if (enemyHpSlider != null)
-        {
-            enemyHpSlider.gameObject.SetActive(false);
-        }
+        if (enemyHpSlider != null) enemyHpSlider.gameObject.SetActive(false);
     }
 
-    // ÀüÅõ ½ÃÀÛ ¿¬Ãâ
     IEnumerator StartBattleSequence()
     {
         panel.SetActive(true);
         isActionInProgress = true;
-
-        // ¸ó½ºÅÍ ÀÌ¸§ °¡Á®¿À±â
-        string monsterName = (enemy != null) ? enemy.enemyName : "¸ó½ºÅÍ";
-        yield return StartCoroutine(TypeWriterEffect($"{monsterName}ÀÌ(°¡) °ø°İÇØ¿Ô´Ù!"));
+        string monsterName = (enemy != null) ? enemy.enemyName : "ì ";
+        yield return StartCoroutine(TypeWriterEffect($"{monsterName}ì´(ê°€) ë‚˜íƒ€ë‚¬ë‹¤!"));
         yield return new WaitForSeconds(1.5f);
-
-        // indicator: ÇÃ·¹ÀÌ¾î ÅÏ
-        if (turnIndicator != null)
-            turnIndicator.SetTarget(playerVisual, playerIndicatorOffset);
-
+        if (turnIndicator != null) turnIndicator.SetTarget(playerVisual, playerIndicatorOffset);
         isActionInProgress = false;
     }
 
-    // Å¸ÀÌÇÎ È¿°ú ÇÔ¼ö
     IEnumerator TypeWriterEffect(string message)
     {
-        DialogText.text = ""; // ÃÊ±âÈ­
+        DialogText.text = "";
         foreach (char letter in message.ToCharArray())
         {
             DialogText.text += letter;
@@ -210,92 +152,81 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    // ¹«±â ¼±ÅÃ
     public void OnWeaponSlotClicked(int slotIndex)
     {
         if (isActionInProgress || battleEnded) return;
 
         WeaponData data = weaponSlotManager.GetWeaponData(slotIndex);
-        if (data != null)
+        if (data == null) return;
+
+        // ì¿¨íƒ€ì„ í™•ì¸
+        if (Time.time - data.lastUseTime < data.cooldown)
         {
-            isActionInProgress = true;
-            StartCoroutine(ShowWeaponUseAndAttack(data));
+            Debug.Log($"{data.displayName}ì€(ëŠ”) ì•„ì§ ì¿¨íƒ€ì„ ì¤‘ì…ë‹ˆë‹¤.");
+            // ì—¬ê¸°ì— ì¿¨íƒ€ì„ ì¤‘ì¼ ë•Œì˜ ì‚¬ìš´ë“œë‚˜ UI í”¼ë“œë°±ì„ ì¶”ê°€í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
+            return;
         }
+
+        isActionInProgress = true;
+        StartCoroutine(ShowWeaponUseAndAttack(data, slotIndex));
     }
 
-    // ÇÃ·¹ÀÌ¾î °ø°İ ÄÚ·çÆ¾
-    IEnumerator ShowWeaponUseAndAttack(WeaponData data)
+    IEnumerator ShowWeaponUseAndAttack(WeaponData data, int slotIndex)
     {
-        int damage = Random.Range(data.minDamage, data.maxDamage + 1); // °ø°İ·Â ·£´ı
+        // ì¿¨íƒ€ì„ ì ìš©
+        data.lastUseTime = Time.time;
+        if (data.cooldown > 0)
+        {
+            weaponSlotManager.StartCooldown(slotIndex, data.cooldown);
+        }
 
-        string printName = string.IsNullOrEmpty(data.name) ? data.name : data.name;
+        int damage = Random.Range(data.minDamage, data.maxDamage + 1);
+        yield return StartCoroutine(TypeWriterEffect($"{data.displayName}(ìœ¼)ë¡œ ê³µê²©!"));
+        yield return new WaitForSeconds(0.2f);
 
-        // 1. °ø°İ ¼±¾ğ (Å¸ÀÌÇÎ)
-        yield return StartCoroutine(TypeWriterEffect($"{data.displayName}(À¸)·Î °ø°İ!"));
-        yield return new WaitForSeconds(0.2f); // ÅØ½ºÆ® ÀĞÀ» ½Ã°£
-
-        // »ç¿îµå Àç»ı
         (SfxType soundToPlay, float volume) = GetWeaponSound(data.name);
         SoundManager.Instance.PlaySFX(soundToPlay, volume);
 
         if (data.name == "Fireball_Book" || data.name == "fireball")
         {
-            // ¸¶¹ı °ø°İ
             yield return StartCoroutine(FireballAttackSequence(damage));
         }
         else
         {
-            // ÀÏ¹İ °ø°İ
-            if (playerVisual != null)
-                yield return StartCoroutine(AttackMotion(playerVisual, playerOriginalPos, true));
-            else
-                yield return new WaitForSeconds(0.5f);
-
-            // ±Ù°Å¸® Å¸°İ Ã³¸®
+            if (playerVisual != null) yield return StartCoroutine(AttackMotion(playerVisual, playerOriginalPos, true));
+            else yield return new WaitForSeconds(0.5f);
             ApplyDamageToEnemy(damage);
         }
 
-        // 4. °á°ú ÅØ½ºÆ® Ãâ·Â (Å¸ÀÌÇÎ)
-        yield return StartCoroutine(TypeWriterEffect($"Àû¿¡°Ô {damage}ÀÇ µ¥¹ÌÁö¸¦ ÀÔÇû´Ù."));
-        yield return new WaitForSeconds(1.0f); // °á°ú È®ÀÎÇÒ ½Ã°£
+        yield return StartCoroutine(TypeWriterEffect($"ì ì—ê²Œ {damage}ì˜ í”¼í•´ë¥¼ ì…í˜”ë‹¤."));
+        yield return new WaitForSeconds(1.0f);
 
-        if (battleEnded) // ÀûÀÌ Á×¾î¼­ HandleEnemyDied°¡ ½ÇÇàµÈ »óÅÂ¶ó¸é
+        if (battleEnded)
         {
-            StartCoroutine(VictorySequence()); // ÀÌÁ¦ ½Â¸® ¿¬Ãâ ½ÃÀÛ!
+            StartCoroutine(VictorySequence());
         }
-        else if (enemy != null) // ÀûÀÌ »ì¾ÆÀÖ´Ù¸é
+        else if (enemy != null)
         {
-            StartCoroutine(EnemyCounterAttack()); // Àû ¹İ°İ ½ÃÀÛ
+            StartCoroutine(EnemyCounterAttack());
         }
     }
 
     IEnumerator FireballAttackSequence(int damage)
     {
-        // 1. ¹ß»ç À§Ä¡ ¼³Á¤
         Vector3 startPos = (firePoint != null) ? firePoint.position : playerVisual.position;
-
-        // 2. ÆÄÀÌ¾îº¼ »ı¼º
         if (fireballPrefab != null)
         {
             GameObject fireball = Instantiate(fireballPrefab, startPos, fireballPrefab.transform.rotation);
+            if (playerVisual != null) fireball.transform.SetParent(playerVisual.parent, true);
 
-            if (playerVisual != null)
-            {
-                fireball.transform.SetParent(playerVisual.parent, true);
-            }
-
-            // 3. ÆÄÀÌ¾îº¼ ³¯¸®±â
             FireballMove mover = fireball.GetComponent<FireballMove>();
             if (mover != null)
             {
                 bool hitFinished = false;
-
                 mover.Setup(enemyVisual.position, () => {
-                    // µµÂø(Ãæµ¹)ÇßÀ» ¶§ ½ÇÇàµÉ ³»¿ë
                     ApplyDamageToEnemy(damage);
-                    hitFinished = true;        
+                    hitFinished = true;
                 });
-
                 while (!hitFinished)
                 {
                     yield return null;
@@ -309,7 +240,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("ÆÄÀÌ¾îº¼ ÇÁ¸®ÆÕÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("íŒŒì´ì–´ë³¼ í”„ë¦¬íŒ¹ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
             ApplyDamageToEnemy(damage);
         }
     }
@@ -317,15 +248,11 @@ public class BattleManager : MonoBehaviour
     void ApplyDamageToEnemy(int damage)
     {
         if (enemy == null) return;
-
         enemy.TakeDamage(damage);
         enemy.GetComponent<DamageFlash>()?.FlashRed(0.4f);
-
-        if (enemyVisual != null)
-            StartCoroutine(HitMotion(enemyVisual, enemyOriginalPos, false));
+        if (enemyVisual != null) StartCoroutine(HitMotion(enemyVisual, enemyOriginalPos, false));
     }
 
-    // Àû ¹İ°İ ÄÚ·çÆ¾
     IEnumerator EnemyCounterAttack()
     {
         if (enemy == null || battleEnded || GameStateManager.Instance.playerHP <= 0)
@@ -334,70 +261,49 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
-        // indicator: enemy ÅÏ
-        if (turnIndicator != null)
-            turnIndicator.SetTarget(enemyVisual, enemyIndicatorOffset);
-
+        if (turnIndicator != null) turnIndicator.SetTarget(enemyVisual, enemyIndicatorOffset);
         string selectedWeapon = enemyWeapons[Random.Range(0, enemyWeapons.Length)];
         int damage = enemyDamageMap[selectedWeapon];
 
-        // 1. Àû °ø°İ ¼±¾ğ (Å¸ÀÌÇÎ)
-        yield return StartCoroutine(TypeWriterEffect($"ÀûÀÇ °ø°İ!"));
+        yield return StartCoroutine(TypeWriterEffect($"ì ì˜ ë°˜ê²©!"));
         yield return new WaitForSeconds(0.2f);
 
-        // 2. Àû °ø°İ ¸ğ¼Ç
         SoundManager.Instance.PlaySFX(SfxType.Attack3, 0.4f);
-        if (enemyVisual != null)
-            yield return StartCoroutine(AttackMotion(enemyVisual, enemyOriginalPos, false));
-        else
-            yield return new WaitForSeconds(0.5f);
+        if (enemyVisual != null) yield return StartCoroutine(AttackMotion(enemyVisual, enemyOriginalPos, false));
+        else yield return new WaitForSeconds(0.5f);
 
         if (enemy == null || battleEnded) yield break;
 
-        // 3. ÇÃ·¹ÀÌ¾î µ¥¹ÌÁö ¹× ÇÇ°İ ¸ğ¼Ç
         SoundManager.Instance.PlaySFX(SfxType.Hit, 0.4f);
         GameStateManager.Instance.ChangeHP(-damage);
         UpdatePlayerHPUI();
         playerVisual.GetComponent<DamageFlash>().FlashRed(0.4f);
+        if (playerVisual != null) StartCoroutine(HitMotion(playerVisual, playerOriginalPos, true));
 
-        if (playerVisual != null)
-            StartCoroutine(HitMotion(playerVisual, playerOriginalPos, true));
-
-        // 4. °á°ú ÅØ½ºÆ® Ãâ·Â (Å¸ÀÌÇÎ)
-        yield return StartCoroutine(TypeWriterEffect($"{damage}ÀÇ µ¥¹ÌÁö¸¦ ÀÔ¾ú´Ù."));
+        yield return StartCoroutine(TypeWriterEffect($"{damage}ì˜ í”¼í•´ë¥¼ ì…ì—ˆë‹¤."));
         yield return new WaitForSeconds(1.0f);
 
-        // ÆĞ¹è
         if (GameStateManager.Instance.playerHP <= 0 && !battleEnded)
         {
             battleEnded = true;
             if (PlayerHpText != null) PlayerHpText.enabled = false;
-
-            // indicator ºñÈ°¼ºÈ­
             if (turnIndicator != null) turnIndicator.SetTarget(null, Vector3.zero);
-
-            yield return StartCoroutine(TypeWriterEffect("´«¾ÕÀÌ ±ô±ôÇØÁø´Ù..."));
+            yield return StartCoroutine(TypeWriterEffect("íŒ¨ë°°í–ˆë‹¤..."));
             yield return new WaitForSeconds(2.0f);
             EndBattle("DialogueTest");
         }
-        else if (!battleEnded) // enemy°¡ »ì¾ÆÀÖ´Ù¸é
+        else if (!battleEnded)
         {
             isActionInProgress = false;
-
-            // indicator: ÇÃ·¹ÀÌ¾î ÅÏ
-            if (turnIndicator != null)
-                turnIndicator.SetTarget(playerVisual, playerIndicatorOffset);
+            if (turnIndicator != null) turnIndicator.SetTarget(playerVisual, playerIndicatorOffset);
         }
     }
 
     IEnumerator VictorySequence()
     {
-        // indicator ºñÈ°¼ºÈ­
         if (turnIndicator != null) turnIndicator.SetTarget(null, Vector3.zero);
-
-        yield return StartCoroutine(TypeWriterEffect("ÀûÀ» ¾²·¯Æ®·È´Ù!"));
+        yield return StartCoroutine(TypeWriterEffect("ì ì„ ë¬¼ë¦¬ì³¤ë‹¤!"));
         yield return new WaitForSeconds(1.5f);
-
         if (GameStateManager.Instance != null && !string.IsNullOrEmpty(currentMonsterId))
         {
             GameStateManager.Instance.defeatedMonsterIds.Add(currentMonsterId);
@@ -409,8 +315,6 @@ public class BattleManager : MonoBehaviour
     {
         float direction = isPlayer ? -1f : 1f;
         Vector3 targetPos = originalPos + new Vector3(attackMoveDistance * direction, 0, 0);
-
-        // 1. ¾ÕÀ¸·Î ÀÌµ¿
         float elapsed = 0f;
         while (elapsed < moveDuration)
         {
@@ -419,11 +323,7 @@ public class BattleManager : MonoBehaviour
             yield return null;
         }
         attacker.position = targetPos;
-
-        // 2. Àá½Ã ´ë±â (Å¸°İ ½ÃÁ¡)
         yield return new WaitForSeconds(0.1f);
-
-        // 3. ¿ø·¡ À§Ä¡·Î º¹±Í
         elapsed = 0f;
         while (elapsed < moveDuration)
         {
@@ -434,13 +334,10 @@ public class BattleManager : MonoBehaviour
         attacker.position = originalPos;
     }
 
-    // ÇÇ°İ ¸ğ¼Ç ÄÚ·çÆ¾
     IEnumerator HitMotion(Transform target, Vector3 originalPos, bool isPlayer)
     {
         float direction = isPlayer ? 1f : -1f;
         Vector3 knockbackPos = originalPos + new Vector3(hitKnockbackDistance * direction, 0, 0);
-
-        // 1. µÚ·Î ¹Ğ·Á³²
         float elapsed = 0f;
         while (elapsed < moveDuration)
         {
@@ -449,8 +346,6 @@ public class BattleManager : MonoBehaviour
             yield return null;
         }
         target.position = knockbackPos;
-
-        // 2. ¿ø·¡ À§Ä¡·Î º¹±Í
         elapsed = 0f;
         while (elapsed < moveDuration)
         {
@@ -463,55 +358,34 @@ public class BattleManager : MonoBehaviour
 
     void EndBattle(string nextScene)
     {
-        Debug.Log($"EndBattle È£ÃâµÊ. ´ÙÀ½ ¾À: {nextScene}");
-
-        // Àû ÀÌº¥Æ® ±¸µ¶ ÇØÁ¦ (¸Ş¸ğ¸® ´©¼ö ¹æÁö)
         if (enemy != null)
         {
             enemy.OnDamaged -= HandleEnemyDamaged;
             enemy.OnDied -= HandleEnemyDied;
         }
-        else
-        {
-            Debug.Log("Enemy ÂüÁ¶°¡ nullÀÌ¹Ç·Î ÀÌº¥Æ® ÇØÁ¦ °Ç³Ê<0xEB><0><0x84>. (ÀÌ¹Ì ÆÄ±«µÈ °ÍÀ¸·Î ¿¹»ó)");
-        }
-
         StartCoroutine(ProcessBattleEnd(nextScene));
     }
 
     IEnumerator ProcessBattleEnd(string nextScene)
     {
-        // 1. FadeManager¿¡°Ô ÆäÀÌµå ¾Æ¿ô ¿äÃ» (1.5ÃÊ µ¿¾È)
-        // yield returnÀ» »ç¿ëÇÏ¿© ÆäÀÌµå°¡ ³¡³¯ ¶§±îÁö ¿©±â¼­ ´ë±âÇÕ´Ï´Ù.
         yield return FadeManager.Instance.FadeOut(1.5f);
-
-        // 2. ÆäÀÌµå ¾Æ¿ôÀÌ ´Ù ³¡³ª¸é ¾À ·Îµå
         if (!string.IsNullOrEmpty(nextScene))
         {
             SceneManager.LoadScene(nextScene);
         }
         else
         {
-            Debug.LogError("ÀÌµ¿ÇÒ ¾À ÀÌ¸§ÀÌ ¾ø½À´Ï´Ù!");
+            Debug.LogError("ì´ë™í•  ì”¬ ì´ë¦„ì´ ì—†ìŠµë‹ˆë‹¤!");
         }
-
-        // 3. ¾ÀÀÌ ·ÎµåµÇ¸é FadeManagerÀÇ OnSceneLoaded°¡ ÀÚµ¿À¸·Î ½ÇÇàµÇ¾î
-        //    »õ·Î¿î ¾À¿¡¼­ FadeIn(È­¸é ¹à¾ÆÁü)ÀÌ ¼öÇàµË´Ï´Ù.
     }
 
-    // ¹«±â Á¾·ùº° »ç¿îµå
     (SfxType, float) GetWeaponSound(string weaponName)
     {
         switch (weaponName)
         {
-            case "axe":
-                return (SfxType.Attack4, 1.0f);
-
-            case "Fireball_Book":
-                return (SfxType.AttackFire, 1.0f);
-
-            default:
-                return (SfxType.Attack1, 0.7f);     // ±× ¿Ü ¹«±â´Â ±âº» ¼Ò¸®
+            case "axe": return (SfxType.Attack4, 1.0f);
+            case "Fireball_Book": return (SfxType.AttackFire, 1.0f);
+            default: return (SfxType.Attack1, 0.7f);
         }
     }
 }
