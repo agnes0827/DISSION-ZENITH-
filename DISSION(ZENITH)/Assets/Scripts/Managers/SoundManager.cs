@@ -25,6 +25,7 @@ public enum SfxType
     UISelect = 16,          // Element 16
     ItemPickup = 17,        // Element 17
     Torch = 18,             // Element 18
+    AttackFire = 18,        // Element 19
 }
 
 public class SoundManager : MonoBehaviour

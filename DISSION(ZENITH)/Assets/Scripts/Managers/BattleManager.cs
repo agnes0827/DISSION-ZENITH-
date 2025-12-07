@@ -66,6 +66,10 @@ public class BattleManager : MonoBehaviour
     public float hitKnockbackDistance = 0.3f; // 피격 시 뒤로 밀려나는 거리
     public float moveDuration = 0.15f;      // 지속 시간
 
+    [Header("이펙트 프리팹")]
+    public GameObject fireballPrefab; // 인스펙터에서 파이어볼 프리팹 넣을 곳
+    public Transform firePoint;       // 파이어볼이 발사될 위치
+
     void Start()
     {
         // 위치 초기화
@@ -231,23 +235,25 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(0.2f); // 텍스트 읽을 시간
 
         // 사운드 재생
-        SfxType soundToPlay = GetWeaponSound(data.name);
-        SoundManager.Instance.PlaySFX(soundToPlay, 0.5f);
+        (SfxType soundToPlay, float volume) = GetWeaponSound(data.name);
+        SoundManager.Instance.PlaySFX(soundToPlay, volume);
 
-        // 2. 플레이어 모션 실행
-        if (playerVisual != null)
-            yield return StartCoroutine(AttackMotion(playerVisual, playerOriginalPos, true));
+        if (data.name == "Fireball_Book" || data.name == "fireball")
+        {
+            // 마법 공격
+            yield return StartCoroutine(FireballAttackSequence(damage));
+        }
         else
-            yield return new WaitForSeconds(0.5f);
+        {
+            // 일반 공격
+            if (playerVisual != null)
+                yield return StartCoroutine(AttackMotion(playerVisual, playerOriginalPos, true));
+            else
+                yield return new WaitForSeconds(0.5f);
 
-        if (enemy == null) { yield break; }
-
-        // 3. 데미지 적용 및 적 피격 모션
-        enemy.TakeDamage(damage);
-        enemy.GetComponent<DamageFlash>()?.FlashRed(0.4f);
-
-        if (enemyVisual != null)
-            StartCoroutine(HitMotion(enemyVisual, enemyOriginalPos, false));
+            // 근거리 타격 처리
+            ApplyDamageToEnemy(damage);
+        }
 
         // 4. 결과 텍스트 출력 (타이핑)
         yield return StartCoroutine(TypeWriterEffect($"적에게 {damage}의 데미지를 입혔다."));
@@ -261,6 +267,62 @@ public class BattleManager : MonoBehaviour
         {
             StartCoroutine(EnemyCounterAttack()); // 적 반격 시작
         }
+    }
+
+    IEnumerator FireballAttackSequence(int damage)
+    {
+        // 1. 발사 위치 설정
+        Vector3 startPos = (firePoint != null) ? firePoint.position : playerVisual.position;
+
+        // 2. 파이어볼 생성
+        if (fireballPrefab != null)
+        {
+            GameObject fireball = Instantiate(fireballPrefab, startPos, fireballPrefab.transform.rotation);
+
+            if (playerVisual != null)
+            {
+                fireball.transform.SetParent(playerVisual.parent, true);
+            }
+
+            // 3. 파이어볼 날리기
+            FireballMove mover = fireball.GetComponent<FireballMove>();
+            if (mover != null)
+            {
+                bool hitFinished = false;
+
+                mover.Setup(enemyVisual.position, () => {
+                    // 도착(충돌)했을 때 실행될 내용
+                    ApplyDamageToEnemy(damage);
+                    hitFinished = true;        
+                });
+
+                while (!hitFinished)
+                {
+                    yield return null;
+                }
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.5f);
+                ApplyDamageToEnemy(damage);
+            }
+        }
+        else
+        {
+            Debug.LogError("파이어볼 프리팹이 연결되지 않았습니다!");
+            ApplyDamageToEnemy(damage);
+        }
+    }
+
+    void ApplyDamageToEnemy(int damage)
+    {
+        if (enemy == null) return;
+
+        enemy.TakeDamage(damage);
+        enemy.GetComponent<DamageFlash>()?.FlashRed(0.4f);
+
+        if (enemyVisual != null)
+            StartCoroutine(HitMotion(enemyVisual, enemyOriginalPos, false));
     }
 
     // 적 반격 코루틴
@@ -284,7 +346,7 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         // 2. 적 공격 모션
-        SoundManager.Instance.PlaySFX(SfxType.Attack3, 0.5f);
+        SoundManager.Instance.PlaySFX(SfxType.Attack3, 0.4f);
         if (enemyVisual != null)
             yield return StartCoroutine(AttackMotion(enemyVisual, enemyOriginalPos, false));
         else
@@ -293,7 +355,7 @@ public class BattleManager : MonoBehaviour
         if (enemy == null || battleEnded) yield break;
 
         // 3. 플레이어 데미지 및 피격 모션
-        SoundManager.Instance.PlaySFX(SfxType.Hit, 0.5f);
+        SoundManager.Instance.PlaySFX(SfxType.Hit, 0.4f);
         GameStateManager.Instance.ChangeHP(-damage);
         UpdatePlayerHPUI();
         playerVisual.GetComponent<DamageFlash>().FlashRed(0.4f);
@@ -438,18 +500,18 @@ public class BattleManager : MonoBehaviour
     }
 
     // 무기 종류별 사운드
-    SfxType GetWeaponSound(string weaponName)
+    (SfxType, float) GetWeaponSound(string weaponName)
     {
         switch (weaponName)
         {
             case "axe":
-                return SfxType.Attack4;
+                return (SfxType.Attack4, 1.0f);
 
-            case "fireball":
-                return SfxType.Attack2;
+            case "Fireball_Book":
+                return (SfxType.AttackFire, 1.0f);
 
             default:
-                return SfxType.Attack1;     // 그 외 무기는 기본 소리
+                return (SfxType.Attack1, 0.7f);     // 그 외 무기는 기본 소리
         }
     }
 }

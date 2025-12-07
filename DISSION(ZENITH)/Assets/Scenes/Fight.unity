@@ -705,6 +705,41 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &238576590
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 238576591}
+  m_Layer: 5
+  m_Name: SpellAttack_Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &238576591
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 238576590}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1285690444}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -66.4, y: -15.4}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &298433467
 GameObject:
   m_ObjectHideFlags: 0
@@ -2070,6 +2105,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4455375130986216252, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
+      propertyPath: hp
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455375130986216252, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: enemyName
       value: "\uBA3C\uC9C0 \uAD34\uBB3C"
       objectReference: {fileID: 0}
@@ -2138,6 +2177,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
+      propertyPath: firePoint
+      value: 
+      objectReference: {fileID: 238576591}
+    - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: DialogText
       value: 
       objectReference: {fileID: 221088190}
@@ -2165,6 +2208,10 @@ PrefabInstance:
       propertyPath: turnIndicator
       value: 
       objectReference: {fileID: 1693202003}
+    - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
+      propertyPath: fireballPrefab
+      value: 
+      objectReference: {fileID: 3913751521049478926, guid: fbac3316fae3b1440852fabdc85f2301, type: 3}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: playerHpSlider
       value: 
@@ -2223,7 +2270,7 @@ PrefabInstance:
       objectReference: {fileID: -2090692679, guid: 30a674584b744dc479c9c81d66e78386, type: 3}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: allWeaponDatabase.Array.data[0].maxDamage
-      value: 20
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: allWeaponDatabase.Array.data[0].minDamage
@@ -2231,11 +2278,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: allWeaponDatabase.Array.data[1].maxDamage
-      value: 30
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: allWeaponDatabase.Array.data[1].minDamage
-      value: 20
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5006309033308877646, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       propertyPath: allWeaponDatabase.Array.data[0].displayName
@@ -2533,6 +2580,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 857653738441262869, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1693202000}
+    - targetCorrespondingSourceObject: {fileID: 4472224579632458016, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 238576591}
     - targetCorrespondingSourceObject: {fileID: 1341312943543492738, guid: 00da53f852bf8044689e3cb6993260ca, type: 3}
       insertIndex: -1
       addedObject: {fileID: 221088188}
