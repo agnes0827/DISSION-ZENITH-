@@ -1,41 +1,56 @@
+/*
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour {
-    public GameObject inventory; // inventory 객체 여기에 넣기
-    private bool activated; // inventory 화면 활성화/비활성화
+public class Inventory : MonoBehaviour
+{
+    public GameObject inventory;
+    private bool activated;
 
-    public void Continue()
+    public void ToggleInventory()
     {
-        activated = false; // activated 상태 변경
+        activated = !activated; //   (<->)
+
+        SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.7f, false);
+
+        if (activated)
+        {
+            OpenInventory();
+        }
+        else
+        {
+            CloseInventory();
+        }
+    }
+
+    public void CloseInventory()
+    {
+        activated = false;
         if (PlayerController.Instance != null)
             PlayerController.Instance.ResumeMovement();
 
-        inventory.SetActive(false); // inventory 화면 비활성화
+        inventory.SetActive(false);
+    }
+
+    public void OpenInventory()
+    {
+        activated = true;
+        if (PlayerController.Instance != null)
+            PlayerController.Instance.StopMovement();
+
+        inventory.SetActive(true);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab)) // Tab 키 클릭 시
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            activated = !activated; // activated 상태 변경
+            if (activated) CloseInventory();
+            else OpenInventory();
+
             SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.7f, false);
-
-            if (activated)
-            {
-                if (PlayerController.Instance != null)
-                    PlayerController.Instance.StopMovement();
-
-                inventory.SetActive(true); // inventory 화면 활성화
-            }
-            else
-            {
-                if (PlayerController.Instance != null)
-                    PlayerController.Instance.ResumeMovement();
-
-                inventory.SetActive(false); // inventory 화면 비활성화
-            }
         }
     }
 }
+*/

@@ -1,15 +1,14 @@
 using UnityEngine;
 
 /// <summary>
-/// Æ¯Á¤ ¾À¿¡ Á¾¼ÓµÈ UI ¿ä¼ÒµéÀ» °ü¸®ÇÏ°í Á¦¾îÇÕ´Ï´Ù.
+/// íŠ¹ì • ì”¬ì— ì¢…ì†ëœ UI ìš”ì†Œë“¤ì„ ê´€ë¦¬í•˜ê³  ì œì–´í•©ë‹ˆë‹¤.
 /// </summary>
 public class UIManager : MonoBehaviour
 {
-    [Header("ÀÌ ¾ÀÀÇ UI ÆĞ³Îµé")]
+    [Header("ì”¬ ì „ìš© UI íŒ¨ë„ë“¤")]
     [SerializeField] private GameObject inventoryPanel;
-    // ... ÀÌ ¾À¿¡¼­ Á¦¾îÇÒ ´Ù¸¥ UI ÆĞ³Îµé ...
 
-    [Header("ÀÎº¥Åä¸® UIÀÇ Grid Layout")]
+    [Header("ì¸ë²¤í† ë¦¬ UIì˜ Grid Layout")]
     [SerializeField] private Transform inventoryGridLayout;
 
     void Start()
@@ -19,7 +18,7 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        // Tab Å°·Î ÀÎº¥Åä¸® ¿­°í ´İ±â
+        // Tab í‚¤ë¡œ ì¸ë²¤í† ë¦¬ ì—´ê³  ë‹«ê¸°
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ToggleInventoryPanel();
@@ -33,22 +32,26 @@ public class UIManager : MonoBehaviour
         bool isActive = !inventoryPanel.activeSelf;
         inventoryPanel.SetActive(isActive);
 
-        // ÆĞ³ÎÀÌ È°¼ºÈ­µÇ´Â ½ÃÁ¡¿¡ ÀÎº¥Åä¸® Á¤º¸¸¦ »õ·Î ¹Ş¾Æ¿È
+        SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.7f, false);
+
+        // íŒ¨ë„ì´ í™œì„±í™”ë˜ëŠ” ì‹œì ì— ì¸ë²¤í† ë¦¬ ë°ì´í„°ë¥¼ ë‹¤ì‹œ ë°›ì•„ì˜´
         if (isActive)
         {
-            Time.timeScale = 0f; // °ÔÀÓ ÀÏ½ÃÁ¤Áö
+            Time.timeScale = 0f; // ê²Œì„ ì¼ì‹œì •ì§€
+            PlayerController.Instance.StopMovement();
             if (InventoryManager.Instance != null && inventoryGridLayout != null)
             {
                 InventoryManager.Instance.RegisterInventoryUI(inventoryGridLayout);
             }
             else
             {
-                Debug.LogWarning("InventoryManager¸¦ Ã£À» ¼ö ¾ø°Å³ª, inventoryGridLayoutÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+                Debug.LogWarning("InventoryManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ê±°ë‚˜, inventoryGridLayoutì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
             }
         }
         else
         {
-            Time.timeScale = 1f; // °ÔÀÓ ½Ã°£À» ¿ø·¡ ¼Óµµ·Î µÇµ¹¸²
+            Time.timeScale = 1f; // ê²Œì„ ì‹œê°„ì„ ì›ë˜ ì†ë„ë¡œ ë˜ëŒë¦¼
+            PlayerController.Instance.ResumeMovement();
         }
     }
 
