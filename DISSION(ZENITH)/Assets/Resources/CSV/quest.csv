@@ -1,7 +1,7 @@
 Quest ID,Quest Title,Description,Type,Target ID,Required Count,Reward
 Q01,깨어나는 길,"""눈을 뜨니 어두운 길 위에 있다\n앞으로 나아가며 출구를 찾자""",    ReachLocation,,0,
 Q02,오래된 집,"""낡은 집에서 눈을 떴다\n집 안을 둘러보자""",HaveItem,apple,1,
-,,,,,,
+Q03,펫을 잡기,"""나무에서 열매를 따서\n펫에게 먹이를 주자""",ReachLocation,,0,
 ,,,,,,
 ,,,,,,
 ,,,,,,
