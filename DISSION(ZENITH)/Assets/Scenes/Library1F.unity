@@ -212,11 +212,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eaf87594006264ea017bf3f18e0bc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextSceneName: town
+  nextSceneName: Town
   requiredCompletedQuestId: 
   requiredItemId: 
   lockedDialogueId: 
-  targetSpawnPointId: 
+  targetSpawnPointId: Town_FromLibrary
   playSFXSound: 1
 --- !u!1001 &64801395
 PrefabInstance:
@@ -4821,7 +4821,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1767838012125647900, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: orthographic size
-      value: 4.5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3839036313128782792, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: m_Name

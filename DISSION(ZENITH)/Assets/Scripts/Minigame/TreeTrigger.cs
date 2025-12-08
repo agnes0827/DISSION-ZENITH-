@@ -4,53 +4,71 @@ using UnityEngine;
 
 public class TreeTrigger : MonoBehaviour
 {
-    [Header("ÀÌ ³ª¹«¿¡¼­ »ç¿ëÇÒ ¹Ì´Ï°ÔÀÓ")]
-    public FruitTimingMiniGame miniGame;   // Canvas ¹Ø¿¡ ÀÖ´Â ¹Ì´Ï°ÔÀÓ ¿ÀºêÁ§Æ®
+    [Header("ê³¼ì¼ íƒ€ì´ë° ë¯¸ë‹ˆê²Œìž„")]
+    public FruitTimingMiniGame miniGame;    // Canvas ë‚´ì— ìžˆëŠ” ë¯¸ë‹ˆê²Œìž„ ì˜¤ë¸Œì íŠ¸
 
-    [Header("Äù½ºÆ® ¿¬µ¿")]
-    public string questId = "Q03";  // ¿­¸Å 3°³ ¸ðÀ¸´Â Äù½ºÆ® ID
-    public int requiredCount = 3;   // ÇÊ¿äÇÑ ¿­¸Å °³¼ö (3°³)
+    [Header("í€˜ìŠ¤íŠ¸ ì„¤ì •")]
+    public string questId = "Q03";          // ì—´ë§¤ 3ê°œ ëª¨ìœ¼ê¸° í€˜ìŠ¤íŠ¸ ID
+    public int requiredCount = 3;           // í•„ìš”í•œ ì—´ë§¤ ê°œìˆ˜ (3ê°œ)
 
-    // ¡Ú ÀüÃ¼ ¿­¸Å °³¼ö (¸ðµç ³ª¹«°¡ °øÀ¯)
+    // ëª¨ë“  ë‚˜ë¬´ ê°ì²´ ê³µìœ 
     private static int collectedCount = 0;
 
-    private bool used = false;  // ÀÌ¹Ì ¿­¸Å¸¦ ¶¤´ÂÁö ¿©ºÎ
+    private bool used = false;              // ì´ë¯¸ ì—´ë§¤ë¥¼ ì–»ì—ˆëŠ”ì§€ ì—¬ë¶€
+    private bool isPlayerInZone = false;    // í”Œë ˆì´ì–´ê°€ ë²”ìœ„ ì•ˆì— ìžˆëŠ”ì§€
+
+    private void Update()
+    {
+        // í”Œë ˆì´ì–´ê°€ ë²”ìœ„ ì•ˆì— ìžˆê³ , Fí‚¤ë¥¼ ëˆŒë €ê³ , ì•„ì§ ì‚¬ìš©ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ë¯¸ë‹ˆê²Œìž„ ì‹œìž‘
+        if (isPlayerInZone && Input.GetKeyDown(KeyCode.F) && !used)
+        {
+            // ì´ë¯¸ ê²Œìž„ì´ í™œì„±í™”ëœ ê²½ìš° ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€
+            if (miniGame.gameObject.activeSelf) return;
+
+            // ë¯¸ë‹ˆê²Œìž„ ì„±ê³µ ì‹œ í˜¸ì¶œí•  ì½œë°± ì§€ì •
+            miniGame.onSuccess = OnMiniGameSuccess;
+
+            // ë¯¸ë‹ˆê²Œìž„ í™œì„±í™” ë° ì‹œìž‘
+            miniGame.gameObject.SetActive(true);
+            miniGame.StartMiniGame();
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (used) return;
-        if (!collision.CompareTag("Player")) return;
+        if (collision.CompareTag("Player"))
+        {
+            isPlayerInZone = true;
+        }
+    }
 
-        // ÀÌ¹Ì ÄÑÁ® ÀÖÀ¸¸é Áßº¹ ½ÇÇà ¸·±â
-        if (miniGame.gameObject.activeSelf) return;
-
-        // ¹Ì´Ï°ÔÀÓ ¼º°ø ½Ã È£ÃâµÉ ÄÝ¹é µî·Ï
-        miniGame.onSuccess = OnMiniGameSuccess;
-
-        // ¹Ì´Ï°ÔÀÓ ÄÑ°í ½ÃÀÛ
-        miniGame.gameObject.SetActive(true);
-        miniGame.StartMiniGame();
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            isPlayerInZone = false;
+        }
     }
 
     private void OnMiniGameSuccess()
     {
-        used = true;  // ÀÌ ³ª¹«´Â ´õ ÀÌ»ó »ç¿ë X
+        used = true;  // ì´ ë‚˜ë¬´ëŠ” ë” ì´ìƒ ì‚¬ìš© ë¶ˆê°€
 
-        // ¿­¸Å °³¼ö +1
+        // ì—´ë§¤ íšë“ +1
         collectedCount++;
-        Debug.Log($"[FruitTree] {questId} ¿­¸Å È¹µæ! ÇöÀç °³¼ö: {collectedCount}/{requiredCount}");
+        Debug.Log($"[FruitTree] {questId} ì—´ë§¤ íšë“! í˜„ìž¬ ê°œìˆ˜: {collectedCount}/{requiredCount}");
 
-        // Äù½ºÆ®°¡ ¼ö¶ôµÇ¾î ÀÖ°í, ¾ÆÁ÷ ¿Ï·á ¾È µÆ°í, 3°³ ´Ù ¸ð¾ÒÀ¸¸é ¿Ï·á Ã³¸®
+        // í€˜ìŠ¤íŠ¸ë¥¼ ìˆ˜ë½í•œ ìƒíƒœì´ê³ , ì•„ì§ ì™„ë£Œí•˜ì§€ ì•Šì•˜ìœ¼ë©°, 3ê°œë¥¼ ë‹¤ ëª¨ì•˜ë‹¤ë©´ ì™„ë£Œ ì²˜ë¦¬
         if (QuestManager.Instance != null &&
             QuestManager.Instance.HasAccepted(questId) &&
             !QuestManager.Instance.HasCompleted(questId) &&
             collectedCount >= requiredCount)
         {
-            // ¸ñÇ¥ ´Þ¼º Ã³¸® (±âÁ¸ QuestTrigger¿¡¼­ ¾²´ø ÆÐÅÏ µû¶ó°¨)
+            // ëª©í‘œ ë‹¬ì„± ì²˜ë¦¬
             QuestManager.Instance.SetObjectiveReached(questId);
             QuestManager.Instance.CompleteQuest(questId);
 
-            Debug.Log($"[FruitTree] Äù½ºÆ® '{questId}' ¿­¸Å {requiredCount}°³ ¸ð¾Æ¼­ ¿Ï·á!");
+            Debug.Log($"[FruitTree] í€˜ìŠ¤íŠ¸ '{questId}' ì™„ë£Œ! {requiredCount}ê°œ ëª¨ìœ¼ê¸° ì„±ê³µ!");
         }
     }
 }
