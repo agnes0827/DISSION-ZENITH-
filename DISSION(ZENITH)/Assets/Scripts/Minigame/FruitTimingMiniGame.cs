@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,8 @@ public class FruitTimingMiniGame : MonoBehaviour
 
     public GameObject playUI;          // 바 + 화살표 + SPACE 안내
     public GameObject resultUI;        // "열매 획득!" + 이미지
+
+    public TMP_Text countText;   // 1/3, 2/3 표시
 
     [Header("설정")]
     public float moveSpeed = 300f;     // 화살표 속도 (픽셀/초)
@@ -121,6 +124,12 @@ public class FruitTimingMiniGame : MonoBehaviour
     {
         gameObject.SetActive(true);
         ResetGame();
+    }
+
+    public void UpdateCountText(int collected, int required)
+    {
+        if (countText != null)
+            countText.text = $"{collected}/{required}";
     }
 
     private IEnumerator CloseAfterDelay(float seconds)

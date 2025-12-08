@@ -11,11 +11,21 @@ public class TreeTrigger : MonoBehaviour
     public string questId = "Q03";          // 열매 3개 모으기 퀘스트 ID
     public int requiredCount = 3;           // 필요한 열매 개수 (3개)
 
+    [Header("나무 스프라이트 변경")]
+    public Sprite normalTreeSprite;   // 열매 없는 나무 스프라이트
+
+    private SpriteRenderer sr;
+
     // 모든 나무 객체 공유
     private static int collectedCount = 0;
 
     private bool used = false;              // 이미 열매를 얻었는지 여부
     private bool isPlayerInZone = false;    // 플레이어가 범위 안에 있는지
+
+    void Start()
+    {
+        sr = GetComponent<SpriteRenderer>();
+    }
 
     private void Update()
     {
@@ -54,9 +64,17 @@ public class TreeTrigger : MonoBehaviour
     {
         used = true;  // 이 나무는 더 이상 사용 불가
 
+        // 열매 획득 후 스프라이트 변경!
+        if (sr != null && normalTreeSprite != null)
+            sr.sprite = normalTreeSprite;
+
+
         // 열매 획득 +1
         collectedCount++;
         Debug.Log($"[FruitTree] {questId} 열매 획득! 현재 개수: {collectedCount}/{requiredCount}");
+
+        // 미니게임 UI에 표시 업데이트!
+        miniGame.UpdateCountText(collectedCount, requiredCount);
 
         // 퀘스트를 수락한 상태이고, 아직 완료하지 않았으며, 3개를 다 모았다면 완료 처리
         if (QuestManager.Instance != null &&
