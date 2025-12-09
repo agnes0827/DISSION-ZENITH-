@@ -2285,7 +2285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1767838012125647900, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: orthographic size
-      value: 4.5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2616274575068400186, guid: b0cbc2feed3627f4dacfab1be00fadab, type: 3}
       propertyPath: m_DefaultBlend.m_Time
@@ -4659,7 +4659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dda3831a5292a648aaa24e8a879359b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPointId: Library1F_From2F
+  spawnPointId: House_FromTown
 --- !u!1 &1635575326
 GameObject:
   m_ObjectHideFlags: 0
