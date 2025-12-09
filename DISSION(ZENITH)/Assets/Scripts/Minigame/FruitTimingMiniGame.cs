@@ -96,7 +96,7 @@ public class FruitTimingMiniGame : MonoBehaviour
         resultUI.SetActive(true);
 
         onSuccess?.Invoke();
-        StartCoroutine(CloseAfterDelay(4f));
+        StartCoroutine(CloseAfterDelay(2f));
 
         // 여기서 펫 언락도 가능:
         // if (PetC.Instance != null) PetC.Instance.followUnlocked = true;
