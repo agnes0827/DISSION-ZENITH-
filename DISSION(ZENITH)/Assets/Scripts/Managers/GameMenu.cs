@@ -6,19 +6,19 @@ using UnityEngine.SceneManagement;
 public class GameMenu : MonoBehaviour
 {
     [Header("Menu Root")]
-    public GameObject go; // menu °´Ã¼ ¿©±â¿¡ ³Ö±â
-    public GameObject saveMenu; // saveMenu °´Ã¼ ¿©±â¿¡ ³Ö±â
-    private bool activated; // menu È­¸é È°¼ºÈ­/ºñÈ°¼ºÈ­
+    public GameObject go; // menu ê°ì²´ ì—¬ê¸°ì— ë„£ê¸°
+    public GameObject saveMenu; // saveMenu ê°ì²´ ì—¬ê¸°ì— ë„£ê¸°
+    private bool activated; // menu í™”ë©´ í™œì„±í™”/ë¹„í™œì„±í™”
 
     private void Start()
     {
-        // ½ÃÀÛ ½Ã ¸Ş´º ºñÈ°¼ºÈ­(¿¡µğÅÍ¿¡¼­ ÄÑÁ®ÀÖ¾îµµ ²¨ÁÜ)
+        // ì‹œì‘ ì‹œ ë©”ë‰´ ë¹„í™œì„±í™”(ì—ë””í„°ì—ì„œ ì¼œì ¸ìˆì–´ë„ êº¼ì¤Œ)
         SetMenu(false);
     }
 
     void Update()
     {
-        // Esc Å° ÀÔ·Â °¨Áö
+        // Esc í‚¤ ì…ë ¥ ê°ì§€
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (saveMenu.activeSelf)
@@ -32,7 +32,7 @@ public class GameMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// °è¼Ó ¹öÆ°: ¸Ş´º ´İ±â Àü¿ë
+    /// ê³„ì† ë²„íŠ¼: ë©”ë‰´ ë‹«ê¸° ì „ìš©
     /// </summary>
     public void Continue()
     {
@@ -40,7 +40,7 @@ public class GameMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼¼ÀÌºê ¹öÆ°: ¼¼ÀÌºê ÆĞ³Î ¿­±â
+    /// ì„¸ì´ë¸Œ ë²„íŠ¼: ì„¸ì´ë¸Œ íŒ¨ë„ ì—´ê¸°
     /// </summary>
     public void SavePanel()
     {
@@ -50,29 +50,30 @@ public class GameMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// Å¸ÀÌÆ²·Î ¹öÆ°
+    /// íƒ€ì´í‹€ë¡œ ë²„íŠ¼
     /// </summary>
     public void GoToStartScene()
     {
-        // ÇÊ¿äÇÏ¸é ¾À ÀÌµ¿ Àü Å¸ÀÓ½ºÄÉÀÏ º¹±¸
+        // í•„ìš”í•˜ë©´ ì”¬ ì´ë™ ì „ íƒ€ì„ìŠ¤ì¼€ì¼ ë³µêµ¬
         // Time.timeScale = 1f;
+        Time.timeScale = 1f;
         SceneManager.LoadScene("StartScene");
     }
 
     /// <summary>
-    /// ¸Ş´º ¿­±â/´İ±â °øÅë Ã³¸®
+    /// ë©”ë‰´ ì—´ê¸°/ë‹«ê¸° ê³µí†µ ì²˜ë¦¬
     /// </summary>
     private void SetMenu(bool show)
     {
         activated = show;
 
-        // ¸Ş´º ÄÑÁú ¶§ È¿°úÀ½ Àç»ı
+        // ë©”ë‰´ ì¼œì§ˆ ë•Œ íš¨ê³¼ìŒ ì¬ìƒ
         if (show == true)
         {
             SoundManager.Instance.PlaySFX(SfxType.UISelect, 0.5f, false);
         }
 
-        // ÇÃ·¹ÀÌ¾î ¿òÁ÷ÀÓ ¼³Á¤
+        // í”Œë ˆì´ì–´ ì›€ì§ì„ ì„¤ì •
         if (PlayerController.Instance != null)
         {
             if (show)
@@ -85,10 +86,10 @@ public class GameMenu : MonoBehaviour
             }
         }
 
-        // ÆĞ³Î È°¼ºÈ­
+        // íŒ¨ë„ í™œì„±í™”
         if (go != null) go.SetActive(show);
 
-        // ½Ã°£ Á¤Áö
+        // ì‹œê°„ ì •ì§€
         Time.timeScale = show ? 0f : 1f;
     }
 }

@@ -12,6 +12,7 @@ public class BattleManager : MonoBehaviour
     public TextMeshProUGUI DialogText;      // 다이얼로그 (전투 상황 메시지) 용 텍스트
     public TextMeshProUGUI PlayerHpText;    // 플레이어 현재 체력 표시 텍스트
     public GameObject panel;                // 전체적인 UI 패널
+    public GameObject defeatPanel;          // 패배했을 때 표시할 패널
     public Slider playerHpSlider;
     public Slider enemyHpSlider;
     public TurnIndicator turnIndicator;
@@ -58,6 +59,8 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
+        if (defeatPanel != null) defeatPanel.SetActive(false);
+
         if (playerVisual != null) playerOriginalPos = playerVisual.position;
         if (enemyVisual != null) enemyOriginalPos = enemyVisual.position;
 
@@ -310,8 +313,18 @@ public class BattleManager : MonoBehaviour
             if (PlayerHpText != null) PlayerHpText.enabled = false;
             if (turnIndicator != null) turnIndicator.SetTarget(null, Vector3.zero);
             yield return StartCoroutine(TypeWriterEffect("패배했다..."));
-            yield return new WaitForSeconds(2.0f);
-            EndBattle("DialogueTest");
+            yield return new WaitForSeconds(1.0f);
+
+            // 패배 패널 활성화
+            if (defeatPanel != null)
+            {
+                defeatPanel.SetActive(true);
+            }
+            else // 패널이 할당되지 않은 경우의 예비 동작
+            {
+                Debug.LogError("Defeat Panel is not assigned in the BattleManager!");
+                EndBattle("StartScene");
+            }
         }
         else if (!battleEnded)
         {
@@ -448,5 +461,32 @@ public class BattleManager : MonoBehaviour
             case "Fireball_Book": return (SfxType.AttackFire, 1.0f);
             default: return (SfxType.Attack1, 0.7f);
         }
+    }
+    
+    /// <summary>
+    /// '재시작' 버튼을 눌렀을 때 호출됩니다.
+    /// 플레이어의 HP를 최대로 회복시키고 현재 씬을 다시 로드합니다.
+    /// </summary>
+    public void OnRestartButton()
+    {
+        // 플레이어 HP를 최대로 회복
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.SetHP(GameStateManager.Instance.playerMaxHP);
+        }
+
+        // 게임 시간을 원래대로 되돌리고 현재 씬을 다시 로드합니다.
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    /// <summary>
+    /// '타이틀로' 버튼을 눌렀을 때 호출됩니다.
+    /// </summary>
+    public void OnGoToTitleButton()
+    {
+        // 게임 시간을 원래대로 되돌리고 타이틀 씬으로 돌아갑니다.
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("StartScene"); // 타이틀 씬 이름이 "StartScene"이라고 가정
     }
 }
